@@ -1,0 +1,13 @@
+{
+  "name": "web-nestre-api",
+  "version": "1.0.0",
+  "description": "API client for NESTRE App Services",
+  "main": "src/index.js",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
