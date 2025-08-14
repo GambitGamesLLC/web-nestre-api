@@ -2,11 +2,16 @@
 import { NestreApiClient } from '../src/index.js';
 
 // --- Test Configuration ---
-const API_BASE_URL = 'https://api.nestre.com'; // Replace with a mock or dev server if needed
-const TEST_USER_ID = 'some-user-id-for-testing'; 
+const API_BASE_URL = 'https://appservices.dev.nestreapp.com'; // Replace production server if needed
 
-// --- DOM Element ---
+// --- DOM Elements ---
+const userIdInput = document.getElementById('userIdInput');
+const authTokenInput = document.getElementById('authTokenInput');
+const runTestBtn = document.getElementById('runTestBtn');
 const outputDiv = document.getElementById('output');
+
+// --- Initialize API Client ---
+const apiClient = new NestreApiClient({ baseUrl: API_BASE_URL });
 
 function log(message) {
     console.log(message);
@@ -14,18 +19,28 @@ function log(message) {
 }
 
 // --- Main Test Function ---
-async function runTest() {
-    log('Initializing API client...');
-    const apiClient = new NestreApiClient({ baseUrl: API_BASE_URL });
-    
-    // You would set this after a mock login
-    // apiClient.setAuthToken('YOUR_TEST_TOKEN');
+async function runTest(userId, authToken) {
+    if (!userId) {
+        log('❌ Error: User ID is required.');
+        return;
+    }
 
+    log('Initializing test...');
+
+    // Set the auth token for this request
+    if (authToken) {
+        apiClient.setAuthToken(authToken);
+        log('Auth token has been set.');
+    } else {
+        apiClient.clearAuthToken();
+        log('No auth token provided. Making unauthenticated request.');
+    }
+    
     try {
-        log(`Fetching profile for user: ${TEST_USER_ID}...`);
+        log(`Fetching profile for user: ${userId}...`);
         
         // Because of JSDoc, you get autocompletion here in VS Code!
-        const profile = await apiClient.user.getUserProfile(TEST_USER_ID);
+        const profile = await apiClient.user.getUserProfile(userId);
 
         log('✅ Test successful!');
         log('User Profile Loaded:');
@@ -40,5 +55,15 @@ async function runTest() {
     }
 }
 
-// --- Run the test ---
-runTest();
+// --- Event Listener ---
+runTestBtn.addEventListener('click', () => {
+    // Clear previous results
+    outputDiv.innerHTML = '';
+    
+    // Get current values from the input fields
+    const userId = userIdInput.value;
+    const authToken = authTokenInput.value;
+    
+    // Run the test with the provided values
+    runTest(userId, authToken);
+});
