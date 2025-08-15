@@ -15,7 +15,8 @@
  * @returns {Promise<T>}
  */
 
-export class UserApiService {
+export class UserApiService 
+{
   /**
    * @private
    * @type {RequestHandler}
@@ -23,21 +24,17 @@ export class UserApiService {
   _request;
 
   /**
+   * Constructor for the UserApiService.
+   * Expects a RequestHandler 
    * @param {RequestHandler} requestHandler
    */
-  constructor(requestHandler) {
+  constructor(requestHandler) 
+  {
     this._request = requestHandler;
+  
   }
 
-  /**
-   * Get user by email address
-   * @param {string} email
-   * @returns {Promise<UserRead>}
-   */
-  getUserByEmail(email) {
-    const encodedEmail = encodeURIComponent(email);
-    return this._request('GET', `/v2/user/get-by-email?email=${encodedEmail}`);
-  }
+//#region PUBLIC - GET BASIC USER PROFILE
 
  /**
    * Get basic user profile, 
@@ -45,9 +42,18 @@ export class UserApiService {
    * @param {string} userId
    * @returns {Promise<BasicUserProfile>}
    */
-  getBasicUserProfile(userId) {
+  //-----------------------------------------------------------------------//
+  GetBasicUserProfile(userId) 
+  //-----------------------------------------------------------------------//
+  {
+
     return this._request('GET', `/v2/user/${userId}`);
-  }
+
+  } //END GetBasicUserProfile Method
+
+//#endregion
+
+//#region PUBLIC - GET FULL USER PROFILE
 
   /**
    * Get the full user profile, 
@@ -59,14 +65,26 @@ export class UserApiService {
   getFullUserProfile(userId) {
     return this._request('GET', `/v2/user/${userId}/profile`);
   }
+
+//#endregion
   
+//#region PUBLIC - UPDATE USER
+
   /**
    * Update the user
    * @param {string} userId
    * @param {UserPatch} payload
    * @returns {Promise<UserRead>}
    */
-  updateUser(userId, payload) {
+  //---------------------------------------------------------------------//
+  UpdateUser(userId, payload) 
+  //---------------------------------------------------------------------//
+  {
+
     return this._request('PATCH', `/v2/user/${userId}`, payload);
-  }
-}
+  
+  } //END UpdateUser Method
+
+  //#endregion
+
+} //END UserApiService Class
