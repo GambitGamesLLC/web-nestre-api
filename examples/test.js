@@ -40,7 +40,7 @@ async function runTest(userId, authToken) {
         log(`Fetching profile for user: ${userId}...`);
         
         // Because of JSDoc, you get autocompletion here in VS Code!
-        const profile = await apiClient.user.getUserProfile(userId);
+        const profile = await apiClient.user.getBasicUserProfile(userId);
 
         log('✅ Test successful!');
         log('User Profile Loaded:');

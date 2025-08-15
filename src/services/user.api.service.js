@@ -1,7 +1,7 @@
 /**
  * @typedef {import('../types.js').UserRead} UserRead
  * @typedef {import('../types.js').UserPatch} UserPatch
- * @typedef {import('../types.js').UserProfile} UserProfile
+ * @typedef {import('../types.js').BasicUserProfile} BasicUserProfile
  * @typedef {import('../types.js').ReferralCode} ReferralCode
  */
 
@@ -39,12 +39,24 @@ export class UserApiService {
     return this._request('GET', `/v2/user/get-by-email?email=${encodedEmail}`);
   }
 
-  /**
-   * Get user profile
+ /**
+   * Get basic user profile, 
+   * does not require that they have completed their assessement
    * @param {string} userId
-   * @returns {Promise<UserProfile>}
+   * @returns {Promise<BasicUserProfile>}
    */
-  getUserProfile(userId) {
+  getBasicUserProfile(userId) {
+    return this._request('GET', `/v2/user/${userId}`);
+  }
+
+  /**
+   * Get the full user profile, 
+   * requires they have completed their assessement
+   * Otherwise returns a 400 error
+   * @param {string} userId
+   * @returns {Promise<FullUserProfile>}
+   */
+  getFullUserProfile(userId) {
     return this._request('GET', `/v2/user/${userId}/profile`);
   }
   
