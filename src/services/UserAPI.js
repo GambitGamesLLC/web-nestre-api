@@ -1,9 +1,13 @@
+//#region IMPORTS
+
 /**
- * @typedef {import('../types.js').UserRead} UserRead
- * @typedef {import('../types.js').UserPatch} UserPatch
  * @typedef {import('../types.js').BasicUserProfile} BasicUserProfile
- * @typedef {import('../types.js').ReferralCode} ReferralCode
+ * @typedef {import('../types.js').FullUserProfile} FullUserProfile
  */
+
+//#endregion
+
+//#region TYPE DEFINITION - REQUEST HANDLER
 
 /**
  * A function that handles API requests.
@@ -15,24 +19,41 @@
  * @returns {Promise<T>}
  */
 
-export class UserApiService 
+//#endregion
+
+/**
+ * Handles API Requests that access the 'user' portion of the API
+ */
+export class UserAPI 
 {
+
+//#region PRIVATE - VARIABLES
+
   /**
+   * Stores the request handler
    * @private
    * @type {RequestHandler}
    */
   _request;
+
+//#endregion
+
+//#region PUBLIC - CONSTRUCTOR
 
   /**
    * Constructor for the UserApiService.
    * Expects a RequestHandler 
    * @param {RequestHandler} requestHandler
    */
+  //----------------------------------------------//
   constructor(requestHandler) 
+  //----------------------------------------------//
   {
     this._request = requestHandler;
   
-  }
+  } //END Constructor Method
+
+//#endregion
 
 //#region PUBLIC - GET BASIC USER PROFILE
 
@@ -62,29 +83,15 @@ export class UserApiService
    * @param {string} userId
    * @returns {Promise<FullUserProfile>}
    */
-  getFullUserProfile(userId) {
+  //--------------------------------------------------------------//
+  GetFullUserProfile(userId) 
+  //--------------------------------------------------------------//
+  {
+   
     return this._request('GET', `/v2/user/${userId}/profile`);
-  }
+  
+  } //END GetFullUserProfile Method
 
 //#endregion
-  
-//#region PUBLIC - UPDATE USER
-
-  /**
-   * Update the user
-   * @param {string} userId
-   * @param {UserPatch} payload
-   * @returns {Promise<UserRead>}
-   */
-  //---------------------------------------------------------------------//
-  UpdateUser(userId, payload) 
-  //---------------------------------------------------------------------//
-  {
-
-    return this._request('PATCH', `/v2/user/${userId}`, payload);
-  
-  } //END UpdateUser Method
-
-  //#endregion
 
 } //END UserApiService Class

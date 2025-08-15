@@ -1,31 +1,62 @@
-import { UserApiService } from './services/user.api.service.js';
+//#region IMPORTS
+
+import { UserAPI } from './services/UserAPI.js';
 
 // VS Code and other editors will automatically pick up the types from this import.
-/** @typedef {import('./types.js').NestreApiClientConfig} NestreApiClientConfig */
+/** 
+ * @typedef {import('./types.js').NestreApiClientConfig} NestreApiClientConfig 
+ **/
 
-export class NestreApiClient {
+//#endregion
+
+/**
+ * Primary class for interacting with the Nestre API
+ */
+export class NestreAPIManager 
+{
+
+//#region PRIVATE - VARIABLES
+
   /**
+   * The first section of the server url, before the version number
    * @private
    * @type {string}
    */
   _baseUrl;
 
   /**
+   * The authentication token
    * @private
    * @type {string | null}
    */
   _authToken = null;
   
-  /** @type {UserApiService} */
+  /** 
+   * Reference to the UserAPI object
+   * @type {UserAPI} 
+   * */
   user;
 
+//#endregion
+
+//#region PUBLIC - CONSTRUCTOR
+
   /**
+   * Constructor for the NestreAPIManager
    * @param {NestreApiClientConfig} config
    */
-  constructor(config) {
+  //------------------------------------------------------//
+  constructor(config) 
+  //------------------------------------------------------//
+  {
     this._baseUrl = config.baseUrl;
-    this.user = new UserApiService(this._request.bind(this));
-  }
+    this.user = new UserAPI(this.Request.bind(this));
+
+  } //END constructor Method
+
+//#endregion
+
+//#region PUBLIC - SET AUTH TOKEN
 
   /**
    * Sets the JWT token for subsequent API calls.
@@ -34,11 +65,19 @@ export class NestreApiClient {
   setAuthToken(token) {
     this._authToken = token;
   }
+
+//#endregion
   
+//#region PUBLIC - CLEAR AUTH TOKEN
+
   /** Clears the authentication token. */
   clearAuthToken() {
     this._authToken = null;
   }
+
+//#endregion
+
+//#region PRIVATE - REQUEST
 
   /**
    * A private, generic request handler.
@@ -49,7 +88,10 @@ export class NestreApiClient {
    * @param {object} [body] - The request body for POST/PATCH requests.
    * @returns {Promise<T>}
    */
-  async _request(method, endpoint, body) {
+  //----------------------------------------------------------------------------//
+  async Request(method, endpoint, body) 
+  //----------------------------------------------------------------------------//
+  {
     const url = `${this._baseUrl}${endpoint}`;
     const headers = { 'Content-Type': 'application/json' };
 
@@ -75,5 +117,9 @@ export class NestreApiClient {
     }
 
     return response.json();
-  }
-}
+
+  } //END Request Method
+
+//#endregion
+
+} //END NestreAPIManager
