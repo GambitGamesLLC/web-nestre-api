@@ -1,7 +1,7 @@
 {
   "name": "web-nestre-api",
   "version": "1.0.0",
-  "description": "API client for NESTRE App Services",
+  "description": "API Manager for Nestre Services",
   "main": "src/index.js",
   "type": "module",
   "files": [

@@ -4,7 +4,7 @@
  * Primary entry point for this package
  */
 
-// Export the main client class so users can instantiate it.
+// Export the main manager class so users can instantiate it.
 export {NestreApiManager} from './nestre-api-manager.js';
 
 // Re-export the empty object from types.js. This allows JSDoc-aware

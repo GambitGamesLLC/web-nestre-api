@@ -1,6 +1,6 @@
 //#region IMPORTS
 
-import { UserApi as UserApi } from './user/user-api.js';
+import { UserApi } from './user/user-api.js';
 
 // VS Code and other editors will automatically pick up the types from this import.
 /** 
@@ -43,12 +43,18 @@ export class NestreApiManager
 
   /**
    * Constructor for the NestreAPIManager
-   * @param {NestreApiManagerConfig} config
+   * @param {NestreApiManagerConfig} config A configuration object used to setup the NestreApiManager
    */
   //------------------------------------------------------//
   constructor(config) 
   //------------------------------------------------------//
   {
+    //Validation Check
+    if( config.baseUrl === undefined || config.baseUrl === null || config.baseUrl === '' )
+    {
+      throw new Error('nestre-api-manager.js constructor() Configuration error: `config.baseUrl` is a required property.');
+    }
+
     this._baseUrl = config.baseUrl;
     this.userAPI = new UserApi(this);
 
