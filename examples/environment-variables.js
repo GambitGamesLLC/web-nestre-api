@@ -1,0 +1,20 @@
+/**
+ * Common variables used when testing the Nestre API
+ */
+
+/**
+ * Base URL for the development NESTRE server
+ * @type{string}
+ */
+export const API_BASE_URL = 'https://appservices.dev.nestreapp.com'; // Replace with production server if needed
+
+/**
+ * UserId we want to use for lookups
+ */
+export const USER_ID = "4839e58f-9d9c-4065-a864-8da46121c174";
+
+/**
+ * Authorization token granted for us to access the Nestre API
+ */
+export const AUTH_TOKEN = "eyJraWQiOiJTeFlTZGZmeXFlQUpPSUVieSs4aWRBV3EwR0RLMW94Z0l0Q0ZcLzdXN05zST0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxZWViZDQyNS0zZjRhLTQzMGEtYjE4Ny0xODQyZDM1MWY2OWMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9vTnl4UlBDV1oiLCJjbGllbnRfaWQiOiI0Z2N1NW5vZDI0M3Bvb2FmZDY4bTg1dG5xNCIsIm9yaWdpbl9qdGkiOiI0MWUwYmVkMS05MDExLTRlYTEtOTEyYy01MGQ4ZTI4MjMyMjIiLCJldmVudF9pZCI6IjBmM2Y1M2Y5LTMwNDUtNDAyYS05ZDU3LWE3OGQ5MzdiZTU0NyIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3NTU1MTg5NzMsImV4cCI6MTc1NTYwNTM3MywiaWF0IjoxNzU1NTE4OTczLCJqdGkiOiIxYjc4OTMzZi05NGE1LTQyYmUtYTgxMC1lMDMwMzM5NzdhMDEiLCJ1c2VybmFtZSI6IjFlZWJkNDI1LTNmNGEtNDMwYS1iMTg3LTE4NDJkMzUxZjY5YyJ9.XnIVbLXXMhi1SQ4CqeBV3HrtJlWIJp8N94Jm1dFd5V9QJmt7VxT3xVZaW3y0VV8WK_F88Kah7j5ciXWC3-MazJ6tu3JEZAQshVdvl8eiCO8ULojNH0eAZC5MEEcI2ApI59RVSUzysbfT8un1frcPgvxO_XaVQ0H-YLdawHJAT6D8YnnlS7e2ZaljG_saF5xeHOJLmEfbybkBPZaJIu4eqYDfNqtYEM3yYE_eLtuivz3ZPLw71h0l2KTMQSv6pxrxad-ucxG28L8NlsrKw8Xir7Jn0xvJMX4IB5wiKw6D8oH-FDVGiistSn141psh0QxAeAlFqLPiOOJDhxg1zcewmw";
+

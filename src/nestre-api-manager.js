@@ -1,10 +1,10 @@
 //#region IMPORTS
 
-import { UserAPI } from './services/UserAPI.js';
+import { UserAPI } from './user/user-api.js';
 
 // VS Code and other editors will automatically pick up the types from this import.
 /** 
- * @typedef {import('./types.js').NestreApiClientConfig} NestreApiClientConfig 
+ * @typedef {import('./types.js').NestreAPIManagerConfig} NestreAPIManagerConfig 
  **/
 
 //#endregion
@@ -35,7 +35,7 @@ export class NestreAPIManager
    * Reference to the UserAPI object
    * @type {UserAPI} 
    * */
-  user;
+  userAPI;
 
 //#endregion
 
@@ -43,14 +43,14 @@ export class NestreAPIManager
 
   /**
    * Constructor for the NestreAPIManager
-   * @param {NestreApiClientConfig} config
+   * @param {NestreAPIManagerConfig} config
    */
   //------------------------------------------------------//
   constructor(config) 
   //------------------------------------------------------//
   {
     this._baseUrl = config.baseUrl;
-    this.user = new UserAPI(this.Request.bind(this));
+    this.userAPI = new UserAPI(this);
 
   } //END constructor Method
 
@@ -62,18 +62,28 @@ export class NestreAPIManager
    * Sets the JWT token for subsequent API calls.
    * @param {string} token - The authentication token.
    */
-  setAuthToken(token) {
+  //------------------------------------------------//
+  SetAuthToken(token) 
+  //------------------------------------------------//
+  {
     this._authToken = token;
-  }
+
+  } //END SetAuthToken
 
 //#endregion
   
 //#region PUBLIC - CLEAR AUTH TOKEN
 
-  /** Clears the authentication token. */
-  clearAuthToken() {
+  /** 
+   * Clears the authentication token. 
+   */
+  //------------------------------------------------//
+  ClearAuthToken() 
+  //------------------------------------------------//
+  {
     this._authToken = null;
-  }
+  
+  } //END ClearAuthToken
 
 //#endregion
 
@@ -107,12 +117,14 @@ export class NestreAPIManager
 
     const response = await fetch(url, config);
 
-    if (!response.ok) {
+    if (!response.ok) 
+    {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(`API Error: ${response.status} - ${errorData.message || 'Unknown error'}`);
     }
 
-    if (response.status === 204 || response.headers.get('content-length') === '0') {
+    if (response.status === 204 || response.headers.get('content-length') === '0') 
+    {
       return null;
     }
 

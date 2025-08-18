@@ -1,22 +1,10 @@
 //#region IMPORTS
 
-/**
- * @typedef {import('../types.js').BasicUserProfile} BasicUserProfile
- * @typedef {import('../types.js').FullUserProfile} FullUserProfile
- */
-
-//#endregion
-
-//#region TYPE DEFINITION - REQUEST HANDLER
+import { NestreAPIManager as NestreApiManager } from '../nestre-api-manager.js';
 
 /**
- * A function that handles API requests.
- * @callback RequestHandler
- * @template T
- * @param {string} method
- * @param {string} endpoint
- * @param {object} [body]
- * @returns {Promise<T>}
+ * @typedef {import('./user-types.js').basic-user-profile} BasicUserProfile
+ * @typedef {import('./user-types.js').full-user-profile} FullUserProfile
  */
 
 //#endregion
@@ -30,27 +18,26 @@ export class UserAPI
 //#region PRIVATE - VARIABLES
 
   /**
-   * Stores the request handler
-   * @private
-   * @type {RequestHandler}
+   * Reference to the Nestre API Manager
+   * @type{NestreApiManager} nestreAPIManager
    */
-  _request;
+  nestreAPIManager;
 
 //#endregion
 
 //#region PUBLIC - CONSTRUCTOR
 
   /**
-   * Constructor for the UserApiService.
-   * Expects a RequestHandler 
-   * @param {RequestHandler} requestHandler
+   * Constructor for the UserAPI
+   * Requires a reference to the NestreAPIManager
+   * @param {NestreApiManager} nestreApiManager
    */
   //----------------------------------------------//
-  constructor(requestHandler) 
+  constructor(nestreApiManager) 
   //----------------------------------------------//
   {
-    this._request = requestHandler;
-  
+    this.nestreAPIManager = nestreApiManager;
+
   } //END Constructor Method
 
 //#endregion
@@ -68,7 +55,7 @@ export class UserAPI
   //-----------------------------------------------------------------------//
   {
 
-    return this._request('GET', `/v2/user/${userId}`);
+    return this.nestreAPIManager.Request('GET', `/v2/user/${userId}`);
 
   } //END GetBasicUserProfile Method
 
@@ -88,7 +75,7 @@ export class UserAPI
   //--------------------------------------------------------------//
   {
    
-    return this._request('GET', `/v2/user/${userId}/profile`);
+    return this.nestreAPIManager.Request('GET', `/v2/user/${userId}/profile`);
   
   } //END GetFullUserProfile Method
 

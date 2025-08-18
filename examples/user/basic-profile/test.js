@@ -1,23 +1,22 @@
 //#region IMPORTS
 
 // Import directly from the source file for local testing
-import { NestreApiClient } from '../src/index.js';
+import { NestreAPIManager } from '../../../src/index.js';
+import { API_BASE_URL } from '../../environmentVariables.js'
+
+/** 
+ * @typedef {import('../../../src/Types.js').NestreAPIManagerConfig} NestreAPIManagerConfig 
+ **/
 
 //#endregion
 
 //#region PRIVATE - VARIABLES
 
 /**
- * Base URL for the development NESTRE server
- * @type{string}
- */
-const API_BASE_URL = 'https://appservices.dev.nestreapp.com'; // Replace production server if needed
-
-/**
  * The Nestre API client, used to make API calls
- * @type{NestreApiClient}
+ * @type{NestreAPIManager}
  */
-let apiClient;
+let nestreAPIManager;
 
 //#endregion
 
@@ -118,11 +117,16 @@ function AddEventListeners()
 function CreateNestreAPI()
 //-------------------------------------------------------//
 {
-    apiClient = new NestreApiClient
-    ({ 
+    /**
+     * @type{NestreAPIManagerConfig}
+     */
+    let nestreAPIManagerConfig = 
+    { 
         baseUrl: API_BASE_URL 
-    });
+    };
 
+    nestreAPIManager = new NestreAPIManager(nestreAPIManagerConfig);
+    
 } //END CreateNestreAPI Method
 
 //#endregion
@@ -174,12 +178,12 @@ async function RunTest(userId, authToken)
     // Set the auth token for this request
     if(authToken) 
     {
-        apiClient.setAuthToken(authToken);
+        nestreAPIManager.SetAuthToken(authToken);
         Log('Auth token has been set.');
     } 
     else 
     {
-        apiClient.clearAuthToken();
+        nestreAPIManager.ClearAuthToken();
         Log('No auth token provided. Making unauthenticated request.');
     }
     
@@ -188,13 +192,13 @@ async function RunTest(userId, authToken)
         Log(`Fetching profile for user: ${userId}...`);
         
         // Because of JSDoc, you get autocompletion here in VS Code!
-        const profile = await apiClient.user.GetBasicUserProfile(userId);
+        const basicProfile = await nestreAPIManager.userAPI.GetBasicUserProfile(userId);
 
         Log('✅ Test successful!');
-        Log('User Profile Loaded:');
+        Log('Basic User Profile Loaded:');
         
         // Display result in a readable format
-        const profileString = JSON.stringify(profile, null, 2);
+        const profileString = JSON.stringify(basicProfile, null, 2);
         outputDiv.innerHTML += `<pre>${profileString}</pre>`;
         
     } 

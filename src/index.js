@@ -5,8 +5,9 @@
  */
 
 // Export the main client class so users can instantiate it.
-export { NestreAPIManager as NestreApiClient } from './NestreAPI.js';
+export {NestreAPIManager} from './NestreAPIManager.js';
 
 // Re-export the empty object from types.js. This allows TypeScript-aware
 // editors to find and use the JSDoc @typedefs for type checking.
-export * from './types.js';
+export * from './Types.js';
+export * from './user/UserTypes.js';
