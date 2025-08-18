@@ -2,11 +2,11 @@
 
 // Import directly from the source file for local testing
 import { NestreAPIManager } from '../../../src/index.js';
-import { API_BASE_URL } from '../../environmentVariables.js';
+import { API_BASE_URL } from '../../environment-variables.js';
 
 
 /** 
- * @typedef {import('../../../src/Types.js').NestreAPIManagerConfig} NestreAPIManagerConfig 
+ * @typedef {import('../../../src/types.js').NestreAPIManagerConfig} NestreAPIManagerConfig 
  **/
 
 //#endregion
