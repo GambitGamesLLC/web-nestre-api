@@ -25,13 +25,78 @@
 
 //#endregion
 
+//#region USER API - UPDATE USER PROFILE
+
+/**
+ * @typedef {object} UpdateUserProfile
+ * @property {string} firstname
+ * @property {string} lastname
+ * @property {string} username
+ * @property {string} email
+ * @property {string} profile_photo_s3_key
+ * @property {number} subscription_level_id
+ * @property {number} referred_by_code
+ * @property {boolean} trial_used
+ * @property {string} date_of_birth
+ * @property {number} gender_id
+ * @property {number} education_level_id
+ * @property {number} marital_status_id
+ * @property {string} organization
+ * @property {boolean} frame_it_unlocked
+ * @property {string} app_version
+ * @property {string} os_version
+ */
+
+//#endregion
+
 //#region USER API - FULL USER PROFILE
 
 /**
+ * @typedef {object} Assessment
+ * @property {number} id
+ * @property {string} alpha
+ * @property {string} cerebral
+ * @property {string} prime
+ * @property {string} created_at
+ */
+
+/**
+ * @typedef {object} Streaks
+ * @property {number} current_streak
+ * @property {number} max_streak
+ */
+
+/**
  * @typedef {object} FullUserProfile
- * @property {UserRead} user
- * @property {Array<object>} streaks - Replace 'object' with a proper Streak type.
- * @property {Array<object>} assessments - Replace 'object' with a proper Assessment type.
+ * @property {string} id
+ * @property {string} email
+ * @property {string} firstname
+ * @property {string} lastname
+ * @property {string} username
+ * @property {EffectiveSubscriptionLevel} effective_subscription_level
+ * @property {boolean} trial_used
+ * @property {boolean} frame_it_unlocked
+ * @property {Assessment} assessment
+ * @property {Streaks} streaks
+ */
+
+//#endregion
+
+//#region USER API - DELETE USER PROFILE
+
+/**
+ * @typedef {object} DeleteConfirmationMessage
+ * @property {string} message
+ */
+
+//#endregion
+
+//#region USER API - CREATE REFERRAL ACCOUNT
+
+/**
+ * @typedef {object} CreateReferralAccountConfirmationMessage
+ * @property {string} code
+ * @property {boolean} is_active
  */
 
 //#endregion

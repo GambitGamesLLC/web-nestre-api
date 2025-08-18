@@ -10,9 +10,10 @@ import { UserApi } from './user/user-api.js';
 //#endregion
 
 /**
- * Primary class for interacting with the Nestre API
+ * Singleton class for interacting with the Nestre API
+ * @class
  */
-export class NestreApiManager 
+class NestreApiManager 
 {
 
 //#region PRIVATE - VARIABLES
@@ -39,16 +40,24 @@ export class NestreApiManager
 
 //#endregion
 
-//#region PUBLIC - CONSTRUCTOR
+//#region PUBLIC - INITIALIZE
 
-  /**
-   * Constructor for the NestreAPIManager
-   * @param {NestreApiManagerConfig} config A configuration object used to setup the NestreApiManager
-   */
-  //------------------------------------------------------//
-  constructor(config) 
-  //------------------------------------------------------//
-  {
+/**
+ * Initializes the NestreApiManager Singleton
+ * @param {NestreApiManagerConfig} config A configuration object used to setup the NestreApiManager
+ */
+//------------------------------------------------//
+constructor(config) 
+//------------------------------------------------//
+{
+    // Singleton check
+    if (NestreApiManager._instance) {
+        // This check is a safeguard, but shouldn't be hit with the singleton module pattern.
+        throw new Error("nestre-api-manager.js constructor() Singleton classes can't be instantiated more than once.");
+    }
+    // Sets the singleton reference so we know we've already called the constructor, preventing duplicates
+    NestreApiManager._instance = this;
+
     //Validation Check
     if( config.baseUrl === undefined || config.baseUrl === null || config.baseUrl === '' )
     {
@@ -56,9 +65,11 @@ export class NestreApiManager
     }
 
     this._baseUrl = config.baseUrl;
+
     this.userAPI = new UserApi(this);
 
-  } //END constructor Method
+} //END constructor Method
+
 
 //#endregion
 
@@ -141,3 +152,56 @@ export class NestreApiManager
 //#endregion
 
 } //END NestreAPIManager
+
+//#region EXPORT SINGLETON INSTANCE
+
+// ----------------------------------------------------------------- //
+// EXPORT INITIALIZER AND GETTER FUNCTIONS FOR THE SINGLETON
+// ----------------------------------------------------------------- //
+
+/** Holds the single instance.
+ * @type {NestreApiManager | null} 
+ */
+let instance = null;
+
+/**
+ * Initializes the NestreApiManager singleton.
+ * Must be called once at application startup.
+ * @param {NestreApiManagerConfig} config 
+ */
+//-----------------------------------------------------------------------//
+export function InitializeNestreApiManager(config) 
+//-----------------------------------------------------------------------//
+{
+  if (instance) 
+  {
+    console.warn('web-nestre-api package : nestre-api-manager.js InitializeNestreApiManager() Warning: NestreApiManager has already been initialized.');
+    return;
+  }
+
+  // Create the one and only instance by calling the new constructor
+  instance = new NestreApiManager(config);
+  
+  // Freeze it to prevent modification
+  //Object.freeze(instance);
+
+} //END Initialize Method
+
+/**
+ * Gets the configured instance of the NestreApiManager.
+ * @returns {NestreApiManager}
+ */
+//-------------------------------------------------------------------------//
+export function GetNestreApiManager() 
+//-------------------------------------------------------------------------//
+{
+  if(!instance) 
+  {
+    throw new Error('web-nestre-api package : nestre-api-manager.js GetNestreApiManager() Error: NestreApiManager has not been initialized. Call Initialize() first.');
+  }
+
+  return instance;
+
+} //END GetNestreApiManager Method
+
+//#endregion
