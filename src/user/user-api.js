@@ -1,6 +1,6 @@
 //#region IMPORTS
 
-import { NestreAPIManager as NestreApiManager } from '../nestre-api-manager.js';
+import { NestreApiManager } from '../nestre-api-manager.js';
 
 /**
  * @typedef {import('./user-types.js').basic-user-profile} BasicUserProfile
@@ -12,7 +12,7 @@ import { NestreAPIManager as NestreApiManager } from '../nestre-api-manager.js';
 /**
  * Handles API Requests that access the 'user' portion of the API
  */
-export class UserAPI 
+export class UserApi 
 {
 
 //#region PRIVATE - VARIABLES
@@ -21,7 +21,7 @@ export class UserAPI
    * Reference to the Nestre API Manager
    * @type{NestreApiManager} nestreAPIManager
    */
-  nestreAPIManager;
+  nestreApiManager;
 
 //#endregion
 
@@ -36,7 +36,7 @@ export class UserAPI
   constructor(nestreApiManager) 
   //----------------------------------------------//
   {
-    this.nestreAPIManager = nestreApiManager;
+    this.nestreApiManager = nestreApiManager;
 
   } //END Constructor Method
 
@@ -55,7 +55,7 @@ export class UserAPI
   //-----------------------------------------------------------------------//
   {
 
-    return this.nestreAPIManager.Request('GET', `/v2/user/${userId}`);
+    return this.nestreApiManager.Request('GET', `/v2/user/${userId}`);
 
   } //END GetBasicUserProfile Method
 
@@ -75,7 +75,7 @@ export class UserAPI
   //--------------------------------------------------------------//
   {
    
-    return this.nestreAPIManager.Request('GET', `/v2/user/${userId}/profile`);
+    return this.nestreApiManager.Request('GET', `/v2/user/${userId}/profile`);
   
   } //END GetFullUserProfile Method
 

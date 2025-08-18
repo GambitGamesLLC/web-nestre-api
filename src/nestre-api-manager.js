@@ -1,10 +1,10 @@
 //#region IMPORTS
 
-import { UserAPI } from './user/user-api.js';
+import { UserApi as UserApi } from './user/user-api.js';
 
 // VS Code and other editors will automatically pick up the types from this import.
 /** 
- * @typedef {import('./types.js').NestreAPIManagerConfig} NestreAPIManagerConfig 
+ * @typedef {import('./types.js').NestreApiManagerConfig} NestreApiManagerConfig 
  **/
 
 //#endregion
@@ -12,7 +12,7 @@ import { UserAPI } from './user/user-api.js';
 /**
  * Primary class for interacting with the Nestre API
  */
-export class NestreAPIManager 
+export class NestreApiManager 
 {
 
 //#region PRIVATE - VARIABLES
@@ -33,7 +33,7 @@ export class NestreAPIManager
   
   /** 
    * Reference to the UserAPI object
-   * @type {UserAPI} 
+   * @type {UserApi} 
    * */
   userAPI;
 
@@ -43,14 +43,14 @@ export class NestreAPIManager
 
   /**
    * Constructor for the NestreAPIManager
-   * @param {NestreAPIManagerConfig} config
+   * @param {NestreApiManagerConfig} config
    */
   //------------------------------------------------------//
   constructor(config) 
   //------------------------------------------------------//
   {
     this._baseUrl = config.baseUrl;
-    this.userAPI = new UserAPI(this);
+    this.userAPI = new UserApi(this);
 
   } //END constructor Method
 

@@ -1,11 +1,11 @@
 //#region IMPORTS
 
 // Import directly from the source file for local testing
-import { NestreAPIManager } from '../../../src/index.js';
+import { NestreApiManager } from '../../../src/index.js';
 import { API_BASE_URL } from '../../environment-variables.js'
 
 /** 
- * @typedef {import('../../../src/types.js').NestreAPIManagerConfig} NestreAPIManagerConfig 
+ * @typedef {import('../../../src/types.js').NestreApiManagerConfig} NestreApiManagerConfig 
  **/
 
 //#endregion
@@ -14,9 +14,9 @@ import { API_BASE_URL } from '../../environment-variables.js'
 
 /**
  * The Nestre API client, used to make API calls
- * @type{NestreAPIManager}
+ * @type{NestreApiManager}
  */
-let nestreAPIManager;
+let nestreApiManager;
 
 //#endregion
 
@@ -60,13 +60,13 @@ let outputDiv;
 document.addEventListener('DOMContentLoaded', () => 
 //-----------------------------------------------------//
 {
-    AttachDOMReferences();
+    AttachDomReferences();
 
     AddEventListeners();
 
-    CreateNestreAPI();
+    CreateNestreApi();
 
-}); //END DomContentLoaded Event Listener Hook
+}); //END DOMContentLoaded Event Listener Hook
 
 //#endregion
 
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () =>
  * @returns
  */
 //------------------------------------------------------//
-function AttachDOMReferences()
+function AttachDomReferences()
 //------------------------------------------------------//
 {
     // --- DOM Elements ---
@@ -87,7 +87,7 @@ function AttachDOMReferences()
     runTestBtn = document.getElementById('runTestBtn');
     outputDiv = document.getElementById('output');
 
-} //END AttachDOMReferences Method
+} //END AttachDomReferences Method
 
 //#endregion
 
@@ -114,20 +114,20 @@ function AddEventListeners()
  * Creates the Nestre API client, preparring it for use
  */
 //-------------------------------------------------------//
-function CreateNestreAPI()
+function CreateNestreApi()
 //-------------------------------------------------------//
 {
     /**
-     * @type{NestreAPIManagerConfig}
+     * @type{NestreApiManagerConfig}
      */
     let nestreAPIManagerConfig = 
     { 
         baseUrl: API_BASE_URL 
     };
 
-    nestreAPIManager = new NestreAPIManager(nestreAPIManagerConfig);
+    nestreApiManager = new NestreApiManager(nestreAPIManagerConfig);
     
-} //END CreateNestreAPI Method
+} //END CreateNestreApi Method
 
 //#endregion
 
@@ -178,12 +178,12 @@ async function RunTest(userId, authToken)
     // Set the auth token for this request
     if(authToken) 
     {
-        nestreAPIManager.SetAuthToken(authToken);
+        nestreApiManager.SetAuthToken(authToken);
         Log('Auth token has been set.');
     } 
     else 
     {
-        nestreAPIManager.ClearAuthToken();
+        nestreApiManager.ClearAuthToken();
         Log('No auth token provided. Making unauthenticated request.');
     }
     
@@ -192,7 +192,7 @@ async function RunTest(userId, authToken)
         Log(`Fetching profile for user: ${userId}...`);
         
         // Because of JSDoc, you get autocompletion here in VS Code!
-        const basicProfile = await nestreAPIManager.userAPI.GetBasicUserProfile(userId);
+        const basicProfile = await nestreApiManager.userAPI.GetBasicUserProfile(userId);
 
         Log('✅ Test successful!');
         Log('Basic User Profile Loaded:');

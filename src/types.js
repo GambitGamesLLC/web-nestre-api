@@ -6,7 +6,7 @@
 
 /**
  * Configuration object passed in during the construction of the NestreAPIManager
- * @typedef {object} NestreAPIManagerConfig
+ * @typedef {object} NestreApiManagerConfig
  * @property {string} baseUrl - The base URL for the NESTRE API.
  */
 
