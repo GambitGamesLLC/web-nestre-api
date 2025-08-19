@@ -1,6 +1,6 @@
 //#region IMPORTS
 
-import {GetNestreApiManager} from '../nestre-api-manager.js';
+import {NestreApiManager} from '../nestre-api-manager.js';
 
 /**
  * @typedef {import('./user-types.js').BasicUserProfile} BasicUserProfile
@@ -50,7 +50,7 @@ export class UserApi
   GetBasicUserProfileByEmail(email) 
   //-----------------------------------------------------------------------//
   {
-    return GetNestreApiManager().Request('GET', `/v2/user/get-by-email?email=${email}`);
+    return NestreApiManager.GetInstance().Request('GET', `/v2/user/get-by-email?email=${email}`);
 
   } //END GetBasicUserProfileByEmail Method
 
@@ -69,7 +69,7 @@ export class UserApi
   GetBasicUserProfile(userId) 
   //-----------------------------------------------------------------------//
   {
-    return GetNestreApiManager().Request('GET', `/v2/user/${userId}`);
+    return NestreApiManager.GetInstance().Request('GET', `/v2/user/${userId}`);
 
   } //END GetBasicUserProfile Method
 
@@ -87,7 +87,7 @@ export class UserApi
   UpdateUserProfile(userId, userProfile) 
   //-----------------------------------------------------------------------//
   {
-    return GetNestreApiManager().Request('PATCH', `/v2/user/${userId}`, userProfile);
+    return NestreApiManager.GetInstance().Request('PATCH', `/v2/user/${userId}`, userProfile);
 
   } //END UpdateUserProfile Method
 
@@ -107,7 +107,7 @@ export class UserApi
   //--------------------------------------------------------------//
   {
    
-    return GetNestreApiManager().Request('GET', `/v2/user/${userId}/profile`);
+    return NestreApiManager.GetInstance().Request('GET', `/v2/user/${userId}/profile`);
   
   } //END GetFullUserProfile Method
 
@@ -124,7 +124,7 @@ export class UserApi
   //--------------------------------------------------------------//
   {
    
-    return GetNestreApiManager().Request('POST', `/v2/user`);
+    return NestreApiManager.GetInstance().Request('POST', `/v2/user`);
   
   } //END CreateNewUserAccount Method
 
@@ -141,7 +141,7 @@ export class UserApi
   //--------------------------------------------------------------//
   {
    
-    return GetNestreApiManager().Request('DELETE', `/v2/user`);
+    return NestreApiManager.GetInstance().Request('DELETE', `/v2/user`);
   
   } //END DeleteUserAccount Method
 
@@ -159,7 +159,7 @@ export class UserApi
   //--------------------------------------------------------------//
   {
    
-    return GetNestreApiManager().Request('POST', `/v2/user/${userId}/referral-code`);
+    return NestreApiManager.GetInstance().Request('POST', `/v2/user/${userId}/referral-code`);
   
   } //END CreateReferralAccount Method
 

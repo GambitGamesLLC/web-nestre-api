@@ -1,7 +1,7 @@
 //#region IMPORTS
 
 // Import directly from the source file for local testing
-import { InitializeNestreApiManager, GetNestreApiManager } from '../../../src/index.js';
+import { NestreApiManager } from '../../../src/index.js';
 import { API_BASE_URL } from '../../environment-variables.js';
 
 /** 
@@ -119,8 +119,9 @@ function CreateNestreApi()
         baseUrl: API_BASE_URL 
     };
 
-    InitializeNestreApiManager(nestreAPIManagerConfig);
-    
+    let nestreApiManager = NestreApiManager.GetInstance();
+    nestreApiManager.Initialize(nestreAPIManagerConfig);
+
 } //END CreateNestreApi Method
 
 //#endregion
@@ -172,12 +173,12 @@ async function RunTest(userId, authToken)
     // Set the auth token for this request
     if(authToken) 
     {
-        GetNestreApiManager().SetAuthToken(authToken);
+        NestreApiManager.GetInstance().SetAuthToken(authToken);
         Log('Auth token has been set.');
     } 
     else 
     {
-        GetNestreApiManager().ClearAuthToken();
+        NestreApiManager.GetInstance().ClearAuthToken();
         Log('No auth token provided. Making unauthenticated request.');
     }
     
@@ -186,13 +187,13 @@ async function RunTest(userId, authToken)
         Log(`Fetching profile for user: ${userId}...`);
         
         // Because of JSDoc, you get autocompletion here in VS Code!
-        const basicProfile = await GetNestreApiManager().userAPI.GetFullUserProfile(userId);
+        const fullProfile = await NestreApiManager.GetInstance().userAPI.GetFullUserProfile(userId);
 
         Log('✅ Test successful!');
         Log('Full User Profile Loaded:');
         
         // Display result in a readable format
-        const profileString = JSON.stringify(basicProfile, null, 2);
+        const profileString = JSON.stringify(fullProfile, null, 2);
         outputDiv.innerHTML += `<pre>${profileString}</pre>`;
         
     } 

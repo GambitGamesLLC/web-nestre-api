@@ -13,7 +13,7 @@ import { UserApi } from './user/user-api.js';
  * Singleton class for interacting with the Nestre API
  * @class
  */
-class NestreApiManager 
+export class NestreApiManager 
 {
 
 //#region PRIVATE - VARIABLES
@@ -44,36 +44,70 @@ class NestreApiManager
 
 //#endregion
 
-//#region PRIVATE - CONSTRUCTOR
+//#region PUBLIC - CONSTRUCTOR
 
 /**
- * Initializes the NestreApiManager Singleton
- * @private
- * @param {NestreApiManagerConfig} config A configuration object used to setup the NestreApiManager
+ * Creates the Api classes used to access the various parts of the Nestre Api
  */
 //------------------------------------------------//
-constructor(config) 
+constructor() 
 //------------------------------------------------//
 {
     // Singleton check
-    if (NestreApiManager._instance) {
-        // This check is a safeguard, but shouldn't be hit with the singleton module pattern.
-        throw new Error("nestre-api-manager.js constructor() Singleton classes can't be instantiated more than once.");
+    if (NestreApiManager.instance) 
+    {
+        return NestreApiManager.instance;
     }
-    // Sets the singleton reference so we know we've already called the constructor, preventing duplicates
-    NestreApiManager._instance = this;
 
+    // Sets the singleton reference so we know we've already called the constructor, preventing duplicates
+    NestreApiManager.instance = this;
+
+} //END constructor Method
+
+//#endregion
+
+//#region PUBLIC - GET INSTANCE
+
+/**
+ * Get the single instance of the NestreApiManager
+ * @returns {NestreApiManager} The NestreApiManager instance
+ */
+// ----------------------------------------------------------------- //
+static GetInstance() 
+// ----------------------------------------------------------------- //
+{
+  if( !NestreApiManager.instance )
+  {
+    NestreApiManager.instance = new NestreApiManager();
+  }
+
+  return NestreApiManager.instance;
+
+} //END GetInstance Method
+
+//#endregion
+
+//#region PUBLIC - INITIALIZE
+
+/**
+ * Initializes the NestreApiManager singleton, preparing it for use
+ * @param {NestreApiManagerConfig} config A configuration object used to setup the NestreApiManager
+ */
+//------------------------------------------------//
+Initialize( config )
+//------------------------------------------------//
+{
     //Validation Check
     if( config.baseUrl === undefined || config.baseUrl === null || config.baseUrl === '' )
     {
-      throw new Error('nestre-api-manager.js constructor() Configuration error: `config.baseUrl` is a required property.');
+      throw new Error('nestre-api-manager.js Initialize() Configuration error: `config.baseUrl` is a required property.');
     }
 
     this._baseUrl = config.baseUrl;
 
     this.userAPI = new UserApi(this);
 
-} //END constructor Method
+} //END Initialize Method
 
 //#endregion
 
@@ -156,74 +190,5 @@ constructor(config)
 //#endregion
 
 } //END NestreAPIManager
-
-//#region EXPORT SINGLETON INSTANCE
-
-// ----------------------------------------------------------------- //
-// EXPORT INITIALIZER AND GETTER FUNCTIONS FOR THE SINGLETON
-// ----------------------------------------------------------------- //
-
-/** Holds the single instance.
- * @private
- * @type {NestreApiManager | null} 
- */
-let instance = null;
-
-/**
- * Initializes the NestreApiManager singleton.
- * Must be called once at application startup.
- * @param {NestreApiManagerConfig} config 
- */
-//-----------------------------------------------------------------------//
-export function InitializeNestreApiManager(config) 
-//-----------------------------------------------------------------------//
-{
-  if( IsInitialized() ) 
-  {
-    throw new Error('web-nestre-api package : nestre-api-manager.js InitializeNestreApiManager() Warning: NestreApiManager has already been initialized.');
-  }
-
-  // Create the one and only instance by calling the new constructor
-  instance = new NestreApiManager(config);
-  
-  // Freeze it to prevent modification
-  //Object.freeze(instance);
-
-} //END Initialize Method
-
-/**
- * Is the NestreApiManager initialized already?
- * @returns {boolean}
- */
-//-----------------------------------------------------------------------//
-export function IsInitialized()
-//-----------------------------------------------------------------------//
-{
-  if( instance)
-  {
-    return true;
-  }
-
-  return false;
-
-} //END IsInitialized Method
-
-/**
- * Gets the configured instance of the NestreApiManager.\n
- * If the Nestre Api Manager has not been initialized, this will result in a Error
- * @returns {NestreApiManager}
- */
-//-------------------------------------------------------------------------//
-export function GetNestreApiManager() 
-//-------------------------------------------------------------------------//
-{
-  if( !IsInitialized() ) 
-  {
-    throw new Error('web-nestre-api package : nestre-api-manager.js GetNestreApiManager() Error: NestreApiManager has not been initialized. Call Initialize() first.');
-  }
-
-  return instance;
-
-} //END GetNestreApiManager Method
 
 //#endregion
