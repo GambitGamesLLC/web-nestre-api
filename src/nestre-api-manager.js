@@ -173,29 +173,29 @@ Initialize( config )
   async Request(method, endpoint, body) 
   //----------------------------------------------------------------------------//
   {
-    if( NestreApiManager.instance === null || NestreApiManager.instance === undefined )
+    if( this.instance === null || this.instance === undefined )
     {
-      throw new Error( "web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined")
+      Promise.reject( "web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined" );
     }
 
     if( this._baseUrl === null || this._baseUrl === undefined || this._baseUrl === '' )
     {
-      throw new Error( "web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null or undefined");
-    }
-
-    if( method === null || method === undefined || method === '' )
-    {
-      throw new Error( "web-nestre-api : nestre-api-manager.js Error: method is null or undefined");
-    }
-
-    if( endpoint === null || endpoint === undefined || endpoint === '' )
-    {
-      throw new Error( "web-nestre-api : nestre-api-manager.js Error: endpoint is null or undefined");
+      Promise.reject( "web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null or undefined");
     }
 
     if( this._authToken === null || this._authToken === undefined || this._authToken === '')
     {
-      throw new Error( "web-nestre-api : nestre-api-manager.js Error: this._authToken is null or undefined");
+      Promise.reject( "web-nestre-api : nestre-api-manager.js Error: this._authToken is null or undefined");
+    }
+
+    if( method === null || method === undefined || method === '' )
+    {
+      Promise.reject( "web-nestre-api : nestre-api-manager.js Error: method is null or undefined");
+    }
+
+    if( endpoint === null || endpoint === undefined || endpoint === '' )
+    {
+      Promise.reject( "web-nestre-api : nestre-api-manager.js Error: endpoint is null or undefined");
     }
 
     //Combine our baseUrl and the endpoint to form the full url
@@ -230,7 +230,7 @@ Initialize( config )
     if (!response.ok) 
     {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      throw new Error(`web-nestre-api : nestre-api-manager.js API Error: ${response.status} - ${errorData.message || 'Unknown error'}`);
+      Promise.reject(`web-nestre-api : nestre-api-manager.js API Error: ${response.status} - ${errorData.message || 'Unknown error'}`);
     }
 
     //If we recieved a 204 or no code at all, 

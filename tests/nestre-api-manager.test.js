@@ -1,7 +1,7 @@
 //#region IMPORTS
 
 // Import the test runner functions
-import { describe, it } from 'node:test';
+import { it, describe, beforeEach, mock } from 'node:test';
 
 // Import the assertion library
 import assert from 'node:assert';
@@ -12,6 +12,15 @@ import { NestreApiManager } from '../src/nestre-api-manager.js';
 /**
  * @typedef {import('../src/types.js').NestreApiManagerConfig} NestreApiManagerConfig 
  */
+
+//Import the BASE_URL from our environment-variables.js
+import { API_BASE_URL } from '../examples/environment-variables.js';
+
+//Import the AUTH_TOKEN from our environment-variables.js
+import { AUTH_TOKEN } from '../examples/environment-variables.js';
+
+//Import the USER_ID from our environment-variables.js
+import { USER_ID } from '../examples/environment-variables.js';
 
 //#endregion
 
@@ -220,14 +229,45 @@ describe( "nestre-api-manager.js SetAuthToken()", () =>
 
 //#endregion
 
+//#region DESCRIBE - nestre-api-manager.js - ClearAuthToken
+
+describe( "nestre-api-manager.js ClearAuthToken()", () =>
+{
+    it( "should set the authToken to null", ()=>
+    {
+        //Arrange
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        //Act
+        NestreApiManager.GetInstance().ClearAuthToken();
+        
+        //Assert
+        assert.deepEqual( NestreApiManager.GetInstance()._authToken, null);
+
+    });
+
+});
+
+//#endregion
+
 //#region DESCRIBE - nestre-api-manager.js - Request
 
 describe( "nestre-api-manager.js Request()", () =>
 {
-    it( "should throw an error if our token parameter is null", ()=>
-    {
-        
 
+    // -------------------------------------------------------------------------- //
+    // ## Input Validation and Pre-condition Tests
+    // -------------------------------------------------------------------------- //
+    it('should reject the promise if NestreApiManager._baseUrl is null', async () => 
+    {
+        NestreApiManager.GetInstance()._baseUrl = null;
+
+        // We expect the promise to be rejected with a specific error message.
+        await assert.rejects
+        (
+            NestreApiManager.GetInstance().Request('GET', '/test'),
+            { message: '"web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null or undefined"' }
+        );
     });
 
 });
