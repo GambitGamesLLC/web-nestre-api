@@ -98,14 +98,24 @@ Initialize( config )
 //------------------------------------------------//
 {
     //Validation Check
-    if( config.baseUrl === undefined || config.baseUrl === null || config.baseUrl === '' )
+    if( config === undefined || config === null || config === '' )
     {
-      throw new Error('nestre-api-manager.js Initialize() Configuration error: `config.baseUrl` is a required property.');
+      throw new Error('web-nestre-api : nestre-api-manager.js Initialize() Configuration error: `config` is a required property.');
     }
 
+    if( config.baseUrl === undefined || config.baseUrl === null || config.baseUrl === '' )
+    {
+      throw new Error('web-nestre-api : nestre-api-manager.js Initialize() Configuration error: `config.baseUrl` is a required property.');
+    }
+
+    //Set variables, this can be changed by calling Initialize again with a new configuration
     this._baseUrl = config.baseUrl;
 
-    this.userAPI = new UserApi(this);
+    //We only need to generate our helper classes once
+    if( this.userAPI === null )
+    {
+      this.userAPI = new UserApi(this);
+    }
 
 } //END Initialize Method
 
@@ -121,6 +131,11 @@ Initialize( config )
   SetAuthToken(token) 
   //------------------------------------------------//
   {
+    if( token == null || token == undefined || token == '')
+    {
+      throw new Error( "web-nestre-api : nestre-api-manager.js SetAuthToken() passed in token is invalid" );
+    }
+
     this._authToken = token;
 
   } //END SetAuthToken
@@ -145,7 +160,8 @@ Initialize( config )
 //#region PRIVATE - REQUEST
 
   /**
-   * A private, generic request handler.
+   * A private, generic request handler. 
+   * Used by our api classes to make HTTP requests to our endpoint
    * @private
    * @template T
    * @param {string} method - The HTTP method (GET, POST, etc.).
@@ -157,32 +173,76 @@ Initialize( config )
   async Request(method, endpoint, body) 
   //----------------------------------------------------------------------------//
   {
+    if( NestreApiManager.instance === null || NestreApiManager.instance === undefined )
+    {
+      throw new Error( "web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined")
+    }
+
+    if( this._baseUrl === null || this._baseUrl === undefined || this._baseUrl === '' )
+    {
+      throw new Error( "web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null or undefined");
+    }
+
+    if( method === null || method === undefined || method === '' )
+    {
+      throw new Error( "web-nestre-api : nestre-api-manager.js Error: method is null or undefined");
+    }
+
+    if( endpoint === null || endpoint === undefined || endpoint === '' )
+    {
+      throw new Error( "web-nestre-api : nestre-api-manager.js Error: endpoint is null or undefined");
+    }
+
+    if( this._authToken === null || this._authToken === undefined || this._authToken === '')
+    {
+      throw new Error( "web-nestre-api : nestre-api-manager.js Error: this._authToken is null or undefined");
+    }
+
+    //Combine our baseUrl and the endpoint to form the full url
     const url = `${this._baseUrl}${endpoint}`;
+
+    //Our response content-type will always be a JSON object
     const headers = { 'Content-Type': 'application/json' };
 
-    if (this._authToken) {
+    //If we have an auth token, add it to our headers
+    if (this._authToken) 
+    {
       headers['Authorization'] = `Bearer ${this._authToken}`;
     }
 
-    const config = { method, headers };
+    /**
+     * The configuration options for our API request.
+     * @type{RequestInit}
+     */
+    const requestInit = { method, headers };
 
-    if (body) {
-      config.body = JSON.stringify(body);
+    //If our Api request has a body, add it to our RequestInit to pass into our 'fetch' promise
+    if( body ) 
+    {
+      requestInit.body = JSON.stringify(body);
     }
 
-    const response = await fetch(url, config);
+    //Make the API request, 
+    //wait to continue until the promise returns with a response
+    const response = await fetch(url, requestInit);
 
+    //Check for errors
     if (!response.ok) 
     {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      throw new Error(`API Error: ${response.status} - ${errorData.message || 'Unknown error'}`);
+      throw new Error(`web-nestre-api : nestre-api-manager.js API Error: ${response.status} - ${errorData.message || 'Unknown error'}`);
     }
 
+    //If we recieved a 204 or no code at all, 
+    // then we have no JSON response 
+    // but the message was recieved by the backend
     if (response.status === 204 || response.headers.get('content-length') === '0') 
     {
       return null;
     }
 
+    //In all other success conditions, 
+    //we'll recieve a JSON object back
     return response.json();
 
   } //END Request Method

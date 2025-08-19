@@ -54,7 +54,7 @@ describe( "nestre-api-manager.js GetInstance()", () =>
 describe( "nestre-api-manager.js Initialize()", () =>
 {
 
-    it("should throw an error is our config parameter is null", ()=>
+    it("should throw an error if our config parameter is null", ()=>
     {
         //Arrange
         const instance = NestreApiManager.GetInstance();
@@ -70,7 +70,7 @@ describe( "nestre-api-manager.js Initialize()", () =>
         
     });
 
-    it( "should throw an error is our config parameter is undefined", ()=>
+    it( "should throw an error if our config parameter is undefined", ()=>
     {
         //Arrange
         const instance = NestreApiManager.GetInstance();
@@ -86,7 +86,7 @@ describe( "nestre-api-manager.js Initialize()", () =>
 
     });
 
-    it( "should throw an error is our config parameter is a blank string", ()=>
+    it( "should throw an error if our config parameter is a blank string", ()=>
     {
         //Arrange
         const instance = NestreApiManager.GetInstance();
@@ -102,7 +102,7 @@ describe( "nestre-api-manager.js Initialize()", () =>
 
     });
 
-    it( "should throw an error is our config.baseUrl parameter is null", ()=>
+    it( "should throw an error if our config.baseUrl parameter is null", ()=>
     {
         //Arrange
         const instance = NestreApiManager.GetInstance();
@@ -125,7 +125,7 @@ describe( "nestre-api-manager.js Initialize()", () =>
 
     });
 
-    it( "should throw an error is our config.baseUrl parameter is undefined", ()=>
+    it( "should throw an error if our config.baseUrl parameter is undefined", ()=>
     {
         //Arrange
         const instance = NestreApiManager.GetInstance();
@@ -148,7 +148,7 @@ describe( "nestre-api-manager.js Initialize()", () =>
 
     });
 
-    it( "should throw an error is our config.baseUrl parameter is a blank string", ()=>
+    it( "should throw an error if our config.baseUrl parameter is a blank string", ()=>
     {
         //Arrange
         const instance = NestreApiManager.GetInstance();
@@ -171,8 +171,65 @@ describe( "nestre-api-manager.js Initialize()", () =>
 
     });
 
-    
+    it( "should create a userApi object", ()=>{
+
+        //Arrange
+        const instance = NestreApiManager.GetInstance();
+
+        //Act
+        /**
+         * @type{NestreApiManagerConfig}
+         */
+        let config = 
+        { 
+            baseUrl: 'www.dummyapi.com/api/v1' 
+        };
+
+        instance.Initialize(config);
+
+        //Assert
+        assert.notStrictEqual( instance.userAPI, null);
+
+    });
 
 }); //END describe nestre-api-manager.js - Initialize
+
+//#endregion
+
+//#region DESCRIBE - nestre-api-manager.js - SetAuthToken
+
+describe( "nestre-api-manager.js SetAuthToken()", () =>
+{
+    it( "should throw an error if our token parameter is null", ()=>
+    {
+        //Arrange
+        const instance = NestreApiManager.GetInstance();
+        let token = null;
+
+        //Act
+        
+        //Assert
+        assert.throws( () =>
+        {
+            instance.SetAuthToken(token);
+        });
+
+    });
+
+});
+
+//#endregion
+
+//#region DESCRIBE - nestre-api-manager.js - Request
+
+describe( "nestre-api-manager.js Request()", () =>
+{
+    it( "should throw an error if our token parameter is null", ()=>
+    {
+        
+
+    });
+
+});
 
 //#endregion
