@@ -25,15 +25,46 @@ import { USER_ID } from '../examples/environment-variables.js';
 describe( "nestre-api-manager.js constructor()", () =>
 {
 
-    it( "should create a userApi object", ()=>{
+    // Test case for initial instantiation
+    it("should create a userApi object on first call", () => {
+        // Arrange
+        NestreApiManager.instance = null; // Ensure a clean state
+        
+        // Act
+        const instance = new NestreApiManager(); // Or GetInstance()
 
-        //Arrange
-        NestreApiManager.instance = null;
-        const instance = NestreApiManager.GetInstance();
+        // Assert
+        assert.notStrictEqual(instance.userAPI, null);
+    });
 
-        //Assert
-        assert.notStrictEqual( instance.userAPI, null);
+    // Test case for subsequent calls (covers the early return) 🎯
+    it("should return the existing instance on subsequent calls", () => {
+        // Arrange
+        NestreApiManager.instance = null; // Ensure a clean state
+        const firstInstance = new NestreApiManager();
 
+        // Act
+        const secondInstance = new NestreApiManager();
+
+        // Assert
+        // This confirms the constructor returned the pre-existing instance
+        assert.strictEqual(secondInstance, firstInstance);
+    });
+
+    // Make sure we only create a userApi object on the first call
+    it("should only create the userApi object when first called", () => {
+        // Arrange
+        NestreApiManager.instance = null; // Reset the singleton for a clean test
+        const firstInstance = new NestreApiManager();
+        const firstUserApi = firstInstance.userAPI; // Get a reference to the initial userAPI object
+
+        // Act
+        const secondInstance = new NestreApiManager(); // Call the constructor again
+
+        // Assert
+        // This proves the userAPI object is the exact same one from the first call,
+        // and was not re-created.
+        assert.strictEqual(secondInstance.userAPI, firstUserApi);
     });
 
 }); //END describe nestre-api-manager.js - constructor
@@ -179,6 +210,35 @@ describe( "nestre-api-manager.js ClearAuthToken()", () =>
 
 describe( "nestre-api-manager.js Request()", () =>
 {
+
+    // -------------------------------------------------------------------------- //
+    // ## Input Validation Tests - NestreApiManager.instance
+    // -------------------------------------------------------------------------- //
+    it('should reject the promise if NestreApiManager.instance is null', async () => {
+        // Arrange
+        // Get an instance first so we can call the method, then nullify the static ref
+        const instance = NestreApiManager.GetInstance();
+        NestreApiManager.instance = null; 
+
+        // Act & Assert
+        await assert.rejects(
+            instance.Request(HttpMethod.GET, '/test'),
+            { message: 'web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined' }
+        );
+    });
+
+    it('should reject the promise if NestreApiManager.instance is undefined', async () => {
+        // Arrange
+        // Get an instance first so we can call the method, then undefine the static ref
+        const instance = NestreApiManager.GetInstance();
+        NestreApiManager.instance = undefined; 
+
+        // Act & Assert
+        await assert.rejects(
+            instance.Request(HttpMethod.GET, '/test'),
+            { message: 'web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined' }
+        );
+    });
 
     // -------------------------------------------------------------------------- //
     // ## Input Validation Tests - _baseUrl

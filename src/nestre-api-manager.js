@@ -45,9 +45,9 @@ export class NestreApiManager
   /**
    * The first section of the server url, before the version number
    * @private
-   * @type {string}
+   * @type {string | null}
    */
-  _baseUrl;
+  _baseUrl = null;
 
   /**
    * The authentication token
@@ -64,7 +64,7 @@ export class NestreApiManager
    * Reference to the UserAPI object
    * @type {UserApi} 
    * */
-  userAPI;
+  userAPI = null;
 
 //#endregion
 

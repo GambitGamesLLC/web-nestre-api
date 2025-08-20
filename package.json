@@ -8,6 +8,7 @@
     "src"
   ],
   "scripts": {
-    "test": "node --test"
+    "test": "node --test --experimental-test-coverage",
+    "test-coverage": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info"
   }
 }
