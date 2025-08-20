@@ -64,7 +64,7 @@ export class NestreApiManager
    * Reference to the UserAPI object
    * @type {UserApi} 
    * */
-  userAPI = null;
+  userApi = null;
 
 //#endregion
 
@@ -87,9 +87,9 @@ constructor()
     NestreApiManager.instance = this;
 
     //We only need to generate our helper classes once
-    if( this.userAPI === null )
+    if( this.userApi === null )
     {
-      this.userAPI = new UserApi(this);
+      this.userApi = new UserApi(this);
     }
 
 } //END constructor Method

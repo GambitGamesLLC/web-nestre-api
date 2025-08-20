@@ -11,9 +11,6 @@ import { http, HttpResponse } from 'msw';
 //Import the BASE_URL from our environment-variables.js
 import { API_BASE_URL } from '../../examples/environment-variables.js';
 
-//Import the AUTH_TOKEN from our environment-variables.js
-import { AUTH_TOKEN } from '../../examples/environment-variables.js';
-
 //Import the USER_ID from our environment-variables.js
 import { USER_ID } from '../../examples/environment-variables.js';
 
@@ -54,7 +51,9 @@ const mockUserProfile = {
  */
 export const handlers = 
 [
-  // Intercept GET requests to this path
+  //------------------------------------//
+  // -- USER API - GET BASIC USER PROFILE BY EMAIL --
+  //------------------------------------//
   http.get(`${API_BASE_URL}/v2/user/get-by-email`, ({ request }) => 
   {
     // You can inspect the request URL to add logic
@@ -70,7 +69,7 @@ export const handlers =
      */
     const email = url.searchParams.get('email');
 
-    // For this example, we'll just return the mock profile
+    // For this header, we'll return the mock profile
     // if the email matches our test email.
     if (email === USER_EMAIL) 
     {
@@ -78,11 +77,33 @@ export const handlers =
       return HttpResponse.json(mockUserProfile);
     }
     
-    // You could return an error for other emails if needed
+    // If the email was not matched, return an error
+    return new HttpResponse('User not found', { status: 404 });
+  }),
+
+  //------------------------------------//
+  // -- USER API - GET BASIC USER PROFILE BY ID --
+  //------------------------------------//
+  http.get(`${API_BASE_URL}/v2/user/${USER_ID}`, ({ request }) => 
+  {
+    // You can inspect the request URL to add logic
+    /**
+     * Url returned by the request callback to the http fetch
+     * type{URL}
+     */
+    const url = new URL(request.url);
+
+    // For this header, we'll return the mock profile
+    // if the url contains our test userId.
+    if ( url.pathname.includes(USER_ID) ) 
+    {
+      //Return the object.
+      return HttpResponse.json(mockUserProfile);
+    }
+    
+    // If our userId was not matched, return an error
     return new HttpResponse('User not found', { status: 404 });
   })
-
-  // We can add other handlers for POST, PATCH, etc. here
   
 ];
 

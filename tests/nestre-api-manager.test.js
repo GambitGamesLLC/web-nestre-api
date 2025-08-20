@@ -26,23 +26,6 @@ import { USER_EMAIL } from '../examples/environment-variables.js';
  * @typedef {import('../src/user/user-types.js').BasicUserProfile } BasicUserProfile
  */
 
-//Import the mock server configuration
-import { server } from './mocks/server.js'; // Adjust path as needed
-
-//#endregion
-
-//#region MOCK SERVER SETUP
-
-// Establish API mocking before all tests.
-beforeAll(() => server.listen());
-
-// Reset any request handlers that we may add during the tests,
-// so they don't affect other tests.
-afterEach(() => server.resetHandlers());
-
-// Clean up after the tests are finished.
-afterAll(() => server.close());
-
 //#endregion
 
 //#region DESCRIBE - nestre-api-manager.js - constructor()
@@ -59,7 +42,7 @@ describe( "nestre-api-manager.js constructor()", () =>
         const instance = new NestreApiManager(); // Or GetInstance()
 
         // Assert
-        assert.notStrictEqual(instance.userAPI, null);
+        assert.notStrictEqual(instance.userApi, null);
     });
 
     // Test case for subsequent calls (covers the early return) 🎯
@@ -81,7 +64,7 @@ describe( "nestre-api-manager.js constructor()", () =>
         // Arrange
         NestreApiManager.instance = null; // Reset the singleton for a clean test
         const firstInstance = new NestreApiManager();
-        const firstUserApi = firstInstance.userAPI; // Get a reference to the initial userAPI object
+        const firstUserApi = firstInstance.userApi; // Get a reference to the initial userAPI object
 
         // Act
         const secondInstance = new NestreApiManager(); // Call the constructor again
@@ -89,7 +72,7 @@ describe( "nestre-api-manager.js constructor()", () =>
         // Assert
         // This proves the userAPI object is the exact same one from the first call,
         // and was not re-created.
-        assert.strictEqual(secondInstance.userAPI, firstUserApi);
+        assert.strictEqual(secondInstance.userApi, firstUserApi);
     });
 
 }); //END describe nestre-api-manager.js - constructor
