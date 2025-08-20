@@ -18,6 +18,31 @@ import { AUTH_TOKEN } from '../examples/environment-variables.js';
 //Import the USER_ID from our environment-variables.js
 import { USER_ID } from '../examples/environment-variables.js';
 
+//Import the USER_EMAIL from our environment-variables.js
+import { USER_EMAIL } from '../examples/environment-variables.js';
+
+//Import the BasicUserProfile used to mock the return data from the get-user-by-email call
+/**
+ * @typedef {import('../src/user/user-types.js').BasicUserProfile } BasicUserProfile
+ */
+
+//Import the mock server configuration
+import { server } from './mocks/server.js'; // Adjust path as needed
+
+//#endregion
+
+//#region MOCK SERVER SETUP
+
+// Establish API mocking before all tests.
+beforeAll(() => server.listen());
+
+// Reset any request handlers that we may add during the tests,
+// so they don't affect other tests.
+afterEach(() => server.resetHandlers());
+
+// Clean up after the tests are finished.
+afterAll(() => server.close());
+
 //#endregion
 
 //#region DESCRIBE - nestre-api-manager.js - constructor()
