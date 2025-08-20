@@ -5,9 +5,8 @@
  */
 
 // Export the main manager class so users can instantiate it.
-export { NestreApiManager } from './nestre-api-manager.js';
+export { NestreApiManager, HttpMethod } from './nestre-api-manager.js';
 
-// Re-export the empty object from types.js. This allows JSDoc-aware
+// Re-export the empty object for each types definition file. This allows JSDoc-aware
 // editors to find and use the JSDoc @typedefs for type checking.
-export * from './types.js';
 export * from './user/user-types.js';

@@ -4,10 +4,6 @@
 import { NestreApiManager } from '../../../src/index.js';
 import { API_BASE_URL } from '../../environment-variables.js'
 
-/** 
- * @typedef {import('../../../src/types.js').NestreApiManagerConfig} NestreApiManagerConfig 
- **/
-
 //#endregion
 
 //#region PRIVATE - VARIABLES
@@ -111,16 +107,8 @@ function AddEventListeners()
 function CreateNestreApi()
 //-------------------------------------------------------//
 {
-    /**
-     * @type{NestreApiManagerConfig}
-     */
-    let nestreAPIManagerConfig = 
-    { 
-        baseUrl: API_BASE_URL 
-    };
-
     let nestreApiManager = NestreApiManager.GetInstance();
-    nestreApiManager.Initialize(nestreAPIManagerConfig);
+    nestreApiManager.SetBaseUrl(API_BASE_URL);
 
 } //END CreateNestreApi Method
 

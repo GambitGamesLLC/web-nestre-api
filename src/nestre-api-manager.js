@@ -2,10 +2,34 @@
 
 import { UserApi } from './user/user-api.js';
 
-// VS Code and other editors will automatically pick up the types from this import.
-/** 
- * @typedef {import('./types.js').NestreApiManagerConfig} NestreApiManagerConfig 
- **/
+//#endregion
+
+//#region PUBLIC - HTTP METHOD VALUE
+
+/**
+ * The specific string values for our HTTP methods.
+ * By defining this type, we get strict type-checking instead of just accepting any string.
+ * @typedef {'GET' | 'POST' | 'PATCH' | 'DELETE'} HttpMethodValue
+ */
+
+/**
+ * An enum representing the supported HTTP request methods.
+ * @readonly
+ * @enum {HttpMethodValue}
+ */
+export const HttpMethod = Object.freeze({
+  /** Represents an HTTP GET request. */
+  GET: 'GET',
+
+  /** Represents an HTTP POST request, typically for creating a new resource. */
+  POST: 'POST',
+
+  /** Represents an HTTP PATCH request, for partial updates. */
+  PATCH: 'PATCH',
+
+  /** Represents an HTTP DELETE request. */
+  DELETE: 'DELETE',
+});
 
 //#endregion
 
@@ -47,7 +71,7 @@ export class NestreApiManager
 //#region PUBLIC - CONSTRUCTOR
 
 /**
- * Creates the Api classes used to access the various parts of the Nestre Api
+ * Initializes the NestreApiManager singleton, preparing it for use
  */
 //------------------------------------------------//
 constructor() 
@@ -61,6 +85,12 @@ constructor()
 
     // Sets the singleton reference so we know we've already called the constructor, preventing duplicates
     NestreApiManager.instance = this;
+
+    //We only need to generate our helper classes once
+    if( this.userAPI === null )
+    {
+      this.userAPI = new UserApi(this);
+    }
 
 } //END constructor Method
 
@@ -87,37 +117,25 @@ static GetInstance()
 
 //#endregion
 
-//#region PUBLIC - INITIALIZE
+//#region PUBLIC - SET BASE URL
 
 /**
- * Initializes the NestreApiManager singleton, preparing it for use
- * @param {NestreApiManagerConfig} config A configuration object used to setup the NestreApiManager
+ * Sets the baseUrl for the HTTP Requests
+ * @param {string} baseUrl The first section of the url used to make HTTP Requests to our endpoint
  */
 //------------------------------------------------//
-Initialize( config )
+SetBaseUrl( baseUrl )
 //------------------------------------------------//
 {
     //Validation Check
-    if( config === undefined || config === null || config === '' )
+    if( baseUrl === undefined || baseUrl === null || baseUrl === '' )
     {
-      throw new Error('web-nestre-api : nestre-api-manager.js Initialize() Configuration error: `config` is a required property.');
+      throw new Error('web-nestre-api : nestre-api-manager.js SetBaseUrl() Configuration error: `baseUrl` is a required property.');
     }
 
-    if( config.baseUrl === undefined || config.baseUrl === null || config.baseUrl === '' )
-    {
-      throw new Error('web-nestre-api : nestre-api-manager.js Initialize() Configuration error: `config.baseUrl` is a required property.');
-    }
+    this._baseUrl = baseUrl;
 
-    //Set variables, this can be changed by calling Initialize again with a new configuration
-    this._baseUrl = config.baseUrl;
-
-    //We only need to generate our helper classes once
-    if( this.userAPI === null )
-    {
-      this.userAPI = new UserApi(this);
-    }
-
-} //END Initialize Method
+} //END SetBaseUrl Method
 
 //#endregion
 
@@ -164,38 +182,43 @@ Initialize( config )
    * Used by our api classes to make HTTP requests to our endpoint
    * @private
    * @template T
-   * @param {string} method - The HTTP method (GET, POST, etc.).
+   * @param {HttpMethodValue} httpMethodValue - The HTTP method to use (GET, POST, PATCH, DELETE).
    * @param {string} endpoint - The API endpoint path.
    * @param {object} [body] - The request body for POST/PATCH requests.
    * @returns {Promise<T>}
    */
   //----------------------------------------------------------------------------//
-  async Request(method, endpoint, body) 
+  async Request(httpMethodValue, endpoint, body) 
   //----------------------------------------------------------------------------//
   {
-    if( this.instance === null || this.instance === undefined )
+    if( NestreApiManager.instance === null || NestreApiManager.instance === undefined )
     {
-      Promise.reject( "web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined" );
+      throw new Error( "web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined" );
     }
 
     if( this._baseUrl === null || this._baseUrl === undefined || this._baseUrl === '' )
     {
-      Promise.reject( "web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null or undefined");
+      throw new Error( 'web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null, undefined, or an empty string');
     }
 
     if( this._authToken === null || this._authToken === undefined || this._authToken === '')
     {
-      Promise.reject( "web-nestre-api : nestre-api-manager.js Error: this._authToken is null or undefined");
+      throw new Error( "web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string");
     }
 
-    if( method === null || method === undefined || method === '' )
+    if( httpMethodValue === null || httpMethodValue === undefined || httpMethodValue === '' )
     {
-      Promise.reject( "web-nestre-api : nestre-api-manager.js Error: method is null or undefined");
+      throw new Error( "web-nestre-api : nestre-api-manager.js Error: httpMethodValue is null, undefined, or an empty string");
+    }
+
+    if( httpMethodValue !== HttpMethod.GET && httpMethodValue !== HttpMethod.POST && httpMethodValue !== HttpMethod.PATCH && httpMethodValue !== HttpMethod.DELETE )
+    {
+      throw new Error( "web-nestre-api : nestre-api-manager.js Error: httpMethodValue is not a valid HttpMethodValue");
     }
 
     if( endpoint === null || endpoint === undefined || endpoint === '' )
     {
-      Promise.reject( "web-nestre-api : nestre-api-manager.js Error: endpoint is null or undefined");
+      throw new Error( "web-nestre-api : nestre-api-manager.js Error: endpoint is null, undefined, or an empty string");
     }
 
     //Combine our baseUrl and the endpoint to form the full url
@@ -214,7 +237,7 @@ Initialize( config )
      * The configuration options for our API request.
      * @type{RequestInit}
      */
-    const requestInit = { method, headers };
+    const requestInit = { method: httpMethodValue, headers };
 
     //If our Api request has a body, add it to our RequestInit to pass into our 'fetch' promise
     if( body ) 
@@ -230,7 +253,7 @@ Initialize( config )
     if (!response.ok) 
     {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      Promise.reject(`web-nestre-api : nestre-api-manager.js API Error: ${response.status} - ${errorData.message || 'Unknown error'}`);
+      throw new Error(`web-nestre-api : nestre-api-manager.js API Error: ${response.status} - ${errorData.message || 'Unknown error'}`);
     }
 
     //If we recieved a 204 or no code at all, 
