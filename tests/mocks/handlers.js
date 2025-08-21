@@ -1,3 +1,5 @@
+/* node:coverage disable */
+
 //#region IMPORTS
 
 //Import the msw (mock-service-worker) package so we can fake our Api responses
@@ -92,6 +94,71 @@ export let handlers = [];
 
 //#endregion
 
+//#region MOCK SERVICE WORKERS - USER API - GET - ERROR - 404
+
+handlers.push
+(
+  
+  http.get(`${API_BASE_URL}/v2/user/error-404`, async({ request }) => 
+  {
+    return new HttpResponse('Not found', { status: 404 });
+  })
+  
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER API - GET - ERROR - 500
+
+handlers.push
+(
+  
+  http.get(`${API_BASE_URL}/v2/user/error-500`, async({ request }) => 
+  {
+    return HttpResponse.json
+    (
+      { message: 'Internal Server Error' },
+      { status: 500 }
+    );
+  })
+  
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER API - GET - NO CONTENT - 204
+
+handlers.push
+(
+  
+  http.get(`${API_BASE_URL}/v2/user/no-content-204`, async({ request }) => 
+  {
+    return new HttpResponse(null, { status: 204 });
+  })
+  
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER API - GET - NO CONTENT - CONTENT-LENGTH = 0
+
+handlers.push
+(
+  
+  http.get(`${API_BASE_URL}/v2/user/no-content-content-length-0`, async({ request }) => 
+  {
+    return new Response(null, {
+      status: 200,
+      headers: {
+        'Content-Length': '0',
+      },
+    });
+  })
+  
+);
+
+//#endregion
+
 //#region MOCK SERVICE WORKERS - USER API - GET BASIC USER PROFILE BY EMAIL
 
 handlers.push
@@ -120,8 +187,13 @@ handlers.push
       return HttpResponse.json(mockBasicUserProfile);
     }
     
-    // If the email was not matched, return an error
-    return new HttpResponse('User not found', { status: 404 });
+    // If the email was not matched, return a JSON error
+    return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+      status: 404,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   })
 
 ); 
@@ -297,3 +369,5 @@ handlers.push
 );
 
 //#endregion
+
+/* node:coverage enable */ 

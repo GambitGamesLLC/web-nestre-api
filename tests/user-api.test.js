@@ -21,8 +21,14 @@ import { USER_ID } from '../examples/environment-variables.js';
 //Import the USER_EMAIL from our environment-variables.js
 import { USER_EMAIL } from '../examples/environment-variables.js';
 
-//#endregion
+import { server } from '../tests/mocks/server.js';
+import { http, HttpResponse } from 'msw';
 
+/**
+ * @typedef {import('../src/user/user-types.js').CreateReferralCode } CreateReferralCode
+ */
+
+//#endregion
 
 //#region DESCRIBE - user-api.js - constructor()
 
@@ -74,6 +80,27 @@ describe( "user-api.js GetBasicUserProfileByEmail()", () =>
 
 //#endregion
 
+//#region DESCRIBE - user-api.js - GetBasicUserProfileByEmail() - Error Handling
+
+describe("user-api.js GetBasicUserProfileByEmail() - Error Handling", () => {
+    it('should throw an error if the user is not found', async () => {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        // Act & Assert
+        await assert.rejects(
+            userApi.GetBasicUserProfileByEmail("nonexistent@email.com"),
+            { message: 'web-nestre-api : nestre-api-manager.js API Error: 404 - User not found' }
+        );
+    });
+});
+
+//#endregion
+
 //#region DESCRIBE - user-api.js - GetBasicUserProfile()
 
 describe( "user-api.js GetBasicUserProfile()", () =>
@@ -97,6 +124,38 @@ describe( "user-api.js GetBasicUserProfile()", () =>
         assert.strictEqual(userProfile.email, USER_EMAIL);
     });
 
+});
+
+//#endregion
+
+//#region DESCRIBE - user-api.js - GetBasicUserProfile() - Error Handling
+
+describe("user-api.js GetBasicUserProfile() - Error Handling", () => {
+    it('should throw an error for an invalid userId', async () => {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v2/user/invalid-id`, () => {
+                return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+                    status: 404,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        // Act & Assert
+        await assert.rejects(
+            userApi.GetBasicUserProfile("invalid-id"),
+            { message: 'web-nestre-api : nestre-api-manager.js API Error: 404 - User not found' }
+        );
+    });
 });
 
 //#endregion
@@ -153,6 +212,38 @@ describe( "user-api.js GetFullUserProfile()", () =>
         assert.strictEqual(userProfile.email, USER_EMAIL);
     });
 
+});
+
+//#endregion
+
+//#region DESCRIBE - user-api.js - GetFullUserProfile() - Error Handling
+
+describe("user-api.js GetFullUserProfile() - Error Handling", () => {
+    it('should throw an error if the user has not completed the assessment', async () => {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v2/user/${USER_ID}/profile`, () => {
+                return new HttpResponse(JSON.stringify({ message: 'Assessment not completed' }), {
+                    status: 400,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        // Act & Assert
+        await assert.rejects(
+            userApi.GetFullUserProfile(USER_ID),
+            { message: 'web-nestre-api : nestre-api-manager.js API Error: 400 - Assessment not completed' }
+        );
+    });
 });
 
 //#endregion
@@ -223,12 +314,21 @@ describe( "user-api.js CreateReferralCode()", () =>
         const userApi = NestreApiManager.GetInstance().userApi;
 
         // Act
-        //Get the user profile for our test user
-        const deleteConfirmationMessage = await userApi.CreateReferralCode( USER_ID, );
+        //Create the referralCode request
+
+        /**
+         * @type{CreateReferralCode}
+         */
+        const createReferralCode =
+        {
+            code: "feioavneawwa32323t2",
+            is_active: true
+        };
+        const createReferralCodeConfirmationMessage = await userApi.CreateReferralCode( USER_ID, createReferralCode );
 
         // Assert
-        assert.notStrictEqual(deleteConfirmationMessage, null );
-        assert.notStrictEqual(deleteConfirmationMessage, "" );
+        assert.notStrictEqual(createReferralCodeConfirmationMessage, null );
+        assert.notStrictEqual(createReferralCodeConfirmationMessage, "" );
     });
 
 });

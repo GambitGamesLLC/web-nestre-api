@@ -26,6 +26,9 @@ import { USER_EMAIL } from '../examples/environment-variables.js';
  * @typedef {import('../src/user/user-types.js').BasicUserProfile } BasicUserProfile
  */
 
+import { server } from '../tests/mocks/server.js';
+import { http, HttpResponse } from 'msw';
+
 //#endregion
 
 //#region DESCRIBE - nestre-api-manager.js - constructor()
@@ -484,6 +487,125 @@ describe( "nestre-api-manager.js Request()", () =>
         );
     });
 
+    // -------------------------------------------------------------------------- //
+    // ## Input Validation Tests - "!response.ok"
+    // -------------------------------------------------------------------------- //
+    it('should reject the promise if the response is not ok (404)', async () =>
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        // Act & Assert
+        await assert.rejects(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/error-404'),
+            { message: 'web-nestre-api : nestre-api-manager.js API Error: 404 - Not Found' }
+        );
+    });
+
+    it('should reject the promise if the response is not ok (500)', async () =>
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        // Act & Assert
+        await assert.rejects(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/error-500'),
+            { message: 'web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error' }
+        );
+    });
+
+    // -------------------------------------------------------------------------- //
+    // ## Input Validation Tests - "no content"
+    // -------------------------------------------------------------------------- //
+    it('should return null if the response status is 204', async () =>
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        // Act
+        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/no-content-204');
+
+        // Assert
+        assert.strictEqual(result, null);
+    });
+
+    it('should return null if the content-length is 0', async () =>
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        // Act
+        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/no-content-content-length-0');
+
+        // Assert
+        assert.strictEqual(result, null);
+    });
+
+});
+
+//#endregion
+
+//#region DESCRIBE - nestre-api-manager.js - Request - Error Handling
+
+describe("nestre-api-manager.js Request() - Error Handling", () => {
+
+    it('should throw an error for a 500 server error', async () => {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v2/user/error`, () => {
+                return new HttpResponse(JSON.stringify({ message: 'Internal Server Error' }), {
+                    status: 500,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        // Act & Assert
+        await assert.rejects(
+            instance.Request(HttpMethod.GET, '/v2/user/error'),
+            { message: 'web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error' }
+        );
+    });
+
+    it('should handle non-JSON error responses gracefully', async () => {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v2/user/html-error`, () => {
+                return new HttpResponse('<h1>Server Error</h1>', {
+                    status: 500,
+                    headers: {
+                        'Content-Type': 'text/html',
+                    },
+                });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        // Act & Assert
+        await assert.rejects(
+            instance.Request(HttpMethod.GET, '/v2/user/html-error'),
+            { message: 'web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error' }
+        );
+    });
 });
 
 //#endregion
