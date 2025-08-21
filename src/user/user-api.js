@@ -7,7 +7,8 @@ import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
  * @typedef {import('./user-types.js').UpdateUserProfile} UpdateUserProfile
  * @typedef {import('./user-types.js').FullUserProfile} FullUserProfile
  * @typedef {import('./user-types.js').DeleteConfirmationMessage } DeleteConfirmationMessage
- * @typedef {import('./user-types.js').CreateReferralAccountConfirmationMessage } CreateReferralAccountConfirmationMessage
+ * @typedef {import('./user-types.js').CreateReferralCode } CreateReferralCode
+ * @typedef {import('./user-types.js').CreateReferralCodeConfirmationMessage } CreateReferralCodeConfirmationMessage
  */
 
 //#endregion
@@ -147,21 +148,22 @@ export class UserApi
 
 //#endregion
 
-//#region PUBLIC - CREATE REFERRAL ACCOUNT
+//#region PUBLIC - CREATE REFERRAL CODE
 
   /**
-   * Permanently delete the authenticated user's account and all associated data
+   * Create a referral code for the authenticated user to refer others to the application
    * @param {string} userId
-   * @returns {Promise<CreateReferralAccountConfirmationMessage>} Newly created user account profile with default subscription
+   * @param {CreateReferralCode} createReferralCode 
+   * @returns {Promise<CreateReferralCodeConfirmationMessage>} 
    */
   //--------------------------------------------------------------//
-  CreateReferralAccount(userId) 
+  CreateReferralCode(userId, createReferralCode) 
   //--------------------------------------------------------------//
   {
    
-    return NestreApiManager.GetInstance().Request(HttpMethod.POST, `/v2/user/${userId}/referral-code`);
+    return NestreApiManager.GetInstance().Request(HttpMethod.POST, `/v2/user/${userId}/referral-code`, createReferralCode);
   
-  } //END CreateReferralAccount Method
+  } //END CreateReferralCode Method
 
 //#endregion
 

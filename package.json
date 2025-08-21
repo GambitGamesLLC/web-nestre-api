@@ -8,7 +8,7 @@
     "src"
   ],
   "scripts": {
-    "test": "node --test --experimental-test-coverage --require ./tests/mocks/setup.js"
+    "test": "node --test --experimental-test-coverage --import ./tests/mocks/setup.js"
   },
   "devDependencies": {
     "msw": "2.10.5"

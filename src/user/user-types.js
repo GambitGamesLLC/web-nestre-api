@@ -53,10 +53,10 @@
 
 /**
  * @typedef {object} Assessment
- * @property {number} id
- * @property {string} alpha
- * @property {string} cerebral
- * @property {string} prime
+ * @property {string} id
+ * @property {number} alpha
+ * @property {number} cerebral
+ * @property {number} prime
  * @property {string} created_at
  */
 
@@ -91,12 +91,21 @@
 
 //#endregion
 
-//#region USER API - CREATE REFERRAL ACCOUNT
+//#region USER API - CREATE REFERRAL CODE
 
 /**
- * @typedef {object} CreateReferralAccountConfirmationMessage
+ * @typedef {object} CreateReferralCode
  * @property {string} code
  * @property {boolean} is_active
+ */
+
+//#endregion
+
+//#region USER API - CREATE REFERRAL CODE CONFIRMATION MESSAGE
+
+/**
+ * @typedef {object} CreateReferralCodeConfirmationMessage
+ * @property {string} message
  */
 
 //#endregion

@@ -6,6 +6,10 @@ import { http, HttpResponse } from 'msw';
 //Import the BasicUserProfile used to mock the return data from the get-user-by-email call
 /**
  * @typedef {import('../../src/user/user-types.js').BasicUserProfile } BasicUserProfile
+ * @typedef {import('../../src/user/user-types.js').FullUserProfile } FullUserProfile
+ * @typedef {import('../../src/user/user-types.js').DeleteConfirmationMessage } DeleteConfirmationMessage
+ * @typedef {import('../../src/user/user-types.js').CreateReferralCode } CreateReferralCode
+ * @typedef {import('../../src/user/user-types.js').CreateReferralCodeConfirmationMessage } CreateReferralCodeConfirmationMessage
  */
 
 //Import the BASE_URL from our environment-variables.js
@@ -17,17 +21,16 @@ import { USER_ID } from '../../examples/environment-variables.js';
 //Import the USER_EMAIL from our environment-variables.js
 import { USER_EMAIL } from '../../examples/environment-variables.js';
 
-
 //#endregion
 
-//#region MOCK USER PROFILE JSON DATA
+//#region MOCK SERVICE WORKERS - CREATE MOCK BASIC USER PROFILE JSON DATA
 
 // The mock data object that matches the BasicUserProfile shape
 /**
  * Dummy user profile returned when mock testing the Request() function
  * @type{BasicUserProfile}
  */
-const mockUserProfile = {
+const mockBasicUserProfile = {
   id: USER_ID,
   email: USER_EMAIL,
   firstname: "Derrick",
@@ -44,16 +47,56 @@ const mockUserProfile = {
 
 //#endregion
 
-//#region MOCK SERVICE WORKERS - DEFINE HTTP GET HANDLER
+//#region MOCK SERVICE WORKERS - CREATE MOCK FULL USER PROFILE JSON DATA
+
+// The mock data object that matches the BasicUserProfile shape
+/**
+ * Dummy user profile returned when mock testing the Request() function
+ * @type{FullUserProfile}
+ */
+const mockFullUserProfile = {
+  id: USER_ID,
+  email: USER_EMAIL,
+  firstname: "Derrick",
+  lastname: "Barra",
+  username: "dbarra1",
+  effective_subscription_level: {
+    name: "Free",
+    id: 1,
+    value: 0
+  },
+  trial_used: false,
+  frame_it_unlocked: false,
+  assessment: {
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    alpha: 0,
+    cerebral: 0,
+    prime: 0,
+    created_at: ""
+  },
+  streaks: {
+    current_streak: 0,
+    max_streak: 0
+  }
+};
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CREATE HANDLER[]
 
 /**
  * Handler used to define our rules for what http call to intercept and what to do with them
+ * @type{HttpHandler[]}
  */
-export const handlers = 
-[
-  //------------------------------------//
-  // -- USER API - GET BASIC USER PROFILE BY EMAIL --
-  //------------------------------------//
+export let handlers = [];
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER API - GET BASIC USER PROFILE BY EMAIL
+
+handlers.push
+(
+
   http.get(`${API_BASE_URL}/v2/user/get-by-email`, ({ request }) => 
   {
     // You can inspect the request URL to add logic
@@ -74,16 +117,22 @@ export const handlers =
     if (email === USER_EMAIL) 
     {
       //Return the object.
-      return HttpResponse.json(mockUserProfile);
+      return HttpResponse.json(mockBasicUserProfile);
     }
     
     // If the email was not matched, return an error
     return new HttpResponse('User not found', { status: 404 });
-  }),
+  })
 
-  //------------------------------------//
-  // -- USER API - GET BASIC USER PROFILE BY ID --
-  //------------------------------------//
+); 
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER API - GET BASIC USER PROFILE BY ID
+
+handlers.push
+(
+
   http.get(`${API_BASE_URL}/v2/user/${USER_ID}`, ({ request }) => 
   {
     // You can inspect the request URL to add logic
@@ -98,13 +147,153 @@ export const handlers =
     if ( url.pathname.includes(USER_ID) ) 
     {
       //Return the object.
-      return HttpResponse.json(mockUserProfile);
+      return HttpResponse.json(mockBasicUserProfile);
     }
     
     // If our userId was not matched, return an error
     return new HttpResponse('User not found', { status: 404 });
   })
   
-];
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER API - UPDATE USER
+
+handlers.push
+(
+  
+  http.patch(`${API_BASE_URL}/v2/user/${USER_ID}`, async({ request }) => 
+  {
+    
+    // You can inspect the request URL to add logic
+    /**
+     * Url returned by the request callback to the http fetch
+     * type{URL}
+     */
+    const url = new URL(request.url);
+
+    // For this header, we'll return the mock profile
+    // if the url contains our test userId.
+    if ( url.pathname.includes(USER_ID) ) 
+    {
+      //Get the updates from the PATCH request
+      const updates = await request.json();
+
+      //Return the patched user data.
+      return HttpResponse.json(updates);
+    }
+    
+    // If our userId was not matched, return an error
+    return new HttpResponse('User not found', { status: 404 });
+  })
+  
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER API - GET FULL USER PROFILE BY ID
+
+handlers.push
+(
+  
+  http.get(`${API_BASE_URL}/v2/user/${USER_ID}/profile`, async({ request }) => 
+  {
+    
+    // You can inspect the request URL to add logic
+    /**
+     * Url returned by the request callback to the http fetch
+     * type{URL}
+     */
+    const url = new URL(request.url);
+
+    // For this header, we'll return the mock profile
+    // if the url contains our test userId.
+    if ( url.pathname.includes(USER_ID) ) 
+    {
+      //Return the patched user data.
+      return HttpResponse.json(mockFullUserProfile);
+    }
+    
+    // If our userId was not matched, return an error
+    return new HttpResponse('User not found', { status: 404 });
+  })
+  
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER API - CREATE NEW USER
+
+handlers.push
+(
+  
+  http.post(`${API_BASE_URL}/v2/user`, async({ request }) => 
+  {
+    return HttpResponse.json(mockBasicUserProfile);
+  })
+  
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER API - DELETE USER
+
+handlers.push
+(
+  
+  http.delete(`${API_BASE_URL}/v2/user`, async({ request }) => 
+  {
+    /**
+     * @type{DeleteConfirmationMessage}
+     */
+    const deleteConfirmationMessage = {
+      message: "User deleted successfully."
+    };
+
+    return HttpResponse.json(deleteConfirmationMessage);
+  })
+  
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER API - CREATE REFERRAL CODE
+
+handlers.push
+(
+  
+  http.post(`${API_BASE_URL}/v2/user/${USER_ID}/referral-code`, async({ request }) => 
+  {
+    // You can inspect the request URL to add logic
+    /**
+     * Url returned by the request callback to the http fetch
+     * type{URL}
+     */
+    const url = new URL(request.url);
+
+    // For this header, we'll return the mock profile
+    // if the url contains our test userId.
+    if ( url.pathname.includes(USER_ID) ) 
+    {
+      /**
+       * @type{CreateReferralCodeConfirmationMessage}
+       */
+      const createReferralCodeConfirmationMessage = {
+        message: "Referral code created successfully."
+      };
+
+      //Get the body from the POST request
+      //const requestBody = await request.json();
+
+      //Check if the referral code that was passed in is the same as our 'happy' path
+      //console.log( requestBody );
+
+      return HttpResponse.json(createReferralCodeConfirmationMessage);
+    }
+    
+  })
+  
+);
 
 //#endregion
