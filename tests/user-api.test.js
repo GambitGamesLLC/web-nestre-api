@@ -25,6 +25,7 @@ import { server } from '../tests/mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
 /**
+ * @typedef {import('../src/user/user-types.js').UpdateUserProfile } UpdateUserProfile
  * @typedef {import('../src/user/user-types.js').CreateReferralCode } CreateReferralCode
  */
 
@@ -83,6 +84,22 @@ describe( "user-api.js GetBasicUserProfileByEmail()", () =>
 //#region DESCRIBE - user-api.js - GetBasicUserProfileByEmail() - Error Handling
 
 describe("user-api.js GetBasicUserProfileByEmail() - Error Handling", () => {
+
+    it('should throw an error if the passed in email value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        // Act & Assert
+        await assert.rejects(
+            userApi.GetBasicUserProfileByEmail(""),
+            { message: 'web-nestre-api : user-api.js GetBasicUserProfileByEmail() Invalid email: The email must be a non-empty string.' }
+        );
+    });
+
     it('should throw an error if the user is not found', async () => {
         // Arrange
         NestreApiManager.instance = null;
@@ -131,6 +148,22 @@ describe( "user-api.js GetBasicUserProfile()", () =>
 //#region DESCRIBE - user-api.js - GetBasicUserProfile() - Error Handling
 
 describe("user-api.js GetBasicUserProfile() - Error Handling", () => {
+
+    it('should throw an error for an empty userId', async () => {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        // Act & Assert
+        await assert.rejects(
+            userApi.GetBasicUserProfile(""),
+            { message: 'web-nestre-api : user-api.js GetBasicUserProfile() Invalid userId: The userId must be a non-empty string.' }
+        );
+    });
+
     it('should throw an error for an invalid userId', async () => {
         // Arrange
         server.use(
@@ -173,22 +206,95 @@ describe( "user-api.js UpdateUserProfile()", () =>
 
         const userApi = NestreApiManager.GetInstance().userApi;
 
-        //Get the user profile for our test user
-        const userProfile = await userApi.GetBasicUserProfile( USER_ID );
+        //Get the current user profile for our test user
+        //const userProfile = await userApi.GetBasicUserProfile( USER_ID );
+
+        /**
+         * @type{UpdateUserProfile}
+         */
+        const updatedUserProfile = {
+            firstname: "Bob",
+            email: "bob@gmail.com"
+        };
 
         // Act
-        userProfile.firstname = "Bob";
-        userProfile.email = "bob@gmail.com"
-        const newUserProfile = await userApi.UpdateUserProfile(USER_ID, userProfile);
+        const newUserProfile = await userApi.UpdateUserProfile(USER_ID, updatedUserProfile);
 
         // Assert
-        assert.strictEqual(userProfile.firstname, newUserProfile.firstname);
-        assert.strictEqual(userProfile.email, newUserProfile.email);
+        assert.strictEqual(updatedUserProfile.firstname, newUserProfile.firstname);
+        assert.strictEqual(updatedUserProfile.email, newUserProfile.email);
     });
 
 });
 
 //#endregion
+
+
+//#region DESCRIBE - user-api.js - UpdateUserProfile() - Error Handling
+
+describe( "user-api.js UpdateUserProfile()", () =>
+{
+    it('should return an error if the passed in userId is an empty string', async () => 
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        /**
+         * @type{UpdateUserProfile}
+         */
+        const updatedUserProfile = {
+            firstname: "Bob",
+            email: "bob@gmail.com"
+        };
+
+        // Act
+
+        // Assert
+         await assert.rejects(
+            userApi.UpdateUserProfile("", updatedUserProfile),
+            { message: 'web-nestre-api : user-api.js GetBasicUserProfile() Invalid userId: The userId must be a non-empty string.' }
+        );
+    });
+
+    it('should return an error if the passed in userProfile data to update has an incorrect shape', async () => 
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        /**
+         * @type{UpdateUserProfile}
+         */
+        const updatedUserProfile = {
+            id: USER_ID,
+            firstname: "Bob",
+            email: "bob@gmail.com"
+        };
+
+        // Act
+
+        // Assert
+        await assert.rejects(
+            userApi.UpdateUserProfile(USER_ID, updatedUserProfile),
+            {
+                //Compares against regex string, allow anything at the end of the string, so any of our validation error message can be appended 
+                message: /^web-nestre-api : user-api.js GetBasicUserProfile\(\) Validation failed for userProfile/
+            }
+        );
+
+    });
+
+});
+
+//#endregion
+
 
 //#region DESCRIBE - user-api.js - GetFullUserProfile()
 

@@ -12,7 +12,7 @@ import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
  */
 
 //Joi Schema Validators
-import { UpdateUserProfileSchema } from './user-schemas';
+import { UpdateUserProfileSchema } from './user-schemas.js';
 
 //#endregion
 
