@@ -229,7 +229,6 @@ describe( "user-api.js UpdateUserProfile()", () =>
 
 //#endregion
 
-
 //#region DESCRIBE - user-api.js - UpdateUserProfile() - Error Handling
 
 describe( "user-api.js UpdateUserProfile()", () =>
@@ -295,7 +294,6 @@ describe( "user-api.js UpdateUserProfile()", () =>
 
 //#endregion
 
-
 //#region DESCRIBE - user-api.js - GetFullUserProfile()
 
 describe( "user-api.js GetFullUserProfile()", () =>
@@ -325,6 +323,22 @@ describe( "user-api.js GetFullUserProfile()", () =>
 //#region DESCRIBE - user-api.js - GetFullUserProfile() - Error Handling
 
 describe("user-api.js GetFullUserProfile() - Error Handling", () => {
+
+    it('should throw an error if the passed in userId is empty', async () => {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        // Act & Assert
+        await assert.rejects(
+            userApi.GetFullUserProfile(""),
+            { message: 'web-nestre-api : user-api.js GetFullUserProfile() Invalid userId: The userId must be a non-empty string.' }
+        );
+    });
+
     it('should throw an error if the user has not completed the assessment', async () => {
         // Arrange
         server.use(
@@ -410,6 +424,7 @@ describe( "user-api.js DeleteUserAccount()", () =>
 
 describe( "user-api.js CreateReferralCode()", () =>
 {
+
     it('should create a new referral code', async () => 
     {
         // Arrange
@@ -435,6 +450,72 @@ describe( "user-api.js CreateReferralCode()", () =>
         // Assert
         assert.notStrictEqual(createReferralCodeConfirmationMessage, null );
         assert.notStrictEqual(createReferralCodeConfirmationMessage, "" );
+    });
+
+});
+
+//#endregion
+
+//#region DESCRIBE - user-api.js - CreateReferralCode() -- Error Handling
+
+describe( "user-api.js CreateReferralCode()", () =>
+{
+
+    it('should return an error if the passed in userId is not a valid string', async () => 
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        // Act
+        //Create the referralCode request
+
+        /**
+         * @type{CreateReferralCode}
+         */
+        const createReferralCode =
+        {
+            code: "feioavneawwa32323t2",
+            is_active: true
+        };
+
+        // Assert
+        await assert.rejects(
+            userApi.CreateReferralCode( "", createReferralCode ),
+            { message: 'web-nestre-api : user-api.js CreateReferralCode() Invalid userId: The userId must be a non-empty string.' }
+        );
+    });
+
+    it('should return an error if the passed in createReferralCode object has an incorrect shape', async () => 
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        // Act
+        //Create the referralCode request
+
+        /**
+         * @type{CreateReferralCode}
+         */
+        const createReferralCode =
+        {
+            id: USER_ID,
+            code: "feioavneawwa32323t2",
+            is_active: true
+        };
+
+        // Assert
+        await assert.rejects(
+            userApi.CreateReferralCode( USER_ID, createReferralCode ),
+            { message: /^web-nestre-api : user-api.js CreateReferralCode\(\) Validation failed for createReferralCode:/ }
+        );
     });
 
 });

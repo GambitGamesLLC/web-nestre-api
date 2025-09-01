@@ -13,6 +13,7 @@ import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
 
 //Joi Schema Validators
 import { UpdateUserProfileSchema } from './user-schemas.js';
+import { CreateReferralCodeSchema } from './user-schemas.js';
 
 //#endregion
 
@@ -139,7 +140,13 @@ export class UserApi
   GetFullUserProfile(userId) 
   //--------------------------------------------------------------//
   {
-   
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : user-api.js GetFullUserProfile() Invalid userId: The userId must be a non-empty string."));
+    }
+
     return NestreApiManager.GetInstance().Request(HttpMethod.GET, `/v2/user/${userId}/profile`);
   
   } //END GetFullUserProfile Method
@@ -193,6 +200,21 @@ export class UserApi
   //--------------------------------------------------------------//
   {
    
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : user-api.js CreateReferralCode() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Validate the CreateReferralCode object against the imported Joi schema
+    const { error } = CreateReferralCodeSchema.validate(createReferralCode);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : user-api.js CreateReferralCode() Validation failed for createReferralCode: ${error.details[0].message}`));
+    }
+
     return NestreApiManager.GetInstance().Request(HttpMethod.POST, `/v2/user/${userId}/referral-code`, createReferralCode);
   
   } //END CreateReferralCode Method

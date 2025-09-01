@@ -1,3 +1,9 @@
+/**
+ * user-schemas.js
+ * 
+ * Holds Joi schemas used to validate the shape of our data objects being sent into our Api via parameters in our functions within user-api.js
+ */
+
 //#region IMPORTS
 
 import Joi from 'joi';
@@ -26,6 +32,18 @@ export const UpdateUserProfileSchema = Joi.object({
     frame_it_unlocked: Joi.boolean(),
     app_version: Joi.string().allow(null, ''),
     os_version: Joi.string().allow(null, '')
+}).unknown(false); // Prevents unknown keys
+
+//#endregion
+
+//#region USER API - CREATE REFERRAL CODE
+
+/**
+ * Joi schema for validating the CreateReferralCodeSchema object.
+ */
+export const CreateReferralCodeSchema = Joi.object({
+    code: Joi.string().allow(null, ''),
+    is_active: Joi.boolean(),
 }).unknown(false); // Prevents unknown keys
 
 //#endregion
