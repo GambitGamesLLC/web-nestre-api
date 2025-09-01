@@ -11,6 +11,9 @@ import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
  * @typedef {import('./user-types.js').CreateReferralCodeConfirmationMessage } CreateReferralCodeConfirmationMessage
  */
 
+//Joi Schema Validators
+import { UpdateUserProfileSchema } from './user-schemas';
+
 //#endregion
 
 /**
@@ -51,6 +54,13 @@ export class UserApi
   GetBasicUserProfileByEmail(email) 
   //-----------------------------------------------------------------------//
   {
+    // Check if the email is a valid non-empty string.
+    if (typeof email !== 'string' || email.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : user-api.js GetBasicUserProfileByEmail() Invalid email: The email must be a non-empty string."));
+    }
+
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `/v2/user/get-by-email?email=${email}`);
 
   } //END GetBasicUserProfileByEmail Method
@@ -70,6 +80,13 @@ export class UserApi
   GetBasicUserProfile(userId) 
   //-----------------------------------------------------------------------//
   {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : user-api.js GetBasicUserProfile() Invalid userId: The userId must be a non-empty string."));
+    }
+
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `/v2/user/${userId}`);
 
   } //END GetBasicUserProfile Method
@@ -88,6 +105,21 @@ export class UserApi
   UpdateUserProfile(userId, userProfile) 
   //-----------------------------------------------------------------------//
   {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : user-api.js GetBasicUserProfile() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Validate the UpdateUserProfile object against the imported Joi schema
+    const { error } = UpdateUserProfileSchema.validate(userProfile);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : user-api.js GetBasicUserProfile() Validation failed for userProfile: ${error.details[0].message}`));
+    }
+
     return NestreApiManager.GetInstance().Request(HttpMethod.PATCH, `/v2/user/${userId}`, userProfile);
 
   } //END UpdateUserProfile Method
