@@ -404,6 +404,27 @@ describe( "user-api.js CreateNewUserAccount()", () =>
 
 //#endregion
 
+//#region DESCRIBE - user-api.js - CreateNewUserAccount() - Error Handling
+
+describe("user-api.js CreateNewUserAccount() - Error Handling", () => {
+    it('should throw an error if the auth token is missing', async () => {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        
+        // This time, we intentionally do NOT set the auth token.
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        // Act & Assert
+        await assert.rejects(
+            userApi.CreateNewUserAccount(),
+            { message: 'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string' }
+        );
+    });
+});
+
+//#endregion
+
 //#region DESCRIBE - user-api.js - DeleteUserAccount()
 
 describe( "user-api.js DeleteUserAccount()", () =>
@@ -426,6 +447,27 @@ describe( "user-api.js DeleteUserAccount()", () =>
         assert.notStrictEqual(deleteConfirmationMessage, "" );
     });
 
+});
+
+//#endregion
+
+//#region DESCRIBE - user-api.js - DeleteUserAccount() - Error Handling
+
+describe("user-api.js DeleteUserAccount() - Error Handling", () => {
+    it('should throw an error if the auth token is missing', async () => {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        
+        // This time, we intentionally do NOT set the auth token.
+        const userApi = NestreApiManager.GetInstance().userApi;
+
+        // Act & Assert
+        await assert.rejects(
+            userApi.DeleteUserAccount(),
+            { message: 'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string' }
+        );
+    });
 });
 
 //#endregion
