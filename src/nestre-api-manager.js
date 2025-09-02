@@ -16,6 +16,9 @@
 
 import { UserApi } from './user/user-api.js';
 
+//Custom error class returned by our Request() when we have a 422 status code in our server Api response
+import { ValidationError } from './validation-error.js';
+
 //#endregion
 
 //#region PUBLIC - HTTP METHOD VALUE
@@ -263,7 +266,16 @@ SetBaseUrl( baseUrl )
     //wait to continue until the promise returns with a response
     const response = await fetch(url, requestInit);
 
-    //Check for errors
+    // Handle the 422 status - validation error
+    if (response.status === 422) 
+    {
+        const errorData = await response.json().catch(() => ({}));
+
+        // Throw a specific error class that can hold the validation details
+        throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Validation Failed Error (422):');
+    }
+
+    //Check for all other errors
     if (!response.ok) 
     {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));

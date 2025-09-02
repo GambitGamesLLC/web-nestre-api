@@ -41,6 +41,9 @@ import { USER_EMAIL } from '../examples/environment-variables.js';
 import { server } from '../tests/mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
+//Custom error class returned by our nestre-api-manager.js Request() when we have a 422 status code in our server Api response
+import { ValidationError } from '../src/validation-error.js';
+
 //#endregion
 
 //#region DESCRIBE - nestre-api-manager.js - constructor()
@@ -627,6 +630,40 @@ describe("nestre-api-manager.js Request() - with body", () => {
 //#region DESCRIBE - nestre-api-manager.js - Request - Error Handling
 
 describe("nestre-api-manager.js Request() - Error Handling", () => {
+
+    it('should reject the promise with a ValidationError for a 422 status code', async () => 
+    {
+        // Arrange
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        const mockValidationErrorResponse = {
+            "detail": [
+                {
+                    "loc": [ "body", "firstname" ],
+                    "msg": "field required",
+                    "type": "value_error.missing"
+                }
+            ]
+        };
+
+        // Add a mock handler for this specific test
+        server.use(
+            http.get(`${API_BASE_URL}/v2/user/error-422`, () => {
+                return HttpResponse.json(mockValidationErrorResponse, { status: 422 });
+            })
+        );
+
+        // Act & Assert
+        await assert.rejects(
+            instance.Request(HttpMethod.GET, '/v2/user/error-422'),
+            // Check if the thrown error is an instance of our custom class
+            (err) => {
+                return err instanceof ValidationError && err.details[0].msg === 'field required';
+            }
+        );
+    });
 
     it('should throw an error for a 500 server error', async () => {
         // Arrange
