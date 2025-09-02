@@ -1,3 +1,9 @@
+/**
+ * nestre-api-manager.test.js
+ * 
+ * Tests the nestre-api-manager.js script using the built in Node testing suite
+ */
+
 //#region IMPORTS
 
 // Import the test runner functions

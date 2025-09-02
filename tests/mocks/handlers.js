@@ -1,3 +1,14 @@
+/**
+ * handlers.js
+ * 
+ * Uses 'msw' (mock-service-worker) library to listen for HTTP requests and intercept them
+ * Instead handling the request directly instead of letting them be handled by the server Api
+ * 
+ * NOTE: This is useful for automatic unit testing, but automatic and manual end-to-end testing 
+ * should also be tested without this mock-service-worker intercepting these HTTP calls
+ */
+
+//Not included in unit testing code coverage
 /* node:coverage disable */
 
 //#region IMPORTS
