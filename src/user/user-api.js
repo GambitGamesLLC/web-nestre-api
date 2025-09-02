@@ -1,3 +1,13 @@
+/**
+ * @file Handles API requests related to user profiles, authentication, and referrals.
+ * @description Provides a singleton class, `UserApi`, for making HTTP requests to the '/v2/user' API endpoint. This file
+ * centralizes all user-specific API logic and includes methods for profile management.
+ * The `UserApi` class here is created automatically by the NestreApiManager class during construction
+ * @exports {UserApi}
+ * @requires {NestreApiManager} from '../nestre-api-manager.js'
+ * @requires {Joi} for schema validation
+ */
+
 //#region IMPORTS
 
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
