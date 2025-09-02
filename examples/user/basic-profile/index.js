@@ -186,7 +186,7 @@ async function RunTest(userId, authToken)
         Log(`Fetching profile for user: ${userId}...`);
         
         // Because of JSDoc, you get autocompletion here in VS Code!
-        const basicProfile = await NestreApiManager.GetInstance().userAPI.GetBasicUserProfile(userId);
+        const basicProfile = await NestreApiManager.GetInstance().userApi.GetBasicUserProfile(userId);
 
         Log('✅ Test successful!');
         Log('Basic User Profile Loaded:');

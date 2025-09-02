@@ -11,7 +11,8 @@
     "test": "node --test --experimental-test-coverage --import ./tests/mocks/setup.js"
   },
   "devDependencies": {
-    "msw": "2.10.5"
+    "msw": "2.10.5",
+    "vite": "7.1.4"
   },
   "dependencies": {
     "joi": "18.0.1"

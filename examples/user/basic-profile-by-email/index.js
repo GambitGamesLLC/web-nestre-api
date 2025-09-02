@@ -1,8 +1,10 @@
 /**
  * index.js
- * @file Frontend script for the full-profile example web page.
- * @description This script demonstrates how to use the `web-nestre-api` library in a browser environment. 
- * It fetches a full user profile using the provided user ID and displays the result on the page.
+ * @file Frontend script for the basic-profile-by-email example web page.
+ * @description This script demonstrates how to use the `web-nestre-api` library 
+ * to fetch a basic user profile using their email. 
+ * It handles DOM interactions, sets the authentication token, 
+ * and displays the API response on the page.
  * @requires {NestreApiManager} from '../../../src/index.js'
  * @requires {API_BASE_URL} from '../../environment-variables.js'
  */
@@ -11,7 +13,7 @@
 
 // Import directly from the source file for local testing
 import { NestreApiManager } from '../../../src/index.js';
-import { API_BASE_URL } from '../../environment-variables.js';
+import { API_BASE_URL } from '../../environment-variables.js'
 
 //#endregion
 
@@ -22,10 +24,10 @@ import { API_BASE_URL } from '../../environment-variables.js';
 //#region PRIVATE - VARIABLES - DOM ELEMENTS
 
 /**
- * Input field for the user id
+ * Input field for the user email
  * @type{HTMLElement | null}
  */
-let userIdInput;
+let emailInput;
 
 /**
  * Input field for the auth token
@@ -65,23 +67,22 @@ document.addEventListener('DOMContentLoaded', () =>
 
     CreateNestreApi();
 
-}); //END DomContentLoaded Event Listener Hook
+}); //END DOMContentLoaded Event Listener Hook
 
 //#endregion
 
-//#region PRIVATE - ATTACH DOM REFERENCES
+//#region PRIVATE - GET DOM REFERENCES
 
 /**
  * Attaches our DOM references to our variables
- * 
- * @returns
+ * * @returns
  */
 //------------------------------------------------------//
 function AttachDomReferences()
 //------------------------------------------------------//
 {
     // --- DOM Elements ---
-    userIdInput = document.getElementById('userIdInput');
+    emailInput = document.getElementById('emailInput');
     authTokenInput = document.getElementById('authTokenInput');
     runTestBtn = document.getElementById('runTestBtn');
     outputDiv = document.getElementById('output');
@@ -136,11 +137,11 @@ function RunButtonClicked()
     outputDiv.innerHTML = '';
     
     // Get current values from the input fields
-    const userId = userIdInput.value;
+    const email = emailInput.value;
     const authToken = authTokenInput.value;
     
     // Run the test with the provided values
-    RunTest(userId, authToken);
+    RunTest(email, authToken);
 
 } //END RunButtonClicked Method
 
@@ -149,19 +150,19 @@ function RunButtonClicked()
 //#region PRIVATE - RUN TEST
 
 /**
- * Runs the test, requires a userId and authentication token
- * @param {string} userId 
+ * Runs the test, requires an email and authentication token
+ * @param {string} email 
  * @param {string} authToken 
  * @returns 
  */
 //------------------------------------------------------------//
-async function RunTest(userId, authToken) 
+async function RunTest(email, authToken) 
 //------------------------------------------------------------//
 {
     
-    if (!userId) 
+    if (!email) 
     {
-        Log('❌ Error: User ID is required.');
+        Log('❌ Error: User Email is required.');
         return;
     }
 
@@ -173,7 +174,7 @@ async function RunTest(userId, authToken)
         NestreApiManager.GetInstance().SetAuthToken(authToken);
         Log('Auth token has been set.');
     } 
-    else 
+    else
     {
         NestreApiManager.GetInstance().ClearAuthToken();
         Log('No auth token provided. Making unauthenticated request.');
@@ -181,16 +182,16 @@ async function RunTest(userId, authToken)
     
     try 
     {
-        Log(`Fetching profile for user: ${userId}...`);
+        Log(`Fetching profile for user with email: ${email}...`);
         
         // Because of JSDoc, you get autocompletion here in VS Code!
-        const fullProfile = await NestreApiManager.GetInstance().userApi.GetFullUserProfile(userId);
+        const basicProfile = await NestreApiManager.GetInstance().userApi.GetBasicUserProfileByEmail(email);
 
         Log('✅ Test successful!');
-        Log('Full User Profile Loaded:');
+        Log('Basic User Profile Loaded:');
         
         // Display result in a readable format
-        const profileString = JSON.stringify(fullProfile, null, 2);
+        const profileString = JSON.stringify(basicProfile, null, 2);
         outputDiv.innerHTML += `<pre>${profileString}</pre>`;
         
     } 
