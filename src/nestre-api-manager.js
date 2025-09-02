@@ -1,3 +1,16 @@
+/**
+ * @file Singleton class for interacting with the Nestre API.
+ * @description This file exports the NestreApiManager singleton, 
+ * which centralizes all HTTP requests to the Nestre endpoint. 
+ * It handles setting the base URL, authentication tokens, 
+ * and includes a generic request handler with built-in error handling.
+ * 
+ * After construction, each of the Nestre Api endpoints is available under a seperate public object
+ * For Example, the `User` portion of the Nestre Api is accessed via the `userApi` object
+ * @exports {NestreApiManager}
+ * @exports {HttpMethod}
+ */
+
 //#region IMPORTS
 
 import { UserApi } from './user/user-api.js';
