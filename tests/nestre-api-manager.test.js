@@ -665,6 +665,31 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         );
     });
 
+    it('should reject the promise with a generic error for a 422 status with a non-JSON body', async () => {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v2/user/error-422-non-json`, () => {
+                return new HttpResponse('Validation failed', {
+                    status: 422,
+                    headers: {
+                        'Content-Type': 'text/html',
+                    },
+                });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        // Act & Assert
+        await assert.rejects(
+            instance.Request(HttpMethod.GET, '/v2/user/error-422-non-json'),
+            { message: 'web-nestre-api : nestre-api-manager.js API Error: 422 - Unprocessable Entity' }
+        );
+    });
+
     it('should throw an error for a 500 server error', async () => {
         // Arrange
         server.use(

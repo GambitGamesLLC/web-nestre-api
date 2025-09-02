@@ -266,20 +266,24 @@ SetBaseUrl( baseUrl )
     //wait to continue until the promise returns with a response
     const response = await fetch(url, requestInit);
 
-    // Handle the 422 status - validation error
-    if (response.status === 422) 
-    {
-        const errorData = await response.json().catch(() => ({}));
-
-        // Throw a specific error class that can hold the validation details
-        throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Validation Failed Error (422):');
-    }
-
     //Check for all other errors
     if (!response.ok) 
     {
-      const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      throw new Error(`web-nestre-api : nestre-api-manager.js API Error: ${response.status} - ${errorData.message || 'Unknown error'}`);
+        let errorData = {};
+        try {
+            errorData = await response.json();
+            
+            // Handle specific 422 validation errors if it's a JSON response.
+            if (response.status === 422) {
+                throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Validation Failed Error (422):');
+            }
+        } catch (e) {
+            // If response is not JSON, use the status text.
+            errorData.message = response.statusText;
+        }
+
+        // Handle all other errors.
+        throw new Error(`web-nestre-api : nestre-api-manager.js API Error: ${response.status} - ${errorData.message || 'Unknown error'}`);
     }
 
     //If we recieved a 204 or no code at all, 
