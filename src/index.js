@@ -1,7 +1,10 @@
 /**
- * web-nestre-api
- * 
- * Primary entry point for this package
+ * index.js
+ * @file Primary entry point for the web-nestre-api package.
+ * @description This file consolidates the main components of the package, re-exporting the core NestreApiManager and HttpMethod enum, as well as all JSDoc type definitions, to provide a single, clean import path for consumers of the library.
+ * @exports {NestreApiManager}
+ * @exports {HttpMethod}
+ * @exports {object} all JSDoc type definitions
  */
 
 // Export the main manager class so users can instantiate it.

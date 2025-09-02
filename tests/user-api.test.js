@@ -1,3 +1,13 @@
+/**
+ * user-api.test.js
+ * @file Unit tests for the UserApi class.
+ * @description This file provides a comprehensive test suite for the `user-api.js` script, 
+ * validating each method that interacts with the user-related API endpoints. 
+ * It uses a mock server using the `msw` library package to test request/response flows without hitting a real server.
+ * @requires {NestreApiManager}
+ * @requires {msw}
+ */
+
 //#region IMPORTS
 
 // Import the test runner functions

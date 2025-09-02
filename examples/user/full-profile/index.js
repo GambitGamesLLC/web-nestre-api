@@ -1,3 +1,12 @@
+/**
+ * index.js
+ * @file Frontend script for the full-profile example web page.
+ * @description This script demonstrates how to use the `web-nestre-api` library in a browser environment. 
+ * It fetches a full user profile using the provided user ID and displays the result on the page.
+ * @requires {NestreApiManager} from '../../../src/index.js'
+ * @requires {API_BASE_URL} from '../../environment-variables.js'
+ */
+
 //#region IMPORTS
 
 // Import directly from the source file for local testing

@@ -1,5 +1,10 @@
 /**
- * Type definitions for the Nestre User API
+ * user-types.js
+ * @file Type definitions for the Nestre User API data objects.
+ * @description This file provides JSDoc `@typedefs` for all data structures used by the Nestre User API. 
+ * These types are crucial for static analysis, autocompletion in IDEs, 
+ * and ensuring consistent data handling throughout the codebase.
+ * @exports {object}
  */
 
 //#region USER API - BASIC USER PROFILE

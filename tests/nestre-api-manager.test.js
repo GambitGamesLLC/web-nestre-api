@@ -1,7 +1,13 @@
 /**
  * nestre-api-manager.test.js
- * 
- * Tests the nestre-api-manager.js script using the built in Node testing suite
+ * @file Unit tests for the NestreApiManager class.
+ * @description This file contains a suite of tests that validate the functionality 
+ * of the `nestre-api-manager.js` script. 
+ * It covers constructor behavior, validation, and request handling, 
+ * ensuring the core API client works as expected.
+ * @requires {NestreApiManager}
+ * @requires {HttpMethod}
+ * @requires {msw}
  */
 
 //#region IMPORTS

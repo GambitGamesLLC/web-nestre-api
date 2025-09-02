@@ -1,4 +1,5 @@
 /**
+ * nestre-api-manager.js
  * @file Singleton class for interacting with the Nestre API.
  * @description This file exports the NestreApiManager singleton, 
  * which centralizes all HTTP requests to the Nestre endpoint. 

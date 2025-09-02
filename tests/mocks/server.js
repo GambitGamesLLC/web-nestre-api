@@ -1,8 +1,12 @@
 /**
  * server.js
- * 
- * Exports a mock server object from the 'msw' (mock-service-worker) library 
- * that works with the Node testing suite
+ * @file Configures and exports a mock server for Node.js test environments.
+ * @description This file sets up a request mocking server using `msw/node`, 
+ * which is configured with the handlers defined in `handlers.js`. 
+ * This allows the unit tests to run in a Node.js context and intercept API calls.
+ * @requires {setupServer} from 'msw/node'
+ * @requires {handlers} from './handlers.js'
+ * @exports {setupServer} server
  */
 
 // src/mocks/server.js

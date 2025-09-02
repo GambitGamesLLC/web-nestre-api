@@ -1,7 +1,10 @@
 /**
  * user-schemas.js
- * 
- * Holds Joi schemas used to validate the shape of our data objects being sent into our Api via parameters in our functions within user-api.js
+ * @file Joi schemas for validating user data objects.
+ * @description This file exports Joi validation schemas for the objects used in the User API. 
+ * These schemas are used to ensure the data sent to the API functions has the correct shape and type.
+ * @exports {UpdateUserProfileSchema}
+ * @exports {CreateReferralCodeSchema}
  */
 
 //#region IMPORTS

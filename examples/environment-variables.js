@@ -1,5 +1,11 @@
 /**
- * Common variables used when testing the Nestre API
+ * environment-variables.js
+ * @file Common environment variables for local testing and examples.
+ * @description This file contains constant values such as the API base URL, test user ID, and a dummy authentication token. These are used to simplify running the local examples and tests.
+ * @exports {string} API_BASE_URL
+ * @exports {string} USER_ID
+ * @exports {string} AUTH_TOKEN
+ * @exports {string} USER_EMAIL
  */
 
 /**
