@@ -266,18 +266,23 @@ SetBaseUrl( baseUrl )
     //wait to continue until the promise returns with a response
     const response = await fetch(url, requestInit);
 
-    //Check for all other errors
+    // Check for all other errors
     if (!response.ok) 
     {
         let errorData = {};
-        try {
+        
+        try 
+        {
             errorData = await response.json();
             
             // Handle specific 422 validation errors if it's a JSON response.
-            if (response.status === 422) {
+            if (response.status === 422) 
+            {
                 throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Validation Failed Error (422):');
             }
-        } catch (e) {
+        } 
+        catch (e) 
+        {
             // If response is not JSON, use the status text.
             errorData.message = response.statusText;
         }
