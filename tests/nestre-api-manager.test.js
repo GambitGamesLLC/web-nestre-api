@@ -192,6 +192,38 @@ describe( "nestre-api-manager.js SetAuthToken()", () =>
 
     });
 
+    it( "should throw an error if our token parameter is undefined", ()=>
+    {
+        //Arrange
+        const instance = NestreApiManager.GetInstance();
+        let token = undefined;
+
+        //Act
+        
+        //Assert
+        assert.throws( () =>
+        {
+            instance.SetAuthToken(token);
+        });
+
+    });
+
+    it( "should throw an error if our token parameter is an empty string", ()=>
+    {
+        //Arrange
+        const instance = NestreApiManager.GetInstance();
+        let token = '';
+
+        //Act
+        
+        //Assert
+        assert.throws( () =>
+        {
+            instance.SetAuthToken(token);
+        });
+
+    });
+
 });
 
 //#endregion
@@ -575,7 +607,7 @@ describe("nestre-api-manager.js Request() - with body", () => {
         // Assert
         assert.deepStrictEqual(result, requestBody);
     });
-    
+
 });
 
 //#endregion
