@@ -1,7 +1,10 @@
 /**
  * index.js
  * @file Frontend script for the basic-profile example web page.
- * @description This script demonstrates how to use the `web-nestre-api` library to fetch a basic user profile. It handles DOM interactions, sets the authentication token, and displays the API response on the page.
+ * @description This script demonstrates how to use the `web-nestre-api` library 
+ * to fetch a basic user profile. 
+ * It handles DOM interactions, sets the authentication token, 
+ * and displays the API response on the page.
  * @requires {NestreApiManager} from '../../../src/index.js'
  * @requires {API_BASE_URL} from '../../environment-variables.js'
  */
