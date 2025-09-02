@@ -195,7 +195,7 @@ SetBaseUrl( baseUrl )
 //#region PRIVATE - REQUEST
 
   /**
-   * A private, generic request handler. 
+   * A private, generic request handler.
    * Used by our api classes to make HTTP requests to our endpoint
    * @private
    * @template T
@@ -205,7 +205,7 @@ SetBaseUrl( baseUrl )
    * @returns {Promise<T>}
    */
   //----------------------------------------------------------------------------//
-  async Request(httpMethodValue, endpoint, body) 
+  async Request(httpMethodValue, endpoint, body)
   //----------------------------------------------------------------------------//
   {
     if( NestreApiManager.instance === null || NestreApiManager.instance === undefined )
@@ -245,7 +245,7 @@ SetBaseUrl( baseUrl )
     const headers = { 'Content-Type': 'application/json' };
 
     //If we have an auth token, add it to our headers
-    if (this._authToken) 
+    if (this._authToken)
     {
       headers['Authorization'] = `Bearer ${this._authToken}`;
     }
@@ -257,49 +257,49 @@ SetBaseUrl( baseUrl )
     const requestInit = { method: httpMethodValue, headers };
 
     //If our Api request has a body, add it to our RequestInit to pass into our 'fetch' promise
-    if( body ) 
+    if( body )
     {
       requestInit.body = JSON.stringify(body);
     }
 
-    //Make the API request, 
+    //Make the API request,
     //wait to continue until the promise returns with a response
     const response = await fetch(url, requestInit);
 
     // Check for all other errors
-    if (!response.ok) 
+    if (!response.ok)
     {
         let errorData = {};
         
-        try 
+        try
         {
             errorData = await response.json();
-            
-            // Handle specific 422 validation errors if it's a JSON response.
-            if (response.status === 422) 
-            {
-                throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Validation Failed Error (422):');
-            }
-        } 
-        catch (e) 
+        }
+        catch (e)
         {
             // If response is not JSON, use the status text.
             errorData.message = response.statusText;
+        }
+
+        // Handle specific 422 validation errors if it's a JSON response.
+        if (response.status === 422 && errorData.detail)
+        {
+            throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Validation Failed Error (422):');
         }
 
         // Handle all other errors.
         throw new Error(`web-nestre-api : nestre-api-manager.js API Error: ${response.status} - ${errorData.message || 'Unknown error'}`);
     }
 
-    //If we recieved a 204 or no code at all, 
-    // then we have no JSON response 
+    //If we recieved a 204 or no code at all,
+    // then we have no JSON response
     // but the message was recieved by the backend
-    if (response.status === 204 || response.headers.get('content-length') === '0') 
+    if (response.status === 204 || response.headers.get('content-length') === '0')
     {
       return null;
     }
 
-    //In all other success conditions, 
+    //In all other success conditions,
     //we'll recieve a JSON object back
     return response.json();
 
