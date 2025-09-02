@@ -553,6 +553,33 @@ describe( "nestre-api-manager.js Request()", () =>
 
 //#endregion
 
+//#region DESCRIBE - nestre-api-manager.js - Request with Body
+
+describe("nestre-api-manager.js Request() - with body", () => {
+    
+    it('should correctly handle a request with a body', async () => {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        const requestBody = {
+            test: "data",
+            value: 123
+        };
+
+        // Act
+        // The mock server should return the exact body we sent
+        const result = await NestreApiManager.GetInstance().Request(HttpMethod.POST, '/v2/user/test-body', requestBody);
+
+        // Assert
+        assert.deepStrictEqual(result, requestBody);
+    });
+    
+});
+
+//#endregion
+
 //#region DESCRIBE - nestre-api-manager.js - Request - Error Handling
 
 describe("nestre-api-manager.js Request() - Error Handling", () => {

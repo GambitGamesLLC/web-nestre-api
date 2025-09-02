@@ -94,6 +94,18 @@ export let handlers = [];
 
 //#endregion
 
+//#region MOCK SERVICE WORKERS - REQUEST POST BODY
+
+handlers.push
+(
+  http.post(`${API_BASE_URL}/v2/user/test-body`, async ({ request }) => {
+    const requestBody = await request.json();
+    return HttpResponse.json(requestBody);
+  })
+);
+
+//#endregion
+
 //#region MOCK SERVICE WORKERS - USER API - GET - ERROR - 404
 
 handlers.push
