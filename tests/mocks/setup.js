@@ -11,7 +11,7 @@
 //#region IMPORTS
 
 import { server } from './server.js';
-import 'whatwg-fetch';
+import 'whatwg-fetch';  //Polyfil for 'Fetch' browser Api, missing in Node but available in the browser
 import { TextEncoder } from 'node:util'; // Import the TextEncoder from Node.js's 'util' module.
 
 // Manually expose TextEncoder to the global scope for the tests.
