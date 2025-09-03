@@ -11,6 +11,22 @@ This is a JavaScript library with JSDoc for accessing the Nestre API. It is used
 
 -----
 
+**DEMO REQUIRMENTS**
+
+To open the demo and have it run as expected, you'll need to configure a local test server within Visual Studio Code and set it to open with the appropriate root path and port.
+
+1. Follow this [guide](https://docs.google.com/document/d/1Yyo79u7AxequUlDg8S5QQgZv2bfs97_ulJ-lelYwQi0/edit?tab=t.0) to install and configure the `Live Server` extension in VS Code.
+
+You will also need to retrieve an authorization token from the development server and replace the authorization key in `environment-variables.js`.
+
+2. In the [How To Authorize](https://docs.google.com/document/d/1Yyo79u7AxequUlDg8S5QQgZv2bfs97_ulJ-lelYwQi0/edit?tab=t.0) section of the RestfulApi Guide. Use the default username and password provided in the guide to authorize within the Nestre Development Server OpenApi. This will return an authorization token that you'll need to copy+paste into `environment-variables.js`.
+
+3. Open `environment-variables.js` in VS Code and replace the `AUTH_TOKEN` variable with your new token.
+
+The authorization token lasts for ~24 hours before it needs to be replaced.
+
+-----
+
 **DEMO INSTRUCTIONS**
 
 The package includes examples demonstrating how to use the Nestre API client in a browser environment.
