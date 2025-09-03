@@ -13,8 +13,5 @@
   "devDependencies": {
     "msw": "2.10.5",
     "vite": "7.1.4"
-  },
-  "dependencies": {
-    "joi": "18.0.1"
   }
 }

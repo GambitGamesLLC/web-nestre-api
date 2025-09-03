@@ -7,6 +7,8 @@
  * @exports {object} all JSDoc type definitions
  */
 
+import * as importmap from './importmap.js';
+
 // Export the main manager class so users can instantiate it.
 export { NestreApiManager, HttpMethod } from './nestre-api-manager.js';
 

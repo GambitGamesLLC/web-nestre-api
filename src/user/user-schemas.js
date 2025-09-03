@@ -11,6 +11,8 @@
 
 import Joi from 'joi';
 
+//import Joi from 'https://cdn.jsdelivr.net/npm/joi@18.0.1/+esm'
+
 //#endregion
 
 //#region USER API - UPDATE USER PROFILE
