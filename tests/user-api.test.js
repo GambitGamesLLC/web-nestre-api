@@ -355,7 +355,7 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
         // Act & Assert
         await expect(
             userApi.GetFullUserProfile(USER_ID)
-        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 400 - Assessment not completed');
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 400 - User has no completed assessments, cannot fetch profile');
     });
 });
 

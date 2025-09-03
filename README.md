@@ -101,9 +101,14 @@ getUserProfile('your_user_id');
 
 -----
 
-**DEPENDENCIES**
+**DEVELOPER DEPENDENCIES**
 
-This package relies on other open-source packages to function correctly, such as Jest for testing and MSW (Mock Service Worker) for mocking API responses during development.
+These dependencies are used during development and testing, but are not included as part of the library when you import it.
+
+  * **Mock Service Worker** [[Repo]](https://github.com/mswjs/msw)  
+    Used to replace the standard `service worker`, so we can unit test our functions without actually calling the backend Api.
+
+
 
 -----
 
