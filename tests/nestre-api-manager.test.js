@@ -129,6 +129,19 @@ describe( "nestre-api-manager.js GetInstance()", () =>
 
 describe( "nestre-api-manager.js SetBaseUrl()", () =>
 {
+    it("should set the baseUrl parameter when a valid url is passed in", ()=>
+    {
+        //Arrange
+        const instance = NestreApiManager.GetInstance();
+        const baseUrl = 'http://test.url';
+
+        //Act
+        instance.SetBaseUrl(baseUrl);
+
+        //Assert
+        expect(instance._baseUrl).toEqual(baseUrl);
+    });
+
     it( "should throw an error if our baseUrl parameter is null", ()=>
     {
         //Arrange
@@ -588,6 +601,20 @@ describe("nestre-api-manager.js Request() - with body", () => {
 //#region DESCRIBE - nestre-api-manager.js - Request - Error Handling
 
 describe("nestre-api-manager.js Request() - Error Handling", () => {
+
+    it('should return null if the response status is 200 and the content-length is 0', async () =>
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+
+        // Act
+        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/no-content-content-length-0');
+
+        // Assert
+        expect(result).toBe(null);
+    });
 
     it('should reject the promise with a ValidationError for a 422 status code', async () =>
     {
