@@ -1,9 +1,9 @@
 /**
  * setup.js
  * @file Manages the lifecycle of the MSW mock server within the test runner.
- * @description This script ensures the mock server is started before all tests, 
- * that handlers are reset after each test, 
- * and the server is closed after all tests are finished. 
+ * @description This script ensures the mock server is started before all tests,
+ * that handlers are reset after each test,
+ * and the server is closed after all tests are finished.
  * This provides a clean and predictable testing environment.
  * @requires {server} from './server.js'
  */
@@ -11,6 +11,11 @@
 //#region IMPORTS
 
 import { server } from './server.js';
+import 'whatwg-fetch';
+import { TextEncoder } from 'node:util'; // Import the TextEncoder from Node.js's 'util' module.
+
+// Manually expose TextEncoder to the global scope for the tests.
+global.TextEncoder = TextEncoder;
 
 //#endregion
 
@@ -27,5 +32,3 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 //#endregion
-
-//console.log( "node test runner: end of setup.js" );
