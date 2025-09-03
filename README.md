@@ -25,6 +25,8 @@ You will also need to retrieve an authorization token from the development serve
 
 The authorization token lasts for ~24 hours before it needs to be replaced.
 
+4. Open the project in Visual Studio Code, and in the terminal, run the `npm install` command
+
 -----
 
 **DEMO INSTRUCTIONS**
@@ -44,13 +46,13 @@ The package includes examples demonstrating how to use the Nestre API client in 
 
 -----
 
-**INSTALLATION INSTRUCTIONS**
+## **INSTALLATION INSTRUCTIONS**
 
 **Method 1: npm (Node Package Manager)**
-To use this package in your project, install it from npm:
+To use this package in your project, install it via npm from this github repository:
 
 ```
-npm install web-nestre-api
+npm install https://github.com/GambitGamesLLC/web-nestre-api.git
 ```
 
 **Method 2: Manual Installation**
@@ -60,7 +62,27 @@ npm install web-nestre-api
 
 -----
 
-**USAGE INSTRUCTIONS**
+## **BUILD STEPS**
+
+This is a pure Vanilla JS+JSDoc library, there's no build step. 🍦
+
+Just import this package and use it.
+
+-----
+
+## **UNIT TESTING INSTRUCTIONS**
+
+Run the following command in Visual Studio Code
+
+```
+npm test
+```
+
+This will run the included unit tests using `jest` and `msw`, and also generate a coverage guide and place it in the `./coverage/` folder at the root of the project.
+
+-----
+
+## **USAGE INSTRUCTIONS**
 
 The core of this package is the `NestreApiManager` class, a singleton that centralizes all HTTP requests to the Nestre API endpoints. It handles setting the base URL, authentication tokens, and includes a generic request handler with built-in error handling.
 
@@ -101,7 +123,7 @@ getUserProfile('your_user_id');
 
 -----
 
-**DEVELOPER DEPENDENCIES**
+## **DEVELOPER DEPENDENCIES**
 
 These dependencies are used during development and testing, but are not included as part of the library when you import it.
 
@@ -116,6 +138,15 @@ These dependencies are used during development and testing, but are not included
 
   * **jest-environment-jsdom** [[Git Repo]](https://github.com/jsdom/jsdom)
     Used by Jest to run in the browser environment instead of the Node environment.
+
+-----
+
+## **DEPENDENCIES**
+
+These dependencies are included as part of the library when you import it. They are seperated into the `vendor` folder.
+
+  * **joi** [[Git Repo]](https://github.com/hapijs/joi)
+  Used to validate JSON schema to make sure it has the right contents and shape.
 
 -----
 
