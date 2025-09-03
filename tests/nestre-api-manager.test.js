@@ -45,6 +45,17 @@ import { ValidationError } from '../src/validation-error.js';
 describe( "nestre-api-manager.js constructor()", () =>
 {
 
+    // Test case for initial instantiation branch
+    it("should create a new instance and return it on the first call", () => {
+        // Arrange & Act
+        NestreApiManager.instance = null; // Ensure a clean state
+        const instance = NestreApiManager.GetInstance();
+
+        // Assert
+        expect(instance).not.toBeNull();
+        expect(NestreApiManager.instance).toBe(instance);
+    });
+
     // Test case for initial instantiation
     it("should create a userApi object on first call", () => {
         // Arrange
@@ -692,6 +703,76 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         await expect(
             instance.Request(HttpMethod.GET, '/v2/user/error')
         ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
+    });
+
+    // Test for the `Request` method branch that handles non-JSON errors
+    it('should handle non-JSON error responses gracefully (500 status)', async () => {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v2/user/html-error`, () => {
+                return new HttpResponse('<h1>Server Error</h1>', {
+                    status: 500,
+                    headers: {
+                        'Content-Type': 'text/html',
+                    },
+                });
+            })
+        );
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        // Act & Assert
+        await expect(
+            instance.Request(HttpMethod.GET, '/v2/user/html-error')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
+    });
+
+    // Test for the `Request` method branch that handles 422 with a non-JSON body
+    it('should reject the promise with a generic error for a 422 status with a non-JSON body', async () => {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v2/user/error-422-non-json`, () => {
+                return new HttpResponse('Validation failed', {
+                    status: 422,
+                    headers: {
+                        'Content-Type': 'text/html',
+                    },
+                });
+            })
+        );
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        // Act & Assert
+        await expect(
+            instance.Request(HttpMethod.GET, '/v2/user/error-422-non-json')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 422 - Unprocessable Entity');
+    });
+
+    // Test to ensure the content-length: 0 branch is properly covered
+    it('should return null if the response status is 200 and the content-length is 0', async () => {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v2/user/no-content-content-length-0`, () => {
+                return new HttpResponse(null, {
+                    status: 200,
+                    headers: {
+                        'Content-Length': '0',
+                    },
+                });
+            })
+        );
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        // Act
+        const result = await instance.Request(HttpMethod.GET, '/v2/user/no-content-content-length-0');
+
+        // Assert
+        expect(result).toBeNull();
     });
 
     it('should handle non-JSON error responses gracefully', async () => {
