@@ -9,9 +9,7 @@
 
 //#region IMPORTS
 
-import Joi from 'joi';
-
-//import Joi from 'https://cdn.jsdelivr.net/npm/joi@18.0.1/+esm'
+import Joi from '../../vendor/joi/joi.js';
 
 //#endregion
 

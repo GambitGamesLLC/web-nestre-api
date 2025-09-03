@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "type": "module",
   "files": [
-    "src"
+    "src",
+    "vendor"
   ],
   "scripts": {
     "test": "node --test --experimental-test-coverage --import ./tests/mocks/setup.js"
