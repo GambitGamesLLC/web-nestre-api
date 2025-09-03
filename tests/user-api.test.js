@@ -1,8 +1,8 @@
 /**
  * user-api.test.js
  * @file Unit tests for the UserApi class.
- * @description This file provides a comprehensive test suite for the `user-api.js` script, 
- * validating each method that interacts with the user-related API endpoints. 
+ * @description This file provides a comprehensive test suite for the `user-api.js` script,
+ * validating each method that interacts with the user-related API endpoints.
  * It uses a mock server using the `msw` library package to test request/response flows without hitting a real server.
  * @requires {NestreApiManager}
  * @requires {msw}
@@ -45,12 +45,12 @@ describe( "user-api.js constructor", ()=>
 
         //Arrange
          NestreApiManager.instance = null;
-        
+
         //Act
         NestreApiManager.GetInstance();
 
         //Assert
-        assert.notStrictEqual( NestreApiManager.instance, null );
+        expect( NestreApiManager.instance ).not.toBe( null );
 
     })
 
@@ -62,11 +62,11 @@ describe( "user-api.js constructor", ()=>
 
 describe( "user-api.js GetBasicUserProfileByEmail()", () =>
 {
-    it('should fetch a basic user profile by email successfully', async () => 
+    it('should fetch a basic user profile by email successfully', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -77,8 +77,8 @@ describe( "user-api.js GetBasicUserProfileByEmail()", () =>
         const userProfile = await userApi.GetBasicUserProfileByEmail(USER_EMAIL);
 
         // Assert
-        assert.strictEqual(userProfile.id, USER_ID);
-        assert.strictEqual(userProfile.email, USER_EMAIL);
+        expect(userProfile.id).toBe(USER_ID);
+        expect(userProfile.email).toBe(USER_EMAIL);
     });
 
 });
@@ -98,10 +98,9 @@ describe("user-api.js GetBasicUserProfileByEmail() - Error Handling", () => {
         const userApi = NestreApiManager.GetInstance().userApi;
 
         // Act & Assert
-        await assert.rejects(
-            userApi.GetBasicUserProfileByEmail(""),
-            { message: 'web-nestre-api : user-api.js GetBasicUserProfileByEmail() Invalid email: The email must be a non-empty string.' }
-        );
+        await expect(
+            userApi.GetBasicUserProfileByEmail("")
+        ).rejects.toThrow('web-nestre-api : user-api.js GetBasicUserProfileByEmail() Invalid email: The email must be a non-empty string.');
     });
 
     it('should throw an error if the user is not found', async () => {
@@ -113,10 +112,9 @@ describe("user-api.js GetBasicUserProfileByEmail() - Error Handling", () => {
         const userApi = NestreApiManager.GetInstance().userApi;
 
         // Act & Assert
-        await assert.rejects(
-            userApi.GetBasicUserProfileByEmail("nonexistent@email.com"),
-            { message: 'web-nestre-api : nestre-api-manager.js API Error: 404 - User not found' }
-        );
+        await expect(
+            userApi.GetBasicUserProfileByEmail("nonexistent@email.com")
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
     });
 });
 
@@ -126,11 +124,11 @@ describe("user-api.js GetBasicUserProfileByEmail() - Error Handling", () => {
 
 describe( "user-api.js GetBasicUserProfile()", () =>
 {
-    it('should fetch a basic user profile by userId successfully', async () => 
+    it('should fetch a basic user profile by userId successfully', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -141,8 +139,8 @@ describe( "user-api.js GetBasicUserProfile()", () =>
         const userProfile = await userApi.GetBasicUserProfile(USER_ID);
 
         // Assert
-        assert.strictEqual(userProfile.id, USER_ID);
-        assert.strictEqual(userProfile.email, USER_EMAIL);
+        expect(userProfile.id).toBe(USER_ID);
+        expect(userProfile.email).toBe(USER_EMAIL);
     });
 
 });
@@ -162,10 +160,9 @@ describe("user-api.js GetBasicUserProfile() - Error Handling", () => {
         const userApi = NestreApiManager.GetInstance().userApi;
 
         // Act & Assert
-        await assert.rejects(
-            userApi.GetBasicUserProfile(""),
-            { message: 'web-nestre-api : user-api.js GetBasicUserProfile() Invalid userId: The userId must be a non-empty string.' }
-        );
+        await expect(
+            userApi.GetBasicUserProfile("")
+        ).rejects.toThrow('web-nestre-api : user-api.js GetBasicUserProfile() Invalid userId: The userId must be a non-empty string.');
     });
 
     it('should throw an error for an invalid userId', async () => {
@@ -188,10 +185,9 @@ describe("user-api.js GetBasicUserProfile() - Error Handling", () => {
         const userApi = NestreApiManager.GetInstance().userApi;
 
         // Act & Assert
-        await assert.rejects(
-            userApi.GetBasicUserProfile("invalid-id"),
-            { message: 'web-nestre-api : nestre-api-manager.js API Error: 404 - User not found' }
-        );
+        await expect(
+            userApi.GetBasicUserProfile("invalid-id")
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
     });
 });
 
@@ -201,11 +197,11 @@ describe("user-api.js GetBasicUserProfile() - Error Handling", () => {
 
 describe( "user-api.js UpdateUserProfile()", () =>
 {
-    it('should update a user profile and return the basic user profile', async () => 
+    it('should update a user profile and return the basic user profile', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -225,8 +221,8 @@ describe( "user-api.js UpdateUserProfile()", () =>
         const newUserProfile = await userApi.UpdateUserProfile(USER_ID, updatedUserProfile);
 
         // Assert
-        assert.strictEqual(updatedUserProfile.firstname, newUserProfile.firstname);
-        assert.strictEqual(updatedUserProfile.email, newUserProfile.email);
+        expect(newUserProfile.firstname).toBe(updatedUserProfile.firstname);
+        expect(newUserProfile.email).toBe(updatedUserProfile.email);
     });
 
 });
@@ -237,11 +233,11 @@ describe( "user-api.js UpdateUserProfile()", () =>
 
 describe( "user-api.js UpdateUserProfile()", () =>
 {
-    it('should return an error if the passed in userId is an empty string', async () => 
+    it('should return an error if the passed in userId is an empty string', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -257,17 +253,16 @@ describe( "user-api.js UpdateUserProfile()", () =>
         // Act
 
         // Assert
-         await assert.rejects(
-            userApi.UpdateUserProfile("", updatedUserProfile),
-            { message: 'web-nestre-api : user-api.js GetBasicUserProfile() Invalid userId: The userId must be a non-empty string.' }
-        );
+         await expect(
+            userApi.UpdateUserProfile("", updatedUserProfile)
+        ).rejects.toThrow('web-nestre-api : user-api.js GetBasicUserProfile() Invalid userId: The userId must be a non-empty string.');
     });
 
-    it('should return an error if the passed in userProfile data to update has an incorrect shape', async () => 
+    it('should return an error if the passed in userProfile data to update has an incorrect shape', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -284,13 +279,9 @@ describe( "user-api.js UpdateUserProfile()", () =>
         // Act
 
         // Assert
-        await assert.rejects(
-            userApi.UpdateUserProfile(USER_ID, updatedUserProfile),
-            {
-                //Compares against regex string, allow anything at the end of the string, so any of our validation error message can be appended 
-                message: /^web-nestre-api : user-api.js GetBasicUserProfile\(\) Validation failed for userProfile/
-            }
-        );
+        await expect(
+            userApi.UpdateUserProfile(USER_ID, updatedUserProfile)
+        ).rejects.toThrow(/^web-nestre-api : user-api.js GetBasicUserProfile\(\) Validation failed for userProfile/);
 
     });
 
@@ -302,11 +293,11 @@ describe( "user-api.js UpdateUserProfile()", () =>
 
 describe( "user-api.js GetFullUserProfile()", () =>
 {
-    it('should return the full user profile', async () => 
+    it('should return the full user profile', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -316,8 +307,8 @@ describe( "user-api.js GetFullUserProfile()", () =>
         const userProfile = await userApi.GetFullUserProfile( USER_ID );
 
         // Assert
-        assert.strictEqual(userProfile.id, USER_ID);
-        assert.strictEqual(userProfile.email, USER_EMAIL);
+        expect(userProfile.id).toBe(USER_ID);
+        expect(userProfile.email).toBe(USER_EMAIL);
     });
 
 });
@@ -337,10 +328,9 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
         const userApi = NestreApiManager.GetInstance().userApi;
 
         // Act & Assert
-        await assert.rejects(
-            userApi.GetFullUserProfile(""),
-            { message: 'web-nestre-api : user-api.js GetFullUserProfile() Invalid userId: The userId must be a non-empty string.' }
-        );
+        await expect(
+            userApi.GetFullUserProfile("")
+        ).rejects.toThrow('web-nestre-api : user-api.js GetFullUserProfile() Invalid userId: The userId must be a non-empty string.');
     });
 
     it('should throw an error if the user has not completed the assessment', async () => {
@@ -363,10 +353,9 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
         const userApi = NestreApiManager.GetInstance().userApi;
 
         // Act & Assert
-        await assert.rejects(
-            userApi.GetFullUserProfile(USER_ID),
-            { message: 'web-nestre-api : nestre-api-manager.js API Error: 400 - Assessment not completed' }
-        );
+        await expect(
+            userApi.GetFullUserProfile(USER_ID)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 400 - Assessment not completed');
     });
 });
 
@@ -376,11 +365,11 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
 
 describe( "user-api.js CreateNewUserAccount()", () =>
 {
-    it('should return the basic user profile of the new user', async () => 
+    it('should return the basic user profile of the new user', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -390,8 +379,8 @@ describe( "user-api.js CreateNewUserAccount()", () =>
         const userProfile = await userApi.CreateNewUserAccount();
 
         // Assert
-        assert.strictEqual(userProfile.id, USER_ID);
-        assert.strictEqual(userProfile.email, USER_EMAIL);
+        expect(userProfile.id).toBe(USER_ID);
+        expect(userProfile.email).toBe(USER_EMAIL);
     });
 
 });
@@ -405,15 +394,14 @@ describe("user-api.js CreateNewUserAccount() - Error Handling", () => {
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
-        
+
         // This time, we intentionally do NOT set the auth token.
         const userApi = NestreApiManager.GetInstance().userApi;
 
         // Act & Assert
-        await assert.rejects(
-            userApi.CreateNewUserAccount(),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string' }
-        );
+        await expect(
+            userApi.CreateNewUserAccount()
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string');
     });
 });
 
@@ -423,11 +411,11 @@ describe("user-api.js CreateNewUserAccount() - Error Handling", () => {
 
 describe( "user-api.js DeleteUserAccount()", () =>
 {
-    it('should delete the user account of the authorized user', async () => 
+    it('should delete the user account of the authorized user', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -437,8 +425,8 @@ describe( "user-api.js DeleteUserAccount()", () =>
         const deleteConfirmationMessage = await userApi.DeleteUserAccount();
 
         // Assert
-        assert.notStrictEqual(deleteConfirmationMessage, null );
-        assert.notStrictEqual(deleteConfirmationMessage, "" );
+        expect(deleteConfirmationMessage).not.toBe(null);
+        expect(deleteConfirmationMessage).not.toBe("");
     });
 
 });
@@ -452,15 +440,14 @@ describe("user-api.js DeleteUserAccount() - Error Handling", () => {
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
-        
+
         // This time, we intentionally do NOT set the auth token.
         const userApi = NestreApiManager.GetInstance().userApi;
 
         // Act & Assert
-        await assert.rejects(
-            userApi.DeleteUserAccount(),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string' }
-        );
+        await expect(
+            userApi.DeleteUserAccount()
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string');
     });
 });
 
@@ -471,11 +458,11 @@ describe("user-api.js DeleteUserAccount() - Error Handling", () => {
 describe( "user-api.js CreateReferralCode()", () =>
 {
 
-    it('should create a new referral code', async () => 
+    it('should create a new referral code', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -494,8 +481,8 @@ describe( "user-api.js CreateReferralCode()", () =>
         const createReferralCodeConfirmationMessage = await userApi.CreateReferralCode( USER_ID, createReferralCode );
 
         // Assert
-        assert.notStrictEqual(createReferralCodeConfirmationMessage, null );
-        assert.notStrictEqual(createReferralCodeConfirmationMessage, "" );
+        expect(createReferralCodeConfirmationMessage).not.toBe(null);
+        expect(createReferralCodeConfirmationMessage).not.toBe("");
     });
 
 });
@@ -507,11 +494,11 @@ describe( "user-api.js CreateReferralCode()", () =>
 describe( "user-api.js CreateReferralCode()", () =>
 {
 
-    it('should return an error if the passed in userId is not a valid string', async () => 
+    it('should return an error if the passed in userId is not a valid string', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -529,17 +516,16 @@ describe( "user-api.js CreateReferralCode()", () =>
         };
 
         // Assert
-        await assert.rejects(
-            userApi.CreateReferralCode( "", createReferralCode ),
-            { message: 'web-nestre-api : user-api.js CreateReferralCode() Invalid userId: The userId must be a non-empty string.' }
-        );
+        await expect(
+            userApi.CreateReferralCode( "", createReferralCode )
+        ).rejects.toThrow('web-nestre-api : user-api.js CreateReferralCode() Invalid userId: The userId must be a non-empty string.');
     });
 
-    it('should return an error if the passed in createReferralCode object has an incorrect shape', async () => 
+    it('should return an error if the passed in createReferralCode object has an incorrect shape', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL); 
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -558,10 +544,9 @@ describe( "user-api.js CreateReferralCode()", () =>
         };
 
         // Assert
-        await assert.rejects(
-            userApi.CreateReferralCode( USER_ID, createReferralCode ),
-            { message: /^web-nestre-api : user-api.js CreateReferralCode\(\) Validation failed for createReferralCode:/ }
-        );
+        await expect(
+            userApi.CreateReferralCode( USER_ID, createReferralCode )
+        ).rejects.toThrow(/^web-nestre-api : user-api.js CreateReferralCode\(\) Validation failed for createReferralCode:/);
     });
 
 });

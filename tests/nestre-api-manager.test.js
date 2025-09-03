@@ -1,9 +1,9 @@
 /**
  * nestre-api-manager.test.js
  * @file Unit tests for the NestreApiManager class.
- * @description This file contains a suite of tests that validate the functionality 
- * of the `nestre-api-manager.js` script. 
- * It covers constructor behavior, validation, and request handling, 
+ * @description This file contains a suite of tests that validate the functionality
+ * of the `nestre-api-manager.js` script.
+ * It covers constructor behavior, validation, and request handling,
  * ensuring the core API client works as expected.
  * @requires {NestreApiManager}
  * @requires {HttpMethod}
@@ -49,12 +49,12 @@ describe( "nestre-api-manager.js constructor()", () =>
     it("should create a userApi object on first call", () => {
         // Arrange
         NestreApiManager.instance = null; // Ensure a clean state
-        
+
         // Act
         const instance = new NestreApiManager(); // Or GetInstance()
 
         // Assert
-        assert.notStrictEqual(instance.userApi, null);
+        expect(instance.userApi).not.toBe(null);
     });
 
     // Test case for subsequent calls (covers the early return) 🎯
@@ -68,7 +68,7 @@ describe( "nestre-api-manager.js constructor()", () =>
 
         // Assert
         // This confirms the constructor returned the pre-existing instance
-        assert.strictEqual(secondInstance, firstInstance);
+        expect(secondInstance).toBe(firstInstance);
     });
 
     // Make sure we only create a userApi object on the first call
@@ -84,7 +84,7 @@ describe( "nestre-api-manager.js constructor()", () =>
         // Assert
         // This proves the userAPI object is the exact same one from the first call,
         // and was not re-created.
-        assert.strictEqual(secondInstance.userApi, firstUserApi);
+        expect(secondInstance.userApi).toBe(firstUserApi);
     });
 
 }); //END describe nestre-api-manager.js - constructor
@@ -100,13 +100,13 @@ describe( "nestre-api-manager.js GetInstance()", () =>
     it("should return an instance of the NestreApiManager", ()=>
     {
         //Arrange
-        
+
 
         //Act
         const nestreApiManager1 = NestreApiManager.GetInstance();
 
         //Assert
-        assert.notStrictEqual( nestreApiManager1, null );
+        expect(nestreApiManager1).not.toBe(null);
     });
 
     it( "should return the same instance of the NestreApiManager", ()=>
@@ -118,7 +118,7 @@ describe( "nestre-api-manager.js GetInstance()", () =>
         const nestreApiManager2 = NestreApiManager.GetInstance();
 
         //Assert
-        assert.strictEqual( nestreApiManager1, nestreApiManager2 );
+        expect(nestreApiManager1).toBe(nestreApiManager2);
     });
 
 }); //END describe nestre-api-manager.js GetInstance() Method
@@ -136,12 +136,11 @@ describe( "nestre-api-manager.js SetBaseUrl()", () =>
         let baseUrl = null;
 
         //Act
-        
+
         //Assert
-        assert.throws( () =>
-        {
+        expect(() => {
             instance.SetBaseUrl(baseUrl);
-        });
+        }).toThrow();
 
     });
 
@@ -152,12 +151,11 @@ describe( "nestre-api-manager.js SetBaseUrl()", () =>
         let baseUrl = undefined;
 
         //Act
-        
+
         //Assert
-        assert.throws( () =>
-        {
+        expect(() => {
             instance.SetBaseUrl(baseUrl);
-        });
+        }).toThrow();
 
     });
 
@@ -168,12 +166,11 @@ describe( "nestre-api-manager.js SetBaseUrl()", () =>
         let baseUrl = '';
 
         //Act
-        
+
         //Assert
-        assert.throws( () =>
-        {
+        expect(() => {
             instance.SetBaseUrl(baseUrl);
-        });
+        }).toThrow();
 
     });
 
@@ -192,12 +189,11 @@ describe( "nestre-api-manager.js SetAuthToken()", () =>
         let token = null;
 
         //Act
-        
+
         //Assert
-        assert.throws( () =>
-        {
+        expect(() => {
             instance.SetAuthToken(token);
-        });
+        }).toThrow();
 
     });
 
@@ -208,12 +204,11 @@ describe( "nestre-api-manager.js SetAuthToken()", () =>
         let token = undefined;
 
         //Act
-        
+
         //Assert
-        assert.throws( () =>
-        {
+        expect(() => {
             instance.SetAuthToken(token);
-        });
+        }).toThrow();
 
     });
 
@@ -224,12 +219,11 @@ describe( "nestre-api-manager.js SetAuthToken()", () =>
         let token = '';
 
         //Act
-        
+
         //Assert
-        assert.throws( () =>
-        {
+        expect(() => {
             instance.SetAuthToken(token);
-        });
+        }).toThrow();
 
     });
 
@@ -248,9 +242,9 @@ describe( "nestre-api-manager.js ClearAuthToken()", () =>
 
         //Act
         NestreApiManager.GetInstance().ClearAuthToken();
-        
+
         //Assert
-        assert.deepEqual( NestreApiManager.GetInstance()._authToken, null);
+        expect(NestreApiManager.GetInstance()._authToken).toEqual(null);
 
     });
 
@@ -270,32 +264,30 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         // Get an instance first so we can call the method, then nullify the static ref
         const instance = NestreApiManager.GetInstance();
-        NestreApiManager.instance = null; 
+        NestreApiManager.instance = null;
 
         // Act & Assert
-        await assert.rejects(
-            instance.Request(HttpMethod.GET, '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined' }
-        );
+        await expect(
+            instance.Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined');
     });
 
     it('should reject the promise if NestreApiManager.instance is undefined', async () => {
         // Arrange
         // Get an instance first so we can call the method, then undefine the static ref
         const instance = NestreApiManager.GetInstance();
-        NestreApiManager.instance = undefined; 
+        NestreApiManager.instance = undefined;
 
         // Act & Assert
-        await assert.rejects(
-            instance.Request(HttpMethod.GET, '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined' }
-        );
+        await expect(
+            instance.Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: NestreApiManager.instance is null or undefined');
     });
 
     // -------------------------------------------------------------------------- //
     // ## Input Validation Tests - _baseUrl
     // -------------------------------------------------------------------------- //
-    it('should reject the promise if NestreApiManager._baseUrl is null', async () => 
+    it('should reject the promise if NestreApiManager._baseUrl is null', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -305,14 +297,12 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null, undefined, or an empty string');
     });
 
-    it('should reject the promise if NestreApiManager._baseUrl is undefined', async () => 
+    it('should reject the promise if NestreApiManager._baseUrl is undefined', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -322,14 +312,12 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null, undefined, or an empty string');
     });
 
-    it('should reject the promise if NestreApiManager._baseUrl is an empty string', async () => 
+    it('should reject the promise if NestreApiManager._baseUrl is an empty string', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -339,17 +327,15 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null, undefined, or an empty string');
     });
 
     // -------------------------------------------------------------------------- //
     // ## Input Validation Tests - _authToken
     // -------------------------------------------------------------------------- //
-    it('should reject the promise if NestreApiManager._authToken is null', async () => 
+    it('should reject the promise if NestreApiManager._authToken is null', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -360,14 +346,12 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string');
     });
 
-    it('should reject the promise if NestreApiManager._authToken is undefined', async () => 
+    it('should reject the promise if NestreApiManager._authToken is undefined', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -378,14 +362,12 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string');
     });
 
-    it('should reject the promise if NestreApiManager._authToken is an empty string', async () => 
+    it('should reject the promise if NestreApiManager._authToken is an empty string', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -396,17 +378,15 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string');
     });
 
     // -------------------------------------------------------------------------- //
     // ## Input Validation Tests - "httpMethodValue" parameter
     // -------------------------------------------------------------------------- //
-    it('should reject the promise if passed in "httpMethodValue" parameter is null', async () => 
+    it('should reject the promise if passed in "httpMethodValue" parameter is null', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -416,14 +396,12 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(null, '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: httpMethodValue is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(null, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: httpMethodValue is null, undefined, or an empty string');
     });
 
-    it('should reject the promise if passed in "httpMethodValue" parameter is undefined', async () => 
+    it('should reject the promise if passed in "httpMethodValue" parameter is undefined', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -433,14 +411,12 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(undefined, '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: httpMethodValue is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(undefined, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: httpMethodValue is null, undefined, or an empty string');
     });
 
-    it('should reject the promise if passed in "httpMethodValue" parameter is a empty string', async () => 
+    it('should reject the promise if passed in "httpMethodValue" parameter is a empty string', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -450,14 +426,12 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request('', '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: httpMethodValue is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request('', '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: httpMethodValue is null, undefined, or an empty string');
     });
 
-    it('should reject the promise if passed in "httpMethodValue" parameter is not a valid httpMethodValue', async () => 
+    it('should reject the promise if passed in "httpMethodValue" parameter is not a valid httpMethodValue', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -467,17 +441,15 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request('GET1', '/test'),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: httpMethodValue is not a valid HttpMethodValue' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request('GET1', '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: httpMethodValue is not a valid HttpMethodValue');
     });
 
     // -------------------------------------------------------------------------- //
     // ## Input Validation Tests - "endpoint" parameter
     // -------------------------------------------------------------------------- //
-    it('should reject the promise if passed in "endpoint" parameter is null', async () => 
+    it('should reject the promise if passed in "endpoint" parameter is null', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -487,14 +459,12 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, null),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: endpoint is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, null)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: endpoint is null, undefined, or an empty string');
     });
 
-    it('should reject the promise if passed in "endpoint" parameter is undefined', async () => 
+    it('should reject the promise if passed in "endpoint" parameter is undefined', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -504,14 +474,12 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, undefined),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: endpoint is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, undefined)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: endpoint is null, undefined, or an empty string');
     });
 
-    it('should reject the promise if passed in "endpoint" parameter is an empty string', async () => 
+    it('should reject the promise if passed in "endpoint" parameter is an empty string', async () =>
     {
         // Arrange
         NestreApiManager.instance = null;
@@ -521,11 +489,9 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act
 
         // We expect the promise to be rejected with a specific error message.
-        await assert.rejects
-        (
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, ''),
-            { message: 'web-nestre-api : nestre-api-manager.js Error: endpoint is null, undefined, or an empty string' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: endpoint is null, undefined, or an empty string');
     });
 
     // -------------------------------------------------------------------------- //
@@ -539,10 +505,9 @@ describe( "nestre-api-manager.js Request()", () =>
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
-        await assert.rejects(
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/error-404'),
-            { message: 'web-nestre-api : nestre-api-manager.js API Error: 404 - Not Found' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/error-404')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Not Found');
     });
 
     it('should reject the promise if the response is not ok (500)', async () =>
@@ -553,10 +518,9 @@ describe( "nestre-api-manager.js Request()", () =>
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
-        await assert.rejects(
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/error-500'),
-            { message: 'web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error' }
-        );
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/error-500')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
     });
 
     // -------------------------------------------------------------------------- //
@@ -573,7 +537,7 @@ describe( "nestre-api-manager.js Request()", () =>
         const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/no-content-204');
 
         // Assert
-        assert.strictEqual(result, null);
+        expect(result).toBe(null);
     });
 
     it('should return null if the content-length is 0', async () =>
@@ -587,7 +551,7 @@ describe( "nestre-api-manager.js Request()", () =>
         const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/no-content-content-length-0');
 
         // Assert
-        assert.strictEqual(result, null);
+        expect(result).toBe(null);
     });
 
 });
@@ -597,7 +561,7 @@ describe( "nestre-api-manager.js Request()", () =>
 //#region DESCRIBE - nestre-api-manager.js - Request with Body
 
 describe("nestre-api-manager.js Request() - with body", () => {
-    
+
     it('should correctly handle a request with a body', async () => {
         // Arrange
         NestreApiManager.instance = null;
@@ -614,7 +578,7 @@ describe("nestre-api-manager.js Request() - with body", () => {
         const result = await NestreApiManager.GetInstance().Request(HttpMethod.POST, '/v2/user/test-body', requestBody);
 
         // Assert
-        assert.deepStrictEqual(result, requestBody);
+        expect(result).toStrictEqual(requestBody);
     });
 
 });
@@ -625,7 +589,7 @@ describe("nestre-api-manager.js Request() - with body", () => {
 
 describe("nestre-api-manager.js Request() - Error Handling", () => {
 
-    it('should reject the promise with a ValidationError for a 422 status code', async () => 
+    it('should reject the promise with a ValidationError for a 422 status code', async () =>
     {
         // Arrange
         const instance = NestreApiManager.GetInstance();
@@ -650,13 +614,9 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         );
 
         // Act & Assert
-        await assert.rejects(
-            instance.Request(HttpMethod.GET, '/v2/user/error-422'),
-            // Check if the thrown error is an instance of our custom class
-            (err) => {
-                return err instanceof ValidationError && err.details[0].msg === 'field required';
-            }
-        );
+        await expect(
+            instance.Request(HttpMethod.GET, '/v2/user/error-422')
+        ).rejects.toThrow(ValidationError);
     });
 
     it('should reject the promise with a generic error for a 422 status with a non-JSON body', async () => {
@@ -678,10 +638,9 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         instance.SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
-        await assert.rejects(
-            instance.Request(HttpMethod.GET, '/v2/user/error-422-non-json'),
-            { message: 'web-nestre-api : nestre-api-manager.js API Error: 422 - Unprocessable Entity' }
-        );
+        await expect(
+            instance.Request(HttpMethod.GET, '/v2/user/error-422-non-json')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 422 - Unprocessable Entity');
     });
 
     it('should throw an error for a 500 server error', async () => {
@@ -703,10 +662,9 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         instance.SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
-        await assert.rejects(
-            instance.Request(HttpMethod.GET, '/v2/user/error'),
-            { message: 'web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error' }
-        );
+        await expect(
+            instance.Request(HttpMethod.GET, '/v2/user/error')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
     });
 
     it('should handle non-JSON error responses gracefully', async () => {
@@ -728,10 +686,9 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         instance.SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
-        await assert.rejects(
-            instance.Request(HttpMethod.GET, '/v2/user/html-error'),
-            { message: 'web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error' }
-        );
+        await expect(
+            instance.Request(HttpMethod.GET, '/v2/user/html-error')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
     });
 });
 

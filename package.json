@@ -9,12 +9,12 @@
     "vendor"
   ],
   "scripts": {
-    "test": "node --test --experimental-test-coverage --import ./tests/mocks/setup.js"
+    "test": "jest"
   },
   "devDependencies": {
     "msw": "2.10.5",
     "vite": "7.1.4",
-    "jest": "29.7.0",
-    "jest-environment-jsdom": "29.7.0"
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
   }
 }
