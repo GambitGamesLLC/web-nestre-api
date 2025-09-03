@@ -105,7 +105,7 @@ getUserProfile('your_user_id');
 
 These dependencies are used during development and testing, but are not included as part of the library when you import it.
 
-  * **Mock Service Worker** [[Git Repo]](https://github.com/mswjs/msw)  
+  * **Mock Service Worker (msw)** [[Git Repo]](https://github.com/mswjs/msw)  
     Used to replace the standard `service worker`, so we can unit test our functions without actually calling the backend Api. Referred to as `msw` throughout this library and documentation.
 
   * **whatwg-fetch** [[Git Repo]](https://github.com/JakeChampion/fetch)
