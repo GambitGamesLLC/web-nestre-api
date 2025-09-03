@@ -9,7 +9,6 @@
  */
 
 //Not included in unit testing code coverage
-/* node:coverage disable */
 
 //#region IMPORTS
 
@@ -392,5 +391,3 @@ handlers.push
 );
 
 //#endregion
-
-/* node:coverage enable */ 

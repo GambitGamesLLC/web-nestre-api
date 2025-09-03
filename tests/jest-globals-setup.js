@@ -1,4 +1,5 @@
 /**
+ * jest-globals-setup.js
  * provide polyfils for msw, since Jest is using a web environment but 'msw' expects a Node environment
  */
 import { TextEncoder, TextDecoder } from 'util';
