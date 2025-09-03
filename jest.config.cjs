@@ -3,10 +3,9 @@ module.exports = {
   testEnvironment: 'jsdom',
 
   // Treat .js files as ES Modules
-  extensionsToTreatAsEsm: ['.js'],
+  // This is no longer necessary as it's handled by "type": "module" in package.json
+  // extensionsToTreatAsEsm: ['.js'],
 
-  // Use this custom transformer for ES Modules
-  transform: {},
 
   // Define the root directory for your tests
   roots: ['<rootDir>/tests'],
