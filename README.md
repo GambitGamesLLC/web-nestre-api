@@ -105,10 +105,17 @@ getUserProfile('your_user_id');
 
 These dependencies are used during development and testing, but are not included as part of the library when you import it.
 
-  * **Mock Service Worker** [[Repo]](https://github.com/mswjs/msw)  
-    Used to replace the standard `service worker`, so we can unit test our functions without actually calling the backend Api.
+  * **Mock Service Worker** [[Git Repo]](https://github.com/mswjs/msw)  
+    Used to replace the standard `service worker`, so we can unit test our functions without actually calling the backend Api. Referred to as `msw` throughout this library and documentation.
 
+  * **whatwg-fetch** [[Git Repo]](https://github.com/JakeChampion/fetch)
+    Used to polyfil the `fetch` web Api. When we run unit tests, `msw` is expecting a pure node environment, but we are running our tests as a web environment, meaning we need to fulfill some expectations of `msw` so it will work properly.
 
+  * **jest** [[Primary Website]](https://jestjs.io/)
+    Test runner, used instead of the built in Node test runner as it supports running the browser environment instead of the Node environment.
+
+  * **jest-environment-jsdom** [[Git Repo]](https://github.com/jsdom/jsdom)
+    Used by Jest to run in the browser environment instead of the Node environment.
 
 -----
 

@@ -15,6 +15,6 @@
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "msw": "2.10.5",
-    "whatwg-fetch": "^3.6.20"
+    "whatwg-fetch": "3.6.20"
   }
 }
