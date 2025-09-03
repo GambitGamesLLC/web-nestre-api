@@ -10,12 +10,6 @@
 
 //#region IMPORTS
 
-// Import the test runner functions
-import { it, describe } from 'node:test';
-
-// Import the assertion library
-import assert from 'node:assert';
-
 // Import what we want to test
 import { NestreApiManager } from '../src/nestre-api-manager.js';
 
