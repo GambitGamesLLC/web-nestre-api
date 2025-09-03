@@ -9,6 +9,8 @@ This is a JavaScript library with JSDoc for accessing the Nestre API. It is used
 
 **Description:** API Manager for Nestre Services
 
+-----
+
 **DEMO INSTRUCTIONS**
 
 The package includes examples demonstrating how to use the Nestre API client in a browser environment.
@@ -21,6 +23,8 @@ The package includes examples demonstrating how to use the Nestre API client in 
 3. The page will load with pre-filled test values for User ID, Email, and Auth Token from `environment-variables.js`.
 
 4. Click the "Run Test" button to see the API call in action.
+
+-----
 
 **INSTALLATION INSTRUCTIONS**
 
@@ -35,6 +39,8 @@ npm install web-nestre-api
 1. Download or clone this repository to your computer.
 
 2. Include the `src/index.js` file in your project.
+
+-----
 
 **USAGE INSTRUCTIONS**
 
@@ -75,9 +81,13 @@ async function getUserProfile(userId) {
 getUserProfile('your_user_id');
 ```
 
+-----
+
 **DEPENDENCIES**
 
 This package relies on other open-source packages to function correctly, such as Jest for testing and MSW (Mock Service Worker) for mocking API responses during development.
+
+-----
 
 **SUPPORT**
 
