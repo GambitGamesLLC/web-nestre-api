@@ -11,7 +11,7 @@ This is a JavaScript library with JSDoc for accessing the Nestre API. It is used
 
 -----
 
-**DEMO REQUIRMENTS**
+## **DEMO REQUIRMENTS**
 
 To open the demo and have it run as expected, you'll need to configure a local test server within Visual Studio Code and set it to open with the appropriate root path and port.
 
@@ -29,7 +29,7 @@ The authorization token lasts for ~24 hours before it needs to be replaced.
 
 -----
 
-**DEMO INSTRUCTIONS**
+## **DEMO INSTRUCTIONS**
 
 The package includes examples demonstrating how to use the Nestre API client in a browser environment.
 
@@ -79,6 +79,18 @@ npm test
 ```
 
 This will run the included unit tests using `jest` and `msw`, and also generate a coverage guide and place it in the `./coverage/` folder at the root of the project.
+
+-----
+
+## **UNIT TESTING - CODE COVERAGE**
+
+This library has nearly `100%` code coverage. There are some edge cases picked up by `Jest` that I haven't been able to iron out, but they shouldn't directly effect the stability of the library.
+
+-----
+
+## **END TO END TESTING**
+
+Currently not supported. This would require the ability to fully `create` a new user on the `Nestre` development server, run our tests, and then `delete` that user.
 
 -----
 
@@ -146,11 +158,11 @@ These dependencies are used during development and testing, but are not included
 These dependencies are included as part of the library when you import it. They are seperated into the `vendor` folder.
 
   * **joi** [[Git Repo]](https://github.com/hapijs/joi)
-  Used to validate JSON schema to make sure it has the right contents and shape.
+  Used to validate `JSON` schema to make sure it has the right contents and shape.
 
 -----
 
-**SUPPORT**
+## **SUPPORT**
 
 Created and maintained by Gambit Games LLC.
 
