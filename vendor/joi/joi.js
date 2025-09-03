@@ -1,10 +1,16 @@
 /**
  * joi.js
- * @file JSON schema validation package.
- * @description The most powerful schema description language and data validator for JavaScript.
+ * @file The most powerful schema description language and data validator for JavaScript.
+ * @description 
  * Bundled by jsDelivr using Rollup v2.79.2 and Terser v5.39.0.
  * Original file: /npm/joi@18.0.1/dist/joi-browser.min.js
  * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
+ * 
+ * Github Link
+ * https://github.com/hapijs/joi
+ *
+ * Downloaded from
+ * https://www.jsdelivr.com/package/npm/joi
  */
 
 /* node:coverage disable */
