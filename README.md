@@ -32,11 +32,13 @@ The authorization token lasts for ~24 hours before it needs to be replaced.
 The package includes examples demonstrating how to use the Nestre API client in a browser environment.
 
 **To run the demos:**
-1. Navigate to the `examples` folder in your local copy of the repository.
+1. Click on the `Go Live` button in your `Live Server` Visual Studio Code Extension
 
-2. Open any of the `index.html` files in a web browser.
+2. Navigate to the `examples` folder in your local copy of the repository.
 
-3. The page will load with pre-filled test values for User ID, Email, and Auth Token from `environment-variables.js`.
+3. Open any of the `index.html` files within on of the subdirectories, such as `examples/user/basic-profile/index.html`.
+
+3. The page will load with pre-filled test values as necessary, such as `User ID`, `Email`, and `Auth Token` from `environment-variables.js`.
 
 4. Click the "Run Test" button to see the API call in action.
 
