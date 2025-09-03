@@ -5,9 +5,19 @@ This is a JavaScript library with JSDoc for accessing the Nestre API. It is used
 
 **Package Name:** web-nestre-api
 
-**Version:** 1.0.0
+**Version:** 0.1.0
 
 **Description:** API Manager for Nestre Services
+
+-----
+
+## **LIMITATIONS**
+
+Currently only supports the following endpoints of the Nestre Api.
+
+- User
+
+Further tagged releases of this library will support more endpoints.
 
 -----
 
