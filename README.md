@@ -4,7 +4,9 @@ JS + JSDoc library for accessing the Nestre API
 This is a JavaScript library with JSDoc for accessing the Nestre API. It is used for handling connectivity and data interaction with the Nestre endpoint for use in browser and Node.js environments.
 
 **Package Name:** web-nestre-api
+
 **Version:** 1.0.0
+
 **Description:** API Manager for Nestre Services
 
 **DEMO INSTRUCTIONS**
@@ -21,6 +23,7 @@ The package includes examples demonstrating how to use the Nestre API client in 
 4. Click the "Run Test" button to see the API call in action.
 
 **INSTALLATION INSTRUCTIONS**
+
 **Method 1: npm (Node Package Manager)**
 To use this package in your project, install it from npm:
 
