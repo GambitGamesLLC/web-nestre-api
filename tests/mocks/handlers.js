@@ -116,20 +116,6 @@ handlers.push
 
 //#endregion
 
-//#region MOCK SERVICE WORKERS - USER API - GET - ERROR - 400
-
-handlers.push
-(
-  
-  http.get(`${API_BASE_URL}/v2/user/error-400`, async({ request }) => 
-  {
-    return new HttpResponse('User has no completed assessments, cannot fetch profile', { status: 400 });
-  })
-  
-);
-
-//#endregion
-
 //#region MOCK SERVICE WORKERS - USER API - GET - ERROR - 404
 
 handlers.push

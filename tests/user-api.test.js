@@ -337,7 +337,7 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
         // Arrange
         server.use(
             http.get(`${API_BASE_URL}/v2/user/${USER_ID}/profile`, () => {
-                return new HttpResponse(JSON.stringify({ message: 'Assessment not completed' }), {
+                return new HttpResponse(JSON.stringify({ message: 'User has no completed assessments, cannot fetch profile' }), {
                     status: 400,
                     headers: {
                         'Content-Type': 'application/json',
