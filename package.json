@@ -15,7 +15,6 @@
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "msw": "2.10.5",
-    "vite": "7.1.4",
     "whatwg-fetch": "^3.6.20"
   }
 }
