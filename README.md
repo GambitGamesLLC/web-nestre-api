@@ -73,9 +73,11 @@ getUserProfile('your_user_id');
 ```
 
 **DEPENDENCIES**
+
 This package relies on other open-source packages to function correctly, such as Jest for testing and MSW (Mock Service Worker) for mocking API responses during development.
 
 **SUPPORT**
+
 Created and maintained by Gambit Games LLC.
 
 For support or feature requests, contact: gambitgamesllc@gmail.com.
