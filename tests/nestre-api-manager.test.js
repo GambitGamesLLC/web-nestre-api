@@ -41,6 +41,7 @@ import { http, HttpResponse } from 'msw';
 //Custom error class returned by our nestre-api-manager.js Request() when we have a 422 status code in our server Api response
 import { ValidationError } from '../src/errors/validation-error.js';
 import { AuthorizationError } from '../src/errors/authorization-error.js';
+import { InternalServerError } from '../src/errors/internal-server-error.js';
 
 //#endregion
 
@@ -680,7 +681,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Act & Assert
         await expect(
             NestreApiManager.GetInstance().Request(HttpMethod.GET, `user/error-500`)
-        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error (500). Internal server error.');
     });
 
     // -------------------------------------------------------------------------- //
@@ -871,7 +872,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         // Act & Assert
         await expect(
             instance.Request(HttpMethod.GET, `user/error`)
-        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
+        ).rejects.toThrow(InternalServerError);
     });
 
     // Test for the `Request` method branch that handles non-JSON errors
@@ -895,7 +896,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         // Act & Assert
         await expect(
             instance.Request(HttpMethod.GET, `user/html-error`)
-        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
+        ).rejects.toThrow(InternalServerError);
     });
 
     // Test for the `Request` method branch that handles 422 with a non-JSON body
@@ -969,7 +970,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         // Act & Assert
         await expect(
             instance.Request(HttpMethod.GET, `user/html-error`)
-        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
+        ).rejects.toThrow(InternalServerError);
     });
 });
 

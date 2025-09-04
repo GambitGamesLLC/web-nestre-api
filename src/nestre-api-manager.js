@@ -16,11 +16,16 @@
 
 import { UserApi } from './user/user-api.js';
 
+//Custom error class returned by our Request() when we have a 500 status code in our server Api response
+import { InternalServerError } from './errors/internal-server-error.js';
+
 //Custom error class returned by our Request() when we have a 422 status code in our server Api response
 import { ValidationError } from './errors/validation-error.js';
 
 //Custom error class returned by our Request() when we have a 401 status code in our server Api response
 import { AuthorizationError } from './errors/authorization-error.js';
+
+//Custom error class returned by our Request() when we have a 400 status code in our server Api response
 import { UnavailableError } from './errors/unavailable-error.js';
 
 //#endregion
@@ -317,6 +322,11 @@ SetApiVersion( version )
         {
             // If response is not JSON, use the status text.
             errorData.message = response.statusText;
+        }
+
+        if( response.status === 500 )
+        {
+          throw new InternalServerError( "web-nestre-api : nestre-api-manager.js API Error (500). Internal server error." );
         }
 
         // Handle specific 422 validation errors if it's a JSON response.
