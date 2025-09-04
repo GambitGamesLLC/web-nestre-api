@@ -73,7 +73,7 @@ export class UserApi
         return Promise.reject(new Error("web-nestre-api : user-api.js GetBasicUserProfileByEmail() Invalid email: The email must be a non-empty string."));
     }
 
-    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `/v2/user/get-by-email?email=${email}`);
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/get-by-email?email=${email}`);
 
   } //END GetBasicUserProfileByEmail Method
 
@@ -99,7 +99,7 @@ export class UserApi
         return Promise.reject(new Error("web-nestre-api : user-api.js GetBasicUserProfile() Invalid userId: The userId must be a non-empty string."));
     }
 
-    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `/v2/user/${userId}`);
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}`);
 
   } //END GetBasicUserProfile Method
 
@@ -132,7 +132,7 @@ export class UserApi
         return Promise.reject(new Error(`web-nestre-api : user-api.js GetBasicUserProfile() Validation failed for userProfile: ${error.details[0].message}`));
     }
 
-    return NestreApiManager.GetInstance().Request(HttpMethod.PATCH, `/v2/user/${userId}`, userProfile);
+    return NestreApiManager.GetInstance().Request(HttpMethod.PATCH, `user/${userId}`, userProfile);
 
   } //END UpdateUserProfile Method
 
@@ -158,7 +158,7 @@ export class UserApi
         return Promise.reject(new Error("web-nestre-api : user-api.js GetFullUserProfile() Invalid userId: The userId must be a non-empty string."));
     }
 
-    return NestreApiManager.GetInstance().Request(HttpMethod.GET, `/v2/user/${userId}/profile`);
+    return NestreApiManager.GetInstance().Request(HttpMethod.GET, `user/${userId}/profile`);
   
   } //END GetFullUserProfile Method
 
@@ -175,7 +175,7 @@ export class UserApi
   //--------------------------------------------------------------//
   {
    
-    return NestreApiManager.GetInstance().Request(HttpMethod.POST, `/v2/user`);
+    return NestreApiManager.GetInstance().Request(HttpMethod.POST, `user`);
   
   } //END CreateNewUserAccount Method
 
@@ -192,7 +192,7 @@ export class UserApi
   //--------------------------------------------------------------//
   {
    
-    return NestreApiManager.GetInstance().Request(HttpMethod.DELETE, `/v2/user`);
+    return NestreApiManager.GetInstance().Request(HttpMethod.DELETE, `user`);
   
   } //END DeleteUserAccount Method
 
@@ -226,7 +226,7 @@ export class UserApi
         return Promise.reject(new Error(`web-nestre-api : user-api.js CreateReferralCode() Validation failed for createReferralCode: ${error.details[0].message}`));
     }
 
-    return NestreApiManager.GetInstance().Request(HttpMethod.POST, `/v2/user/${userId}/referral-code`, createReferralCode);
+    return NestreApiManager.GetInstance().Request(HttpMethod.POST, `user/${userId}/referral-code`, createReferralCode);
   
   } //END CreateReferralCode Method
 

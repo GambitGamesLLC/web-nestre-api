@@ -14,6 +14,7 @@
 // Import directly from the source file for local testing
 import { NestreApiManager } from '../../../src/index.js';
 import { API_BASE_URL } from '../../environment-variables.js'
+import { API_VERSION } from '../../environment-variables.js';
 
 //#endregion
 
@@ -119,6 +120,7 @@ function CreateNestreApi()
 {
     let nestreApiManager = NestreApiManager.GetInstance();
     nestreApiManager.SetBaseUrl(API_BASE_URL);
+    nestreApiManager.SetApiVersion(API_VERSION);
 
 } //END CreateNestreApi Method
 

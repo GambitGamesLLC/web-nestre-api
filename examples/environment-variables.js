@@ -15,6 +15,12 @@
 export const API_BASE_URL = 'https://appservices.dev.nestreapp.com'; // Replace with production server if needed
 
 /**
+ * Current version of the Nestre Api to call
+ * @type{number}
+ */
+export const API_VERSION = 2;
+
+/**
  * UserId we want to use for user lookups
  * @type{string}
  */

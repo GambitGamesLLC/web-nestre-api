@@ -21,6 +21,7 @@ import { ValidationError } from './errors/validation-error.js';
 
 //Custom error class returned by our Request() when we have a 401 status code in our server Api response
 import { AuthorizationError } from './errors/authorization-error.js';
+import { UnavailableError } from './errors/unavailable-error.js';
 
 //#endregion
 
@@ -68,6 +69,13 @@ export class NestreApiManager
    * @type {string | null}
    */
   _baseUrl = null;
+
+  /**
+   * The version number of the Api to call
+   * @private
+   * @type {number | null}
+   */
+  _version = null;
 
   /**
    * The authentication token
@@ -159,6 +167,28 @@ SetBaseUrl( baseUrl )
 
 //#endregion
 
+//#region PUBLIC - SET API VERSION
+
+/**
+ * Sets the version number for the Api to call during HTTP requests
+ * @param {number} version The version number of the Api to call
+ */
+//------------------------------------------------//
+SetApiVersion( version )
+//------------------------------------------------//
+{
+    //Validation Check
+    if( version === undefined || version === null || typeof version !== 'number' )
+    {
+      throw new Error('web-nestre-api : nestre-api-manager.js SetApiVersion() Configuration error: `version` is a required property.');
+    }
+
+    this._version = version;
+
+} //END SetApiVersion Method
+
+//#endregion
+
 //#region PUBLIC - SET AUTH TOKEN
 
   /**
@@ -221,6 +251,11 @@ SetBaseUrl( baseUrl )
       throw new Error( 'web-nestre-api : nestre-api-manager.js Error: this._baseUrl is null, undefined, or an empty string');
     }
 
+    if( this._version === undefined || this._version === null || typeof this._version !== 'number' )
+    {
+      throw new Error('web-nestre-api : nestre-api-manager.js Error: this._version is null, undefined, or not a number');
+    }
+
     if( this._authToken === null || this._authToken === undefined || this._authToken === '')
     {
       throw new Error( "web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string");
@@ -242,7 +277,7 @@ SetBaseUrl( baseUrl )
     }
 
     //Combine our baseUrl and the endpoint to form the full url
-    const url = `${this._baseUrl}${endpoint}`;
+    const url = `${this._baseUrl}/v${this._version}/${endpoint}`;
 
     //Our response content-type will always be a JSON object
     const headers = { 'Content-Type': 'application/json' };
@@ -287,12 +322,17 @@ SetBaseUrl( baseUrl )
         // Handle specific 422 validation errors if it's a JSON response.
         if (response.status === 422 && errorData.detail)
         {
-            throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Validation Failed Error (422):');
+          throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Validation Failed Error (422):');
         }
 
         if( response.status === 401 )
         {
           throw new AuthorizationError( "web-nestre-api : nestre-api-manager.js API Call Unauthorized (401). Please refresh your auth token" );
+        }
+
+        if( response.status === 400 )
+        {
+          throw new UnavailableError( "web-nestre-api : nestre-api-manager.js Unavailable (400). The requested data may not exist or is currently unavailable" );
         }
 
         // Handle all other errors.
