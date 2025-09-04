@@ -26,7 +26,7 @@ import { ValidationError } from './errors/validation-error.js';
 import { AuthorizationError } from './errors/authorization-error.js';
 
 //Custom error class returned by our Request() when we have a 400 status code in our server Api response
-import { UnavailableError } from './errors/unavailable-error.js';
+import { GeneralError } from './errors/general-error.js';
 
 //#endregion
 
@@ -326,23 +326,23 @@ SetApiVersion( version )
 
         if( response.status === 500 )
         {
-          throw new InternalServerError( "web-nestre-api : nestre-api-manager.js API Error (500). Internal server error." );
+          throw new InternalServerError( errorData.detail, "web-nestre-api : nestre-api-manager.js API Error (500). Internal server error." );
         }
 
         // Handle specific 422 validation errors if it's a JSON response.
-        if (response.status === 422 && errorData.detail)
+        if (response.status === 422)
         {
-          throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Error (422). Validation error.');
+          throw new ValidationError( errorData.detail, 'web-nestre-api : nestre-api-manager.js API Error (422). Validation error.');
         }
 
         if( response.status === 401 )
         {
-          throw new AuthorizationError( "web-nestre-api : nestre-api-manager.js API Error (401). Unauthorized access." );
+          throw new AuthorizationError( errorData.detail, "web-nestre-api : nestre-api-manager.js API Error (401). Unauthorized access." );
         }
 
         if( response.status === 400 )
         {
-          throw new UnavailableError( "web-nestre-api : nestre-api-manager.js API Error (400). Unavailable error." );
+          throw new GeneralError( errorData.detail, "web-nestre-api : nestre-api-manager.js API Error (400). General error." );
         }
 
         // Handle all other errors.

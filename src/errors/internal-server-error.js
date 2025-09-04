@@ -13,12 +13,20 @@
 export class InternalServerError extends Error 
 {
     /**
+     * The detailed messages from the API response.
+     * @type {object[]}
+     */
+    details = [];
+
+    /**
      * Creates a new instance of the InternalServerError.
+     * @param {object[]} details The array of error details.
      * @param {string} message A high-level error message.
      */
-    constructor(message) 
+    constructor(details, message) 
     {
         super(message);
         this.name = 'InternalServerError';
+        this.details = details;
     }
 }

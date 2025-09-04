@@ -30,6 +30,7 @@ import { USER_EMAIL } from '../examples/environment-variables.js';
 
 import { server } from '../tests/mocks/server.js';
 import { http, HttpResponse } from 'msw';
+import { GeneralError } from '../src/errors/general-error.js';
 
 /**
  * @typedef {import('../src/user/user-types.js').UpdateUserProfile } UpdateUserProfile
@@ -350,7 +351,7 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
         // Arrange
         server.use(
             http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/profile`, () => {
-                return new HttpResponse(JSON.stringify({ message: 'API Error (400). Unavailable error.' }), {
+                return new HttpResponse(JSON.stringify({ message: 'API Error (400). General error.' }), {
                     status: 400,
                     headers: {
                         'Content-Type': 'application/json',
@@ -369,7 +370,7 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
         // Act & Assert
         await expect(
             userApi.GetFullUserProfile(USER_ID)
-        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error (400). Unavailable error.');
+        ).rejects.toThrow(GeneralError);
     });
 });
 

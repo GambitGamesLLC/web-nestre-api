@@ -13,14 +13,14 @@
 export class ValidationError extends Error 
 {
     /**
-     * The detailed validation messages from the API response.
+     * The detailed messages from the API response.
      * @type {object[]}
      */
     details = [];
 
     /**
      * Creates a new instance of the ValidationError.
-     * @param {object[]} details The array of validation error details.
+     * @param {object[]} details The array of error details.
      * @param {string} message A high-level error message.
      */
     constructor(details, message) 
