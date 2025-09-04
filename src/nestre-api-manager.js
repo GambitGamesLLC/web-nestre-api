@@ -120,10 +120,8 @@ constructor()
     NestreApiManager.instance = this;
 
     //We only need to generate our helper classes once
-    if( this.userApi === null )
-    {
-      this.userApi = new UserApi(this);
-    }
+    this.userApi = null;
+    this.userApi = new UserApi(this);
 
 } //END constructor Method
 
@@ -287,11 +285,8 @@ SetApiVersion( version )
     //Our response content-type will always be a JSON object
     const headers = { 'Content-Type': 'application/json' };
 
-    //If we have an auth token, add it to our headers
-    if (this._authToken)
-    {
-      headers['Authorization'] = `Bearer ${this._authToken}`;
-    }
+    //Add the auth token to our header
+    headers['Authorization'] = `Bearer ${this._authToken}`;
 
     /**
      * The configuration options for our API request.

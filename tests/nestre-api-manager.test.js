@@ -774,6 +774,32 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         expect(result).toBe(null);
     });
 
+    it('should return an "Unknown Error" if the errorData.message is null', async () =>
+    {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/general-error`, () => {
+                return new HttpResponse(null, {
+                    status: 499,
+                    headers: {
+                        'Content-Type': 'text/html',
+                    },
+                });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        // Act
+        await expect(
+            instance.Request(HttpMethod.GET, `user/general-error`)
+        ).rejects.toThrow(Error);
+    });
+
     it('should return an General Error if the response status is 400', async () =>
     {
         // Arrange
