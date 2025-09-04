@@ -158,6 +158,7 @@ const nestreApiManager = NestreApiManager.GetInstance();
 
 // Set the base URL and authentication token
 nestreApiManager.SetBaseUrl('https://api.yourserver.com');
+nestreApiManager.SetApiVersion( 2 ); // Swap with your preferred Api version to call. 
 nestreApiManager.SetAuthToken('your_jwt_token');
 
 // Now you can access the API modules
