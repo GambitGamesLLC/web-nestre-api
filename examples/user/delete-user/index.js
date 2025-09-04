@@ -170,7 +170,7 @@ async function RunTest(authToken)
     } 
     catch (error) 
     {
-        Log(`❌ Test failed: ${error.message}`);
+        Log(`❌ Test failed: ${error.message} : ${error.details}`);
         console.error(error);
     }
 

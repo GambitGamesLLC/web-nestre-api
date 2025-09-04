@@ -206,7 +206,7 @@ async function RunTest(userId, authToken, userProfileUpdates)
     } 
     catch (error) 
     {
-        Log(`❌ Test failed: ${error.message}`);
+        Log(`❌ Test failed: ${error.message} : ${error.details}`);
         console.error(error);
     }
 
