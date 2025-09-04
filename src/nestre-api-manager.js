@@ -322,17 +322,17 @@ SetApiVersion( version )
         // Handle specific 422 validation errors if it's a JSON response.
         if (response.status === 422 && errorData.detail)
         {
-          throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Validation Failed Error (422):');
+          throw new ValidationError(errorData.detail, 'web-nestre-api : nestre-api-manager.js API Error (422). Validation error.');
         }
 
         if( response.status === 401 )
         {
-          throw new AuthorizationError( "web-nestre-api : nestre-api-manager.js API Call Unauthorized (401). Please refresh your auth token" );
+          throw new AuthorizationError( "web-nestre-api : nestre-api-manager.js API Error (401). Unauthorized access." );
         }
 
         if( response.status === 400 )
         {
-          throw new UnavailableError( "web-nestre-api : nestre-api-manager.js Unavailable (400). The requested data may not exist or is currently unavailable" );
+          throw new UnavailableError( "web-nestre-api : nestre-api-manager.js API Error (400). Unavailable error." );
         }
 
         // Handle all other errors.

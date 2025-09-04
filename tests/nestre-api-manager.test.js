@@ -18,6 +18,9 @@ import { NestreApiManager, HttpMethod } from '../src/nestre-api-manager.js';
 //Import the BASE_URL from our environment-variables.js
 import { API_BASE_URL } from '../examples/environment-variables.js';
 
+//Import the API_VERSION from our environment-variables.js
+import { API_VERSION } from '../examples/environment-variables.js';
+
 //Import the AUTH_TOKEN from our environment-variables.js
 import { AUTH_TOKEN } from '../examples/environment-variables.js';
 
@@ -36,7 +39,7 @@ import { server } from '../tests/mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
 //Custom error class returned by our nestre-api-manager.js Request() when we have a 422 status code in our server Api response
-import { ValidationError } from '../src/validation-error.js';
+import { ValidationError } from '../src/errors/validation-error.js';
 
 //#endregion
 
@@ -145,7 +148,7 @@ describe( "nestre-api-manager.js SetBaseUrl()", () =>
         //Arrange
         const instance = NestreApiManager.GetInstance();
         const baseUrl = 'http://test.url';
-
+        
         //Act
         instance.SetBaseUrl(baseUrl);
 
@@ -194,6 +197,72 @@ describe( "nestre-api-manager.js SetBaseUrl()", () =>
         //Assert
         expect(() => {
             instance.SetBaseUrl(baseUrl);
+        }).toThrow();
+
+    });
+
+});
+
+//#endregion
+
+//#region DESCRIBE - nestre-api-manager.js - SetApiVersion
+
+describe( "nestre-api-manager.js SetApiVersion()", () =>
+{
+    it("should set the version parameter when a valid number is passed in", ()=>
+    {
+        //Arrange
+        const instance = NestreApiManager.GetInstance();
+        const version = API_VERSION;
+        
+        //Act
+        instance.SetApiVersion(version);
+
+        //Assert
+        expect(instance._version).toEqual(version);
+    });
+
+    it( "should throw an error if our version parameter is null", ()=>
+    {
+        //Arrange
+        const instance = NestreApiManager.GetInstance();
+        let version = null;
+
+        //Act
+
+        //Assert
+        expect(() => {
+            instance.SetApiVersion(version);
+        }).toThrow();
+
+    });
+
+    it( "should throw an error if our version parameter is undefined", ()=>
+    {
+        //Arrange
+        const instance = NestreApiManager.GetInstance();
+        let version = undefined;
+
+        //Act
+
+        //Assert
+        expect(() => {
+            instance.SetApiVersion(version);
+        }).toThrow();
+
+    });
+
+    it( "should throw an error if our version parameter is not a type of number", ()=>
+    {
+        //Arrange
+        const instance = NestreApiManager.GetInstance();
+        let version = '';
+
+        //Act
+
+        //Assert
+        expect(() => {
+            instance.SetApiVersion(version);
         }).toThrow();
 
     });
@@ -316,6 +385,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance()._baseUrl = null;
 
         // Act
@@ -331,6 +401,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance()._baseUrl = undefined;
 
         // Act
@@ -346,6 +417,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance()._baseUrl = '';
 
         // Act
@@ -357,6 +429,57 @@ describe( "nestre-api-manager.js Request()", () =>
     });
 
     // -------------------------------------------------------------------------- //
+    // ## Input Validation Tests - _version
+    // -------------------------------------------------------------------------- //
+    it('should reject the promise if NestreApiManager._version is null', async () =>
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
+        NestreApiManager.GetInstance()._version = null;
+
+        // Act
+
+        // We expect the promise to be rejected with a specific error message.
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._version is null, undefined, or not a number');
+    });
+
+    it('should reject the promise if NestreApiManager._version is undefined', async () =>
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
+        NestreApiManager.GetInstance()._version = undefined;
+
+        // Act
+
+        // We expect the promise to be rejected with a specific error message.
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._version is null, undefined, or not a number');
+    });
+
+    it('should reject the promise if NestreApiManager._version is not a number', async () =>
+    {
+        // Arrange
+        NestreApiManager.instance = null;
+        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
+        NestreApiManager.GetInstance()._version = '';
+
+        // Act
+
+        // We expect the promise to be rejected with a specific error message.
+        await expect(
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, '/test')
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._version is null, undefined, or not a number');
+    });
+
+    // -------------------------------------------------------------------------- //
     // ## Input Validation Tests - _authToken
     // -------------------------------------------------------------------------- //
     it('should reject the promise if NestreApiManager._authToken is null', async () =>
@@ -364,6 +487,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
         NestreApiManager.GetInstance()._authToken = null;
 
@@ -380,6 +504,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
         NestreApiManager.GetInstance()._authToken = undefined;
 
@@ -396,6 +521,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
         NestreApiManager.GetInstance()._authToken = '';
 
@@ -415,6 +541,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
@@ -430,6 +557,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
@@ -445,6 +573,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
@@ -460,6 +589,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
@@ -478,6 +608,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
@@ -493,6 +624,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
@@ -508,6 +640,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
@@ -526,6 +659,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
@@ -539,6 +673,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
@@ -555,6 +690,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
@@ -569,6 +705,7 @@ describe( "nestre-api-manager.js Request()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
@@ -590,6 +727,7 @@ describe("nestre-api-manager.js Request() - with body", () => {
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const requestBody = {
@@ -618,10 +756,11 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
-        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, '/v2/user/no-content-content-length-0');
+        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, `/v${API_VERSION}/user/no-content-content-length-0`);
 
         // Assert
         expect(result).toBe(null);
@@ -632,6 +771,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         // Arrange
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
         const mockValidationErrorResponse = {
@@ -673,6 +813,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         NestreApiManager.instance = null;
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
@@ -697,6 +838,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         NestreApiManager.instance = null;
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
@@ -720,6 +862,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         );
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
@@ -743,6 +886,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         );
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert
@@ -766,6 +910,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         );
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
         // Act
@@ -791,6 +936,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         NestreApiManager.instance = null;
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
         // Act & Assert

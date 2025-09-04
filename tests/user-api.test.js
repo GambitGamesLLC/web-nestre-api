@@ -16,6 +16,9 @@ import { NestreApiManager } from '../src/nestre-api-manager.js';
 //Import the BASE_URL from our environment-variables.js
 import { API_BASE_URL } from '../examples/environment-variables.js';
 
+//Import the API_VERSION from our environment-variables.js
+import { API_VERSION } from '../examples/environment-variables.js';
+
 //Import the AUTH_TOKEN from our environment-variables.js
 import { AUTH_TOKEN } from '../examples/environment-variables.js';
 
@@ -67,6 +70,7 @@ describe( "user-api.js GetBasicUserProfileByEmail()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -93,6 +97,7 @@ describe("user-api.js GetBasicUserProfileByEmail() - Error Handling", () => {
         //Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -107,6 +112,7 @@ describe("user-api.js GetBasicUserProfileByEmail() - Error Handling", () => {
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -129,6 +135,7 @@ describe( "user-api.js GetBasicUserProfile()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -155,6 +162,7 @@ describe("user-api.js GetBasicUserProfile() - Error Handling", () => {
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -168,7 +176,7 @@ describe("user-api.js GetBasicUserProfile() - Error Handling", () => {
     it('should throw an error for an invalid userId', async () => {
         // Arrange
         server.use(
-            http.get(`${API_BASE_URL}/v2/user/invalid-id`, () => {
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/invalid-id`, () => {
                 return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
                     status: 404,
                     headers: {
@@ -180,6 +188,7 @@ describe("user-api.js GetBasicUserProfile() - Error Handling", () => {
 
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -202,6 +211,7 @@ describe( "user-api.js UpdateUserProfile()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -263,6 +273,7 @@ describe( "user-api.js UpdateUserProfile()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -298,6 +309,7 @@ describe( "user-api.js GetFullUserProfile()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -323,6 +335,7 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -336,8 +349,8 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
     it('should throw an error if the user has not completed the assessment', async () => {
         // Arrange
         server.use(
-            http.get(`${API_BASE_URL}/v2/user/${USER_ID}/profile`, () => {
-                return new HttpResponse(JSON.stringify({ message: 'User has no completed assessments, cannot fetch profile' }), {
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/profile`, () => {
+                return new HttpResponse(JSON.stringify({ message: 'API Error (400). Unavailable error.' }), {
                     status: 400,
                     headers: {
                         'Content-Type': 'application/json',
@@ -348,6 +361,7 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
 
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -355,7 +369,7 @@ describe("user-api.js GetFullUserProfile() - Error Handling", () => {
         // Act & Assert
         await expect(
             userApi.GetFullUserProfile(USER_ID)
-        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 400 - User has no completed assessments, cannot fetch profile');
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error (400). Unavailable error.');
     });
 });
 
@@ -370,6 +384,7 @@ describe( "user-api.js CreateNewUserAccount()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -394,6 +409,7 @@ describe("user-api.js CreateNewUserAccount() - Error Handling", () => {
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
 
         // This time, we intentionally do NOT set the auth token.
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -416,6 +432,7 @@ describe( "user-api.js DeleteUserAccount()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -440,6 +457,7 @@ describe("user-api.js DeleteUserAccount() - Error Handling", () => {
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
 
         // This time, we intentionally do NOT set the auth token.
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -463,6 +481,7 @@ describe( "user-api.js CreateReferralCode()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -499,6 +518,7 @@ describe( "user-api.js CreateReferralCode()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
@@ -526,6 +546,7 @@ describe( "user-api.js CreateReferralCode()", () =>
         // Arrange
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
+        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         const userApi = NestreApiManager.GetInstance().userApi;
