@@ -122,7 +122,10 @@ Run the following command in Visual Studio Code
 npm test
 ```
 
-This will run the included unit tests using `jest` and `msw`, and also generate a coverage guide and place it in the `./coverage/` folder at the root of the project.
+This will run the included unit tests using `jest` as the test runner.
+The mock service worker (`msw`) will mock server commands and callbacks according to the Nestre OpenApi documentation. 
+
+When complete, this will also generate a coverage guide and place it in the `./coverage/` folder at the root of the project.
 
 -----
 
