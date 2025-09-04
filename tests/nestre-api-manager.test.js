@@ -35,6 +35,11 @@ import { USER_EMAIL } from '../examples/environment-variables.js';
  * @typedef {import('../src/user/user-types.js').BasicUserProfile } BasicUserProfile
  */
 
+//Import the ValidationError json message shape
+/**
+ * @typedef {import('../src/errors/validation-error.js').ValidationDetail } ValidationDetail
+ */
+
 import { server } from '../tests/mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
@@ -829,6 +834,10 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
+        /**
+         * The validation error json response
+         * @type {ValidationDetail}
+         */
         const mockValidationErrorResponse = {
             "detail": [
                 {

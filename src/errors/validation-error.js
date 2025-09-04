@@ -7,6 +7,22 @@
  * validation messages in the application.
  */
 
+//#region VALIDATION DETAIL - TYPE DEFINITION
+
+/**
+ * @typedef {Object} ValidationError
+ * @property {Array<string|number>} loc - The location of the validation error. This can be an array of strings (field names) or numbers (list indices).
+ * @property {string} msg - The human-readable error message.
+ * @property {string} type - The type of validation error.
+ */
+
+/**
+ * @typedef {Object} ValidationDetail
+ * @property {ValidationError[]} detail - An array of validation error objects.
+ */
+
+//#endregion
+
 /**
  * 422 Response. The parameters passed into the Api were not valid
  */
