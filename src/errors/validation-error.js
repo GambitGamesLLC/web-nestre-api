@@ -7,6 +7,9 @@
  * validation messages in the application.
  */
 
+/**
+ * 422 Response. The parameters passed into the Api were not valid
+ */
 export class ValidationError extends Error 
 {
     /**
