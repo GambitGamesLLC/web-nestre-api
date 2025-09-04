@@ -42,7 +42,7 @@ web-nestre-api/
 │   └── index.js                  # Library entry point, exports NestreApiManager and type definitions
 │   └── nestre-api-manager.js     # Primary singleton for Api access
 ├── tests/                        # Unit tests for the library.
-├── vendor/                       # Third-party libraries bundled with the package.
+├── vendor/                       # Third-party dependencies bundled with the package.
 │   └── joi/                      # Joi schema validation library.
 ├── .gitignore                    # Specifies intentionally untracked files to ignore.
 ├── jest.config.cjs               # Jest test runner configuration file.
