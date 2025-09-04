@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NESTRE API Client Test - Update User Profile</title>
+    <style>
+        body { font-family: sans-serif; padding: 1em; }
+        input { width: 300px; padding: 8px; margin-bottom: 10px; }
+        button { padding: 8px 15px; }
+        #output { margin-top: 20px; white-space: pre-wrap; background-color: #f4f4f4; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>NESTRE API Client Test - Update User Profile</h1>
+
+    <div>
+        <label for="userIdInput">User ID:</label><br>
+        <input type="text" id="userIdInput" value="">
+    </div>
+    
+    <div>
+        <label for="authTokenInput">Auth Token (JWT):</label><br>
+        <input type="text" id="authTokenInput" value="">
+    </div>
+
+    <hr>
+    
+    <h3>User Profile Data to Update:</h3>
+    <div>
+        <label for="firstNameInput">First Name:</label><br>
+        <input type="text" id="firstNameInput" value="Test">
+    </div>
+    <div>
+        <label for="lastNameInput">Last Name:</label><br>
+        <input type="text" id="lastNameInput" value="User">
+    </div>
+
+    <button id="runTestBtn">Update Profile</button>
+
+    <div id="output">Test results will appear here...</div>
+
+    <script type="module">
+        import { USER_ID, AUTH_TOKEN } from '../../environment-variables.js';
+
+        const userIdInput = document.getElementById('userIdInput');
+        const authTokenInput = document.getElementById('authTokenInput');
+        
+        userIdInput.value = USER_ID;
+        authTokenInput.value = AUTH_TOKEN;
+    </script>
+    
+    <script type="module" src="index.js"></script>
+</body>
+</html>
