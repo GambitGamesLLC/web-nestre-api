@@ -69,6 +69,8 @@ The authorization token lasts for ~24 hours before it needs to be replaced.
 
 4. Open the project in Visual Studio Code, and in the terminal, run the `npm install` command
 
+- This will install the developer dependencies for his library, used while running tests and examples.
+
 -----
 
 ## **DEMO INSTRUCTIONS**
