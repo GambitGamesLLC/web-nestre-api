@@ -40,6 +40,7 @@ import { http, HttpResponse } from 'msw';
 
 //Custom error class returned by our nestre-api-manager.js Request() when we have a 422 status code in our server Api response
 import { ValidationError } from '../src/errors/validation-error.js';
+import { AuthorizationError } from '../src/errors/authorization-error.js';
 
 //#endregion
 
@@ -664,7 +665,7 @@ describe( "nestre-api-manager.js Request()", () =>
 
         // Act & Assert
         await expect(
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, `/v${API_VERSION}/user/error-404`)
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, `user/error-404`)
         ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Not Found');
     });
 
@@ -678,7 +679,7 @@ describe( "nestre-api-manager.js Request()", () =>
 
         // Act & Assert
         await expect(
-            NestreApiManager.GetInstance().Request(HttpMethod.GET, `/v${API_VERSION}/user/error-500`)
+            NestreApiManager.GetInstance().Request(HttpMethod.GET, `user/error-500`)
         ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
     });
 
@@ -694,7 +695,7 @@ describe( "nestre-api-manager.js Request()", () =>
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
-        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, `/v${API_VERSION}/user/no-content-204`);
+        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, `user/no-content-204`);
 
         // Assert
         expect(result).toBe(null);
@@ -709,7 +710,7 @@ describe( "nestre-api-manager.js Request()", () =>
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
-        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, `/v${API_VERSION}/user/no-content-content-length-0`);
+        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, `user/no-content-content-length-0`);
 
         // Assert
         expect(result).toBe(null);
@@ -737,7 +738,7 @@ describe("nestre-api-manager.js Request() - with body", () => {
 
         // Act
         // The mock server should return the exact body we sent
-        const result = await NestreApiManager.GetInstance().Request(HttpMethod.POST, `/v${API_VERSION}/user/test-body`, requestBody);
+        const result = await NestreApiManager.GetInstance().Request(HttpMethod.POST, `user/test-body`, requestBody);
 
         // Assert
         expect(result).toStrictEqual(requestBody);
@@ -760,10 +761,36 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
 
         // Act
-        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, `/v${API_VERSION}/user/no-content-content-length-0`);
+        const result = await NestreApiManager.GetInstance().Request(HttpMethod.GET, `user/no-content-content-length-0`);
 
         // Assert
         expect(result).toBe(null);
+    });
+
+    it('should return an Authorization Error if the response status is 401', async () =>
+    {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/no-auth-token`, () => {
+                return new HttpResponse('Authorization failed', {
+                    status: 401,
+                    headers: {
+                        'Content-Type': 'text/html',
+                    },
+                });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
+        instance.SetAuthToken("totally-not-an-auth-token");
+
+        // Act
+        await expect(
+            instance.Request(HttpMethod.GET, `user/no-auth-token`)
+        ).rejects.toThrow(AuthorizationError);
     });
 
     it('should reject the promise with a ValidationError for a 422 status code', async () =>
@@ -793,7 +820,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
 
         // Act & Assert
         await expect(
-            instance.Request(HttpMethod.GET, `/v${API_VERSION}/user/error-422`)
+            instance.Request(HttpMethod.GET, `user/error-422`)
         ).rejects.toThrow(ValidationError);
     });
 
@@ -818,7 +845,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
 
         // Act & Assert
         await expect(
-            instance.Request(HttpMethod.GET, `/v${API_VERSION}/user/error-422-non-json`)
+            instance.Request(HttpMethod.GET, `user/error-422-non-json`)
         ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 422 - Unprocessable Entity');
     });
 
@@ -826,7 +853,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         // Arrange
         server.use(
             http.get(`${API_BASE_URL}/v${API_VERSION}/user/error`, () => {
-                return new HttpResponse(JSON.stringify({ message: 'Internal Server Error' }), {
+                return new HttpResponse( "Internal Server Error", {
                     status: 500,
                     headers: {
                         'Content-Type': 'application/json',
@@ -843,7 +870,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
 
         // Act & Assert
         await expect(
-            instance.Request(HttpMethod.GET, `/v${API_VERSION}/user/error`)
+            instance.Request(HttpMethod.GET, `user/error`)
         ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
     });
 
@@ -867,7 +894,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
 
         // Act & Assert
         await expect(
-            instance.Request(HttpMethod.GET, `/v${API_VERSION}/user/html-error`)
+            instance.Request(HttpMethod.GET, `user/html-error`)
         ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
     });
 
@@ -891,7 +918,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
 
         // Act & Assert
         await expect(
-            instance.Request(HttpMethod.GET, `/v${API_VERSION}/user/error-422-non-json`)
+            instance.Request(HttpMethod.GET, `user/error-422-non-json`)
         ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 422 - Unprocessable Entity');
     });
 
@@ -914,7 +941,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         instance.SetAuthToken(AUTH_TOKEN);
 
         // Act
-        const result = await instance.Request(HttpMethod.GET, `/v${API_VERSION}/user/no-content-content-length-0`);
+        const result = await instance.Request(HttpMethod.GET, `user/no-content-content-length-0`);
 
         // Assert
         expect(result).toBeNull();
@@ -941,7 +968,7 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
 
         // Act & Assert
         await expect(
-            instance.Request(HttpMethod.GET, `/v${API_VERSION}/user/html-error`)
+            instance.Request(HttpMethod.GET, `user/html-error`)
         ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 500 - Internal Server Error');
     });
 });
