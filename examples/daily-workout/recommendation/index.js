@@ -12,8 +12,8 @@
 //#region IMPORTS
 
 // Import directly from the source file for local testing
-import { NestreApiManager } from '../../src/index.js';
-import { API_BASE_URL, API_VERSION } from '../environment-variables.js';
+import { NestreApiManager } from '../../../src/index.js';
+import { API_BASE_URL, API_VERSION } from '../../environment-variables.js';
 
 //#endregion
 
