@@ -15,12 +15,16 @@
 //#region IMPORTS
 
 import { UserApi } from './user/user-api.js';
+import { DailyWorkoutApi } from './daily-workout/daily-workout-api.js';
 
 //Custom error class returned by our Request() when we have a 500 status code in our server Api response
 import { InternalServerError } from './errors/internal-server-error.js';
 
 //Custom error class returned by our Request() when we have a 422 status code in our server Api response
 import { ValidationError } from './errors/validation-error.js';
+
+//Custom error class returned by our Request() when we have a 403 status code in our server Api response
+import { ForbiddenError } from './errors/forbidden-error.js';
 
 //Custom error class returned by our Request() when we have a 401 status code in our server Api response
 import { AuthorizationError } from './errors/authorization-error.js';
@@ -99,6 +103,12 @@ export class NestreApiManager
    * */
   userApi = null;
 
+  /**
+   * Reference to the DailyWorkoutApi object
+   * @type {DailyWorkoutApi}
+   * */
+  dailyWorkoutApi = null;
+
 //#endregion
 
 //#region PUBLIC - CONSTRUCTOR
@@ -122,6 +132,9 @@ constructor()
     //We only need to generate our helper classes once
     this.userApi = null;
     this.userApi = new UserApi(this);
+
+    this.dailyWorkoutApi = null;
+    this.dailyWorkoutApi = new DailyWorkoutApi();
 
 } //END constructor Method
 
@@ -328,6 +341,11 @@ SetApiVersion( version )
         if (response.status === 422)
         {
           throw new ValidationError( errorData.detail, 'web-nestre-api : nestre-api-manager.js API Error (422). Validation error.');
+        }
+
+        if( response.status === 403 )
+        {
+          throw new ForbiddenError( errorData.detail, "web-nestre-api : nestre-api-manager.js API Error (403). Forbidden access." );
         }
 
         if( response.status === 401 )

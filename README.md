@@ -16,6 +16,7 @@ This is a JavaScript library with JSDoc for accessing the Nestre API. It is used
 Currently only supports the following endpoints of the Nestre Api.
 
 - User
+- Daily Workout
 
 Further tagged releases of this library will support more endpoints.
 

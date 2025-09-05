@@ -1,7 +1,7 @@
 /**
  * user-api.js
  * @file Handles API requests related to user profiles, authentication, and referrals.
- * @description Provides a singleton class, `UserApi`, for making HTTP requests to the '/v2/user' API endpoint. This file
+ * @description Provides a singleton class, `UserApi`, for making HTTP requests to the '/v#/user' API endpoint. This file
  * centralizes all user-specific API logic and includes methods for profile management.
  * The `UserApi` class here is created automatically by the NestreApiManager class during construction
  * @exports {UserApi}
@@ -232,4 +232,4 @@ export class UserApi
 
 //#endregion
 
-} //END UserApiService Class
+} //END UserApi Class

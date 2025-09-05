@@ -48,6 +48,7 @@ import { ValidationError } from '../src/errors/validation-error.js';
 import { AuthorizationError } from '../src/errors/authorization-error.js';
 import { InternalServerError } from '../src/errors/internal-server-error.js';
 import { GeneralError } from '../src/errors/general-error.js';
+import { ForbiddenError } from '../src/errors/forbidden-error.js';
 
 //#endregion
 
@@ -850,6 +851,32 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         await expect(
             instance.Request(HttpMethod.GET, `user/no-auth-token`)
         ).rejects.toThrow(AuthorizationError);
+    });
+
+    it('should return an Forbidden Error if the response status is 403', async () =>
+    {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/forbidden`, () => {
+                return new HttpResponse('Forbidden', {
+                    status: 403,
+                    headers: {
+                        'Content-Type': 'text/html',
+                    },
+                });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        // Act
+        await expect(
+            instance.Request(HttpMethod.GET, `user/forbidden`)
+        ).rejects.toThrow(ForbiddenError);
     });
 
     it('should reject the promise with a ValidationError for a 422 status code', async () =>

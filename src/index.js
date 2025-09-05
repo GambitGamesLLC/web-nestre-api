@@ -13,3 +13,11 @@ export { NestreApiManager, HttpMethod } from './nestre-api-manager.js';
 // Re-export the empty object for each types definition file. This allows JSDoc-aware
 // editors to find and use the JSDoc @typedefs for type checking.
 export * from './user/user-types.js';
+export * from './daily-workout/daily-workout-types.js';
+
+// Re-export the error classes
+export * from './errors/authorization-error.js';
+export * from './errors/forbidden-error.js';
+export * from './errors/general-error.js';
+export * from './errors/internal-server-error.js';
+export * from './errors/validation-error.js';
