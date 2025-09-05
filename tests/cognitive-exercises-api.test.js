@@ -1,8 +1,8 @@
 /**
  * cognitive-exercises-api.test.js
- * @file Unit tests for the DailyWorkoutApi class.
- * @description This file provides a comprehensive test suite for the `daily-workout-api.js` script,
- * validating each method that interacts with the daily workout-related API endpoints.
+ * @file Unit tests for the CognitiveExercisesApi class.
+ * @description This file provides a comprehensive test suite for the `cognitive-exercises-api.js` script,
+ * validating each method that interacts with the related API endpoints.
  * It uses a mock server using the `msw` library package to test request/response flows without hitting a real server.
  * @requires {NestreApiManager}
  * @requires {msw}
@@ -29,16 +29,16 @@ import { server } from './mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
 /**
- * @typedef {import('../src/daily-workout/daily-workout-types.js').DailyWorkoutRecommendation } DailyWorkoutRecommendation
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CognitiveExercisesRecommendation } CognitiveExercisesRecommendation
  */
 
 //#endregion
 
-//#region DESCRIBE - daily-workout-api.js - constructor()
+//#region DESCRIBE - cognitive-exercises-api.js - constructor()
 
-describe( "daily-workout-api.js constructor", ()=>
+describe( "cognitive-exercises-api.js constructor", ()=>
 {
-    it("should create an instance of the DailyWorkoutApi object on NestreApiManager", ()=>
+    it("should create an instance of the CognitiveExercisesApi object on NestreApiManager", ()=>
     {
         //Arrange
         NestreApiManager.instance = null;
@@ -48,13 +48,13 @@ describe( "daily-workout-api.js constructor", ()=>
 
         //Assert
         expect( manager ).not.toBe( null );
-        expect( manager.dailyWorkoutApi ).not.toBe( null );
+        expect( manager.cognitiveExcercisesApi ).not.toBe( null );
     });
 });
 
 //#endregion
 
-//#region DESCRIBE - daily-workout-api.js - GetDailyWorkoutRecommendation()
+//#region DESCRIBE - cognitive-exercises-api.js - GetDailyWorkoutRecommendation()
 
 describe( "daily-workout-api.js GetDailyWorkoutRecommendation()", () =>
 {
