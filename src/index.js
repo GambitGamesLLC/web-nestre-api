@@ -14,7 +14,7 @@ export { NestreApiManager, HttpMethod } from './nestre-api-manager.js';
 // editors to find and use the JSDoc @typedefs for type checking.
 export * from './user/user-types.js';
 export * from './daily-workout/daily-workout-types.js';
-export * from './cognitive-excercises/cognitive-excercises-types.js';
+export * from './cognitive-exercises/cognitive-exercises-types.js';
 
 // Re-export the error classes
 export * from './errors/authorization-error.js';
