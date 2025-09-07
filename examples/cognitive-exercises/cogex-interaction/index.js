@@ -197,14 +197,12 @@ async function RunTest(userId, authToken, recordText)
         // Because of JSDoc, you get autocompletion here in VS Code!
         const confirmation = await NestreApiManager.GetInstance().cognitiveExercisesApi.RecordCognitiveExerciseInteraction(userId, cognitiveExerciseRecord);
 
-        if (confirmation) {
-            Log('✅ Test successful!');
-            Log('API Response:');
-            outputDiv.innerHTML += `<pre>${confirmation}</pre>`;
-        } else {
-            // This case might be for 204 No Content responses
-            Log('✅ Interaction recorded successfully (but no confirmation message was returned).');
-        }
+        Log('✅ Test successful!');
+        Log('Interaction Recorded:');
+        
+        // Display result in a readable format
+        const confirmationString = JSON.stringify(confirmation, null, 2);
+        outputDiv.innerHTML += `<pre>${confirmationString}</pre>`;
         
     } 
     catch (error) 

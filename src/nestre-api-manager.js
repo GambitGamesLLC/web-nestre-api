@@ -111,7 +111,7 @@ export class NestreApiManager
   dailyWorkoutApi = null;
 
   /**
-   * Reference to the CognitiveExercisesApi object
+   * Reference to the CognitiveExcercisesApi object
    * @type {CognitiveExercisesApi}
    * */
   cognitiveExercisesApi = null;
@@ -381,15 +381,16 @@ SetApiVersion( version )
     }
 
     const contentType = response.headers.get('content-type');
-
-    // If the response is JSON, parse it as JSON.
-    if (contentType && contentType.includes('application/json')) {
+    if (contentType && contentType.includes('application/json'))
+    {
+      //In all other success conditions,
+      //we'll recieve a JSON object back
       return response.json();
     }
 
     // Otherwise, handle it as plain text. This is useful for simple string responses.
     return response.text();
-    
+
   } //END Request Method
 
 //#endregion

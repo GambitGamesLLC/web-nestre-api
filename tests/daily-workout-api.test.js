@@ -88,7 +88,7 @@ describe( "daily-workout-api.js GetDailyWorkoutRecommendation()", () =>
                     status: 200,
                     headers: 
                     {
-                        'Content-Type': 'text/json',
+                        'Content-Type': 'application/json',
                     },
                 });
             })

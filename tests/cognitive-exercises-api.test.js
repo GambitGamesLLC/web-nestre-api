@@ -84,9 +84,7 @@ describe( "cognitive-exercises-api.js RecordCognitiveExerciseInteraction()", () 
         };
 
         /** @type {RecordExerciseInteractionConfirmationMessage} */
-        const mockConfirmation = {
-            message: "Interaction recorded successfully."
-        };
+        const mockConfirmation = "Interaction recorded successfully.";
 
         server.use(
             http.post(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/interaction`, async ({ request }) => {
@@ -257,7 +255,7 @@ describe( "cognitive-exercises-api.js GetCognitiveExercisesRecommendation()", ()
                     status: 200,
                     headers: 
                     {
-                        'Content-Type': 'text/json',
+                        'Content-Type': 'application/json',
                     },
                 });
             })

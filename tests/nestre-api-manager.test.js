@@ -1037,6 +1037,33 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
             instance.Request(HttpMethod.GET, `user/html-error`)
         ).rejects.toThrow(InternalServerError);
     });
+
+    it('should handle plain text responses for successful requests', async () => {
+        // Arrange
+        const responseText = 'OK';
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/text-response`, () => {
+                return new HttpResponse(responseText, {
+                    status: 200,
+                    headers: {
+                        'Content-Type': 'text/plain',
+                    },
+                });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        // Act
+        const result = await instance.Request(HttpMethod.GET, 'user/text-response');
+
+        // Assert
+        expect(result).toBe(responseText);
+    });
 });
 
 //#endregion

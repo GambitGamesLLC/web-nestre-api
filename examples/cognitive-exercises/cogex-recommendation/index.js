@@ -173,7 +173,7 @@ async function RunTest(userId, authToken)
         Log(`Fetching cognitive exercises recommendation for user: ${userId}...`);
         
         // Because of JSDoc, you get autocompletion here in VS Code!
-        const recommendation = await NestreApiManager.GetInstance().cognitiveExercisesApi.GetCognitiveExercisesRecommendation(userId);
+        const recommendation = await NestreApiManager.GetInstance().cognitiveExcercisesApi.GetCognitiveExercisesRecommendation(userId);
 
         Log('✅ Test successful!');
         Log('Cognitive Exercises Recommendation Loaded:');
