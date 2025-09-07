@@ -32,6 +32,8 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CognitiveExercisesRecommendation } CognitiveExercisesRecommendation
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CognitiveExerciseRecord } CognitiveExerciseRecord
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').RecordExerciseInteractionConfirmationMessage } RecordExerciseInteractionConfirmationMessage
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').UserProgressForExercise } UserProgressForExercise
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CogexId } CogexId
  */
 
 //#endregion
@@ -51,6 +53,136 @@ describe( "cognitive-exercises-api.js constructor", ()=>
         //Assert
         expect( manager ).not.toBe( null );
         expect( manager.cognitiveExercisesApi ).not.toBe( null );
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetCurrentLevelForCognitiveExercise()
+
+describe( "cognitive-exercises-api.js GetCurrentLevelForCognitiveExercise()", () =>
+{
+    it('should fetch the current level for a cognitive exercise successfully', async () =>
+    {
+        // Arrange
+        /** @type {CogexId} */
+        const cogexId = 'IMPULSE-1';
+
+        /** @type {UserProgressForExercise} */
+        const mockProgress = {
+            cogex_id: cogexId,
+            current_level: 5,
+            current_round: 2,
+            is_baseline_training: false,
+            completed_today: true
+        };
+
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/${cogexId}/progress`, () => {
+                return HttpResponse.json(mockProgress, { status: 200 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act
+        const userProgress = await cognitiveExercisesApi.GetCurrentLevelForCognitiveExercise(USER_ID, cogexId);
+
+        // Assert
+        expect(userProgress).toEqual(mockProgress);
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetCurrentLevelForCognitiveExercise() - Error Handling
+
+describe("cognitive-exercises-api.js GetCurrentLevelForCognitiveExercise() - Error Handling", () => {
+
+    /** @type {CogexId} */
+    const validCogexId = 'ATTENTION-1';
+
+    it('should throw an error if the passed in userId value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetCurrentLevelForCognitiveExercise("", validCogexId)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCurrentLevelForCognitiveExercise() Invalid userId: The userId must be a non-empty string.');
+        
+        await expect(
+            cognitiveExercisesApi.GetCurrentLevelForCognitiveExercise("   ", validCogexId)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCurrentLevelForCognitiveExercise() Invalid userId: The userId must be a non-empty string.');
+
+        await expect(
+            cognitiveExercisesApi.GetCurrentLevelForCognitiveExercise(null, validCogexId)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCurrentLevelForCognitiveExercise() Invalid userId: The userId must be a non-empty string.');
+    });
+
+    it('should throw an error if the passed in cogexId value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        const expectedError = 'web-nestre-api : cognitive-exercises-api.js GetCurrentLevelForCognitiveExercise() Invalid cogexId: The cogexId must be a non-empty string and one of the following: ATTENTION-1, IMPULSE-1, SALIENCE-1, MEMORY-1.';
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetCurrentLevelForCognitiveExercise(USER_ID, "")
+        ).rejects.toThrow(expectedError);
+        
+        await expect(
+            cognitiveExercisesApi.GetCurrentLevelForCognitiveExercise(USER_ID, "   ")
+        ).rejects.toThrow(expectedError);
+
+        await expect(
+            cognitiveExercisesApi.GetCurrentLevelForCognitiveExercise(USER_ID, null)
+        ).rejects.toThrow(expectedError);
+
+        await expect(
+            cognitiveExercisesApi.GetCurrentLevelForCognitiveExercise(USER_ID, "INVALID-ID")
+        ).rejects.toThrow(expectedError);
+    });
+
+    it('should throw an error if the server returns an error', async () => {
+        // Arrange
+        const cogexId = 'MEMORY-1';
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/${cogexId}/progress`, () => {
+                return HttpResponse.json({ message: 'Progress not found' }, { status: 404 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetCurrentLevelForCognitiveExercise(USER_ID, cogexId)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Progress not found');
     });
 });
 

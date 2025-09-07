@@ -19,6 +19,7 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').CognitiveExerciseRecord } CognitiveExerciseRecord
  * @typedef {import('./cognitive-exercises-types.js').RecordExerciseInteractionConfirmationMessage } RecordExerciseInteractionConfirmationMessage
  * @typedef {import('./cognitive-exercises-types.js').CogexId } CogexId
+ * @typedef {import('./cognitive-exercises-types.js').UserProgressForExercise } UserProgressForExercise
  */
 
 //#endregion
@@ -111,32 +112,33 @@ export class CognitiveExercisesApi
  /**
    * Get the current level for a specific cognitive exercise.
    * 
+   * @param {string} userId
    * @param {CogexId} cogexId
-   * @param {CognitiveExerciseRecord} cognitiveExerciseRecord
-   * @returns {Promise<RecordExerciseInteractionConfirmationMessage>}
+   * @returns {Promise<UserProgressForExercise>}
    */
   //-----------------------------------------------------------------------//
-  RecordCognitiveExerciseInteraction(userId, cognitiveExerciseRecord) 
+  GetCurrentLevelForCognitiveExercise(userId, cogexId) 
   //-----------------------------------------------------------------------//
   {
+    //Check if the cogexId is valid
+    if(typeof cogexId !== 'string' || 
+       cogexId.trim().length === 0 || 
+       !['ATTENTION-1', 'IMPULSE-1', 'SALIENCE-1', 'MEMORY-1'].includes(cogexId))
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCurrentLevelForCognitiveExercise() Invalid cogexId: The cogexId must be a non-empty string and one of the following: ATTENTION-1, IMPULSE-1, SALIENCE-1, MEMORY-1."));
+    }
+
     // Check if the userId is a valid non-empty string.
     if (typeof userId !== 'string' || userId.trim().length === 0) 
     {
         // Return a rejected promise with a descriptive error.
-        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js RecordCognitiveExerciseInteraction() Invalid userId: The userId must be a non-empty string."));
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCurrentLevelForCognitiveExercise() Invalid userId: The userId must be a non-empty string."));
     }
 
-    // Validate the cognitiveExerciseRecord object against the imported Joi schema
-    const { error } = CognitiveExerciseRecordSchema.validate(cognitiveExerciseRecord);
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/${cogexId}/progress`);
 
-    if (error) {
-        // Return a rejected promise with a descriptive error.
-        return Promise.reject(new Error(`web-nestre-api : cognitive-exercises-api.js RecordCognitiveExerciseInteraction() Validation failed for cognitiveExerciseRecord: ${error.details[0].message}`));
-    }
-
-    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/cogex/interaction`, cognitiveExerciseRecord);
-
-  } //END RecordCognitiveExerciseInteraction Method
+  } //END GetCurrentLevelForCognitiveExercise Method
 
 
 //#endregion
