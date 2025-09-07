@@ -52,5 +52,14 @@
 
 //#endregion
 
+//@region COGNITIVE EXERCISES API - COGEX ID's
+
+/**
+ * Enum for cognitive exercise IDs.
+ * @typedef {'ATTENTION-1' | 'IMPULSE-1' | 'SALIENCE-1' | 'MEMORY-1'} CogexId
+ */
+
+//@endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};
