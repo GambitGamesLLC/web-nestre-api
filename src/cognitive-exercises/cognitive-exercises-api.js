@@ -12,9 +12,12 @@
 //#region IMPORTS
 
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
+import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js';
 
 /**
  * @typedef {import('./cognitive-exercises-types.js').CognitiveExercisesRecommendation} CognitiveExercisesRecommendation
+ * @typedef {import('./cognitive-exercises-types.js').CognitiveExerciseRecord } CognitiveExerciseRecord
+ * @typedef {import('./cognitive-exercises-types.js').RecordExerciseInteractionConfirmationMessage } RecordExerciseInteractionConfirmationMessage
  */
 
 //#endregion
@@ -67,5 +70,39 @@ export class CognitiveExercisesApi
   } //END GetCognitiveExercisesRecommendation Method
 
 //#endregion
+
+//#region PUBLIC - RECORD EXERCISE INTERACTION
+
+ /**
+   * Record a user's interaction with a cognitive exercise round. This will also update the training progress table and completion status of the daily workout.
+   * 
+   * @param {string} userId
+   * @param {CognitiveExerciseRecord} cognitiveExerciseRecord
+   * @returns {Promise<RecordExerciseInteractionConfirmationMessage>}
+   */
+  //-----------------------------------------------------------------------//
+  RecordCognitiveExerciseInteraction(userId, cognitiveExerciseRecord) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js RecordCognitiveExerciseInteraction() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Validate the cognitiveExerciseRecord object against the imported Joi schema
+    const { error } = CognitiveExerciseRecordSchema.validate(cognitiveExerciseRecord);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : cognitive-exercises-api.js RecordCognitiveExerciseInteraction() Validation failed for cognitiveExerciseRecord: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/cogex/interaction`, cognitiveExerciseRecord);
+
+  } //END RecordCognitiveExerciseInteraction Method
+
+//@endregion
 
 } //END CognitiveExercisesApi Class

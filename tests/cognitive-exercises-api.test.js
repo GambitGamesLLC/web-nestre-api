@@ -30,6 +30,8 @@ import { http, HttpResponse } from 'msw';
 
 /**
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CognitiveExercisesRecommendation } CognitiveExercisesRecommendation
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CognitiveExerciseRecord } CognitiveExerciseRecord
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').RecordExerciseInteractionConfirmationMessage } RecordExerciseInteractionConfirmationMessage
  */
 
 //#endregion
@@ -48,41 +50,208 @@ describe( "cognitive-exercises-api.js constructor", ()=>
 
         //Assert
         expect( manager ).not.toBe( null );
-        expect( manager.cognitiveExcercisesApi ).not.toBe( null );
+        expect( manager.cognitiveExercisesApi ).not.toBe( null );
     });
 });
 
 //#endregion
 
-//#region DESCRIBE - cognitive-exercises-api.js - GetDailyWorkoutRecommendation()
+//#region DESCRIBE - cognitive-exercises-api.js - RecordCognitiveExerciseInteraction()
 
-describe( "daily-workout-api.js GetDailyWorkoutRecommendation()", () =>
+describe( "cognitive-exercises-api.js RecordCognitiveExerciseInteraction()", () =>
 {
-    it('should fetch a daily-workout recommendation successfully', async () =>
+    it('should record a cognitive exercise interaction successfully', async () =>
     {
         // Arrange
-        /**
-         * @type {DailyWorkoutRecommendation}
-         */
-        const mockRecommendation = {
-            cognitive_exercises: [
-                {
-                    cogex_id: 'test-cogex-1',
-                    version: '1.0.0',
-                    is_available: true,
-                    completed_today: false,
-                },
-            ],
-            contents: [
-                {
-                    content_id: 'test-content-1',
-                    completed_today: false,
-                },
-            ],
+        /** @type {CognitiveExerciseRecord} */
+        const mockRecord = {
+            cogex_id: "IMPULSE-1",
+            user_id: USER_ID,
+            context: "daily_workout",
+            version: "alpha",
+            level: 1,
+            round_number: 1,
+            correct_assertiveness: 10,
+            incorrect_assertiveness: 2,
+            correct_prudence: 8,
+            incorrect_prudence: 1,
+            no_answer: 1,
+            average_reaction_time_correct: 500.5,
+            average_reaction_time_incorrect: 750.2,
+            score: 95,
+            interaction_duration: 120.5,
+            user_subscription_level_id: 1
+        };
+
+        /** @type {RecordExerciseInteractionConfirmationMessage} */
+        const mockConfirmation = {
+            message: "Interaction recorded successfully."
         };
 
         server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/daily-workout`, () => {
+            http.post(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/interaction`, async ({ request }) => {
+                const body = await request.json();
+                expect(body).toEqual(mockRecord);
+                return HttpResponse.json(mockConfirmation, { status: 200 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act
+        const confirmation = await cognitiveExercisesApi.RecordCognitiveExerciseInteraction(USER_ID, mockRecord);
+
+        // Assert
+        expect(confirmation).toEqual(mockConfirmation);
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - RecordCognitiveExerciseInteraction() - Error Handling
+
+describe("cognitive-exercises-api.js RecordCognitiveExerciseInteraction() - Error Handling", () => {
+
+    /** @type {CognitiveExerciseRecord} */
+    const validRecord = {
+        cogex_id: "IMPULSE-1",
+        user_id: USER_ID,
+        context: "daily_workout",
+        version: "alpha",
+        level: 1,
+        round_number: 1,
+        correct_assertiveness: 10,
+        incorrect_assertiveness: 2,
+        correct_prudence: 8,
+        incorrect_prudence: 1,
+        no_answer: 1,
+        average_reaction_time_correct: 500.5,
+        average_reaction_time_incorrect: 750.2,
+        score: 95,
+        interaction_duration: 120.5,
+        user_subscription_level_id: 1
+    };
+
+    it('should throw an error if the passed in userId value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.RecordCognitiveExerciseInteraction("", validRecord)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js RecordCognitiveExerciseInteraction() Invalid userId: The userId must be a non-empty string.');
+        
+        await expect(
+            cognitiveExercisesApi.RecordCognitiveExerciseInteraction("   ", validRecord)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js RecordCognitiveExerciseInteraction() Invalid userId: The userId must be a non-empty string.');
+
+        await expect(
+            cognitiveExercisesApi.RecordCognitiveExerciseInteraction(null, validRecord)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js RecordCognitiveExerciseInteraction() Invalid userId: The userId must be a non-empty string.');
+    });
+
+    it('should throw an error if the cognitiveExerciseRecord is invalid', async () => {
+        // Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        const invalidRecord = { ...validRecord, extra_field: 'invalid' };
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.RecordCognitiveExerciseInteraction(USER_ID, invalidRecord)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js RecordCognitiveExerciseInteraction() Validation failed for cognitiveExerciseRecord: "extra_field" is not allowed');
+    });
+
+    it('should throw an error if the server returns an error', async () => {
+        // Arrange
+        server.use(
+            http.post(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/interaction`, () => {
+                return new HttpResponse(JSON.stringify({ detail: 'Internal Server Error' }), {
+                    status: 500,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.RecordCognitiveExerciseInteraction(USER_ID, validRecord)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error (500). Internal server error.');
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetCognitiveExercisesRecommendation()
+
+describe( "cognitive-exercises-api.js GetCognitiveExercisesRecommendation()", () =>
+{
+    it('should fetch the recommended cognitive excercises successfully', async () =>
+    {
+        // Arrange
+        /**
+         * @type {CognitiveExercisesRecommendation}
+         */
+        const mockRecommendation = {
+            cognitive_exercises: 
+            [
+                {
+                    cogex_id: "IMPULSE-1",
+                    version: "alpha",
+                    is_available: true,
+                    completed_today: false
+                },
+                {
+                    cogex_id: "ATTENTION-1",
+                    version: null,
+                    is_available: false,
+                    completed_today: false
+                },
+                {
+                    cogex_id: "SALIENCE-1",
+                    version: null,
+                    is_available: false,
+                    completed_today: false
+                },
+                {
+                    cogex_id: "MEMORY-1",
+                    version: null,
+                    is_available: false,
+                    completed_today: false
+                }
+            ]
+        };
+
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex`, () => {
                 return HttpResponse.json(mockRecommendation, 
                 {
                     status: 200,
@@ -100,31 +269,27 @@ describe( "daily-workout-api.js GetDailyWorkoutRecommendation()", () =>
         manager.SetApiVersion(API_VERSION);
         manager.SetAuthToken(AUTH_TOKEN);
 
-        const dailyWorkoutApi = manager.dailyWorkoutApi;
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
 
         // Act
         // This call will trigger a real `fetch`, but MSW will intercept it
         // and return the mock data from our handler.
         /**
-         * @type{DailyWorkoutRecommendation}
+         * @type{CognitiveExercisesRecommendation}
          */
-        const dailyWorkoutRecommendation = await dailyWorkoutApi.GetDailyWorkoutRecommendation(USER_ID);
+        const cognitiveExercisesRecommendation = await cognitiveExercisesApi.GetCognitiveExercisesRecommendation(USER_ID);
 
         // Assert
-        expect(dailyWorkoutRecommendation).not.toBeNull();
-        expect(dailyWorkoutRecommendation).toEqual(mockRecommendation);
-        expect(dailyWorkoutRecommendation.cognitive_exercises).toBeDefined();
-        expect(dailyWorkoutRecommendation.contents).toBeDefined();
-        expect(dailyWorkoutRecommendation.cognitive_exercises.length).toBeGreaterThan(0);
-        expect(dailyWorkoutRecommendation.contents.length).toBeGreaterThan(0);
+        expect(cognitiveExercisesRecommendation).not.toBeNull();
+        expect(cognitiveExercisesRecommendation).toEqual(mockRecommendation);
     });
 });
 
 //#endregion
 
-//#region DESCRIBE - daily-workout-api.js - GetDailyWorkoutRecommendation() - Error Handling
+//#region DESCRIBE - cognitive-exercises-api.js - GetCognitiveExercisesRecommendation() - Error Handling
 
-describe("daily-workout-api.js GetDailyWorkoutRecommendation() - Error Handling", () => {
+describe("cognitive-exercises-api.js GetCognitiveExercisesRecommendation() - Error Handling", () => {
 
     it('should throw an error if the passed in userId value is invalid', async()=>{
         //Arrange
@@ -134,27 +299,27 @@ describe("daily-workout-api.js GetDailyWorkoutRecommendation() - Error Handling"
         manager.SetApiVersion(API_VERSION);
         manager.SetAuthToken(AUTH_TOKEN);
 
-        const dailyWorkoutApi = manager.dailyWorkoutApi;
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
 
         // Act & Assert
         await expect(
-            dailyWorkoutApi.GetDailyWorkoutRecommendation("")
-        ).rejects.toThrow('web-nestre-api : daily-workout-api.js GetDailyWorkoutRecommendation() Invalid userId: The userId must be a non-empty string.');
+            cognitiveExercisesApi.GetCognitiveExercisesRecommendation("")
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCognitiveExercisesRecommendation() Invalid userId: The userId must be a non-empty string.');
         
         await expect(
-            dailyWorkoutApi.GetDailyWorkoutRecommendation("   ")
-        ).rejects.toThrow('web-nestre-api : daily-workout-api.js GetDailyWorkoutRecommendation() Invalid userId: The userId must be a non-empty string.');
+            cognitiveExercisesApi.GetCognitiveExercisesRecommendation("   ")
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCognitiveExercisesRecommendation() Invalid userId: The userId must be a non-empty string.');
 
         await expect(
-            dailyWorkoutApi.GetDailyWorkoutRecommendation(null)
-        ).rejects.toThrow('web-nestre-api : daily-workout-api.js GetDailyWorkoutRecommendation() Invalid userId: The userId must be a non-empty string.');
+            cognitiveExercisesApi.GetCognitiveExercisesRecommendation(null)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCognitiveExercisesRecommendation() Invalid userId: The userId must be a non-empty string.');
     });
 
     it('should throw an error if the user is not found', async () => {
         // Arrange
         const nonExistentUserId = 'non-existent-user-id';
         server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${nonExistentUserId}/daily-workout`, () => {
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${nonExistentUserId}/cogex`, () => {
                 return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
                     status: 404,
                     headers: {
@@ -170,11 +335,11 @@ describe("daily-workout-api.js GetDailyWorkoutRecommendation() - Error Handling"
         manager.SetApiVersion(API_VERSION);
         manager.SetAuthToken(AUTH_TOKEN);
 
-        const dailyWorkoutApi = manager.dailyWorkoutApi;
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
 
         // Act & Assert
         await expect(
-            dailyWorkoutApi.GetDailyWorkoutRecommendation(nonExistentUserId)
+            cognitiveExercisesApi.GetCognitiveExercisesRecommendation(nonExistentUserId)
         ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
     });
 });
