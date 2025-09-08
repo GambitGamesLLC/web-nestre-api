@@ -26,6 +26,7 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').NBackDifficulty } NBackDifficulty
  * @typedef {import('./cognitive-exercises-types.js').NBackVersion } NBackVersion
  * @typedef {import('./cognitive-exercises-types.js').NBackSequence } NBackSequence
+ * @typedef {import('./cognitive-exercises-types.js').CatchMeDifficulty } CatchMeDifficulty
 */
 
 //#endregion
@@ -317,6 +318,39 @@ GetNBackSequence(userId, level, version)
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/nback/sequence?level=${level}&version=${version}`);
 
 } //END GetNBackSequence Method
+
+//#endregion
+
+//#region PUBLIC - GET CATCHME DIFFICULTY
+
+ /**
+   * Get the difficulty parameters for the CatchMe exercise.
+   * 
+   * @param {string} userId
+   * @param {number} level
+   * @returns {Promise<CatchMeDifficulty>}
+   */
+//-----------------------------------------------------------------------//
+GetCatchMeDifficulty(userId, level)
+//-----------------------------------------------------------------------//
+{
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCatchMeDifficulty() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the level is a valid number that is greater than or equal to 1.
+    if (typeof level !== 'number' || level <= 0)
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCatchMeDifficulty() Invalid level: The level must be a positive number that's greater than or equal to 1"));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/catchme/difficulty?level=${level}`);
+
+} //END GetCatchMeDifficulty Method
 
 //#endregion
 

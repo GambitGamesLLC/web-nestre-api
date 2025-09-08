@@ -40,6 +40,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').NBackDifficulty } NBackDifficulty
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').NBackSequence } NBackSequence
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').NBackFrame } NBackFrame
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeDifficulty } CatchMeDifficulty
  */
 
 //#endregion
@@ -59,6 +60,124 @@ describe( "cognitive-exercises-api.js constructor", ()=>
         //Assert
         expect( manager ).not.toBe( null );
         expect( manager.cognitiveExercisesApi ).not.toBe( null );
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetCatchMeDifficulty()
+
+describe( "cognitive-exercises-api.js GetCatchMeDifficulty()", () =>
+{
+    it('should fetch the CatchMe difficulty successfully', async () =>
+    {
+        // Arrange
+        const level = 3;
+        /** @type {CatchMeDifficulty} */
+        const mockDifficulty = {
+            level_progression_score: 90,
+            level_progression_sessions: 2,
+            insect_lifetime: 2000,
+            spawn_rate: 1000,
+            synchronous_spawns: 2
+        };
+
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/catchme/difficulty`, ({request}) => {
+                const url = new URL(request.url);
+                expect(url.searchParams.get('level')).toBe(level.toString());
+                return HttpResponse.json(mockDifficulty, { status: 200 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act
+        const difficulty = await cognitiveExercisesApi.GetCatchMeDifficulty(USER_ID, level);
+
+        // Assert
+        expect(difficulty).toEqual(mockDifficulty);
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetCatchMeDifficulty() - Error Handling
+
+describe("cognitive-exercises-api.js GetCatchMeDifficulty() - Error Handling", () => {
+
+    const validLevel = 1;
+
+    it('should throw an error if the passed in userId value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetCatchMeDifficulty("", validLevel)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCatchMeDifficulty() Invalid userId: The userId must be a non-empty string.');
+        
+        await expect(
+            cognitiveExercisesApi.GetCatchMeDifficulty("   ", validLevel)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCatchMeDifficulty() Invalid userId: The userId must be a non-empty string.');
+
+        await expect(
+            cognitiveExercisesApi.GetCatchMeDifficulty(null, validLevel)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCatchMeDifficulty() Invalid userId: The userId must be a non-empty string.');
+    });
+
+    it('should throw an error if the passed in level value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        const expectedError = "web-nestre-api : cognitive-exercises-api.js GetCatchMeDifficulty() Invalid level: The level must be a positive number that's greater than or equal to 1";
+
+        // Act & Assert
+        await expect(cognitiveExercisesApi.GetCatchMeDifficulty(USER_ID, 0)).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetCatchMeDifficulty(USER_ID, -1)).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetCatchMeDifficulty(USER_ID, null)).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetCatchMeDifficulty(USER_ID, "a")).rejects.toThrow(expectedError);
+    });
+
+    it('should throw an error if the server returns an error', async () => {
+        // Arrange
+        const level = 1;
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/catchme/difficulty`, () => {
+                return HttpResponse.json({ message: 'Difficulty not found' }, { status: 404 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetCatchMeDifficulty(USER_ID, level)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Difficulty not found');
     });
 });
 

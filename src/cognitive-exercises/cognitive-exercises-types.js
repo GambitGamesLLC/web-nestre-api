@@ -173,5 +173,18 @@
 
 //#endregion
 
+//#region COGNITIVE EXERCISES API - CATCHME - DIFFICULTY
+
+/**
+ * @typedef CatchMeDifficulty
+ * @property {number} level_progression_score
+ * @property {number} level_progression_sessions
+ * @property {number} insect_lifetime
+ * @property {number} spawn_rate
+ * @property {number} synchronous_spawns
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};
