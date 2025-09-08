@@ -24,6 +24,8 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').CurrentStatisticsForExercises } CurrentStatisticsForExercises 
  * @typedef {import('./cognitive-exercises-types.js').CurrentRoundStatisticsForExercise } CurrentRoundStatisticsForExercise
  * @typedef {import('./cognitive-exercises-types.js').NBackDifficulty } NBackDifficulty
+ * @typedef {import('./cognitive-exercises-types.js').NBackVersion } NBackVersion
+ * @typedef {import('./cognitive-exercises-types.js').NBackSequence } NBackSequence
 */
 
 //#endregion
@@ -272,6 +274,49 @@ GetNBackDifficulty(userId, level)
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/nback/difficulty?level=${level}`);
 
 } //END GetNBackDifficulty Method
+
+//#endregion
+
+//#region PUBLIC - GET NBACK SEQUENCE
+
+ /**
+   * Generate a sequence for the N-Back working memory exercise based on difficulty level and mindset version
+   * 
+   * @param {string} userId
+   * @param {number} level
+   * @param {NBackVersion} version
+   * @returns {Promise<NBackSequence>}
+   */
+//-----------------------------------------------------------------------//
+GetNBackSequence(userId, level, version)
+//-----------------------------------------------------------------------//
+{
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetNBackSequence() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the level is a valid number that is greater than or equal to 1.
+    if (typeof level !== 'number' || level <= 0)
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetNBackSequence() Invalid level: The level must be a positive number that's greater than or equal to 1"));
+    }
+
+    //Check if the version is valid
+    if(typeof version !== 'string' || 
+       version.trim().length === 0 || 
+       !['alpha', 'cerebral', 'prime'].includes(version))
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetNBackSequence() Invalid version: The version must be a non-empty string and one of the following: 'alpha', 'cerebral', 'prime'."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/nback/sequence?level=${level}&version=${version}`);
+
+} //END GetNBackSequence Method
 
 //#endregion
 

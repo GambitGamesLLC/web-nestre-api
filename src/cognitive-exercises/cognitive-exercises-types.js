@@ -149,5 +149,29 @@
 
 //#endregion
 
+//#region COGNITIVE EXERCISES API - NBACK - SEQUENCE
+
+/**
+ * A single frame/exposure in an N-Back sequence.
+ * It contains one or two numbers, each representing a shape (integer from 1 to 4).
+ * @typedef {number[]} NBackFrame
+ */
+
+/**
+ * Represents a sequence for the N-Back exercise, returned as a list of frames/exposures.
+ * @typedef {NBackFrame[]} NBackSequence
+ */
+
+//#endregion
+
+//#region COGNITIVE EXERCISES API - NBACK - VERSION
+
+/**
+ * Enum for NBACK versions.
+ * @typedef {'alpha' | 'cerebral' | 'prime' } NBackVersion
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};
