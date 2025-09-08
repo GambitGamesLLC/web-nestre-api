@@ -186,5 +186,35 @@
 
 //#endregion
 
+//#region COGNITIVE EXERCISES API - CATCHME - SEQUENCE
+
+/**
+ * A list of strings representing the sequence of insects that will be spawned.
+ * Each element represents a tuple of species, color, and size.
+ * For example ["113", "213", "313", "413", "113", "213", "313"].
+ * @typedef {string[]} CatchMeSequence
+ */
+
+//#endregion
+
+//#region COGNITIVE EXERCISES API - CATCHME - VERSION
+
+/**
+ * Enum for CATCHME versions.
+ * @typedef {'alpha' | 'cerebral' | 'prime' } CatchMeVersion
+ */
+
+//#endregion
+
+//#region COGNITIVE EXERCISES API - CATCHME - CRITERIA TYPE
+
+/**
+ * Enum for CATCHME criteria type.
+ * @typedef {'assertiveness' | 'prudence' } CatchMeCriteriaType
+ */
+
+//#endregion
+
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

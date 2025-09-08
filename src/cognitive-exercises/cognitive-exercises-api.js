@@ -27,6 +27,9 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').NBackVersion } NBackVersion
  * @typedef {import('./cognitive-exercises-types.js').NBackSequence } NBackSequence
  * @typedef {import('./cognitive-exercises-types.js').CatchMeDifficulty } CatchMeDifficulty
+ * @typedef {import('./cognitive-exercises-types.js').CatchMeSequence } CatchMeSequence
+ * @typedef {import('./cognitive-exercises-types.js').CatchMeVersion } CatchMeVersion
+ * @typedef {import('./cognitive-exercises-types.js').CatchMeCriteriaType } CatchMeCriteriaType
 */
 
 //#endregion
@@ -351,6 +354,67 @@ GetCatchMeDifficulty(userId, level)
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/catchme/difficulty?level=${level}`);
 
 } //END GetCatchMeDifficulty Method
+
+//#endregion
+
+//#region PUBLIC - GET CATCHME SEQUENCE
+
+ /**
+   * Get a sequence for the CatchMe exercise.
+   * 
+   * @param {string} userId
+   * @param {number} level
+   * @param {CatchMeVersion} version
+   * @param {string} criteria
+   * @param {CatchMeCriteriaType} criteriaType
+   * @returns {Promise<CatchMeSequence>}
+   */
+//-----------------------------------------------------------------------//
+GetCatchMeSequence(userId, level, version, criteria, criteriaType)
+//-----------------------------------------------------------------------//
+{
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCatchMeSequence() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the level is a valid number that is greater than or equal to 1.
+    if (typeof level !== 'number' || level <= 0)
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCatchMeSequence() Invalid level: The level must be a positive number that's greater than or equal to 1"));
+    }
+
+    //Check if the version is valid
+    if(typeof version !== 'string' || 
+       version.trim().length === 0 || 
+       !['alpha', 'cerebral', 'prime'].includes(version))
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCatchMeSequence() Invalid version: The version must be a non-empty string and one of the following: 'alpha', 'cerebral', 'prime'."));
+    }
+
+    // Check if the criteria is a valid non-empty string.
+    if (typeof criteria !== 'string' || criteria.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCatchMeSequence() Invalid criteria: The criteria must be a non-empty string."));
+    }
+
+    //Check if the criteriaType is valid
+    if(typeof criteriaType !== 'string' || 
+       criteriaType.trim().length === 0 || 
+       !['assertiveness', 'prudence'].includes(criteriaType))
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCatchMeSequence() Invalid criteriaType: The criteriaType must be a non-empty string and one of the following: 'assertiveness', 'prudence'."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/catchme/sequence?level=${level}&version=${version}&criteria=${criteria}&criteria_type=${criteriaType}`);
+
+} //END GetCatchMeSequence Method
 
 //#endregion
 
