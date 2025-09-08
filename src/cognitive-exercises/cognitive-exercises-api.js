@@ -20,6 +20,7 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').RecordExerciseInteractionConfirmationMessage } RecordExerciseInteractionConfirmationMessage
  * @typedef {import('./cognitive-exercises-types.js').CogexId } CogexId
  * @typedef {import('./cognitive-exercises-types.js').UserProgressForExercise } UserProgressForExercise
+ * @typedef {import('./cognitive-exercises-types.js').InteractionsForCurrentSession } InteractionsForCurrentSession
  */
 
 //#endregion
@@ -140,6 +141,41 @@ export class CognitiveExercisesApi
 
   } //END GetCurrentLevelForCognitiveExercise Method
 
+
+//#endregion
+
+//#region PUBLIC - GET CURRENT SESSION INTERACTIONS
+
+ /**
+   * Get the current session interactions for a specific cognitive exercise.
+   * 
+   * @param {string} userId
+   * @param {CogexId} cogexId
+   * @returns {Promise<InteractionsForCurrentSession>}
+   */
+//-----------------------------------------------------------------------//
+GetCurrentSessionInteractions(userId, cogexId)
+//-----------------------------------------------------------------------//
+{
+    //Check if the cogexId is valid
+    if(typeof cogexId !== 'string' || 
+       cogexId.trim().length === 0 || 
+       !['ATTENTION-1', 'IMPULSE-1', 'SALIENCE-1', 'MEMORY-1'].includes(cogexId))
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCurrentSessionInteractions() Invalid cogexId: The cogexId must be a non-empty string and one of the following: ATTENTION-1, IMPULSE-1, SALIENCE-1, MEMORY-1."));
+    }
+
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCurrentSessionInteractions() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/${cogexId}/interactions-for-current-session`);
+
+} //END GetCurrentSessionInteractions Method
 
 //#endregion
 

@@ -34,6 +34,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').RecordExerciseInteractionConfirmationMessage } RecordExerciseInteractionConfirmationMessage
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').UserProgressForExercise } UserProgressForExercise
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CogexId } CogexId
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').InteractionsForCurrentSession } InteractionsForCurrentSession
  */
 
 //#endregion
@@ -53,6 +54,150 @@ describe( "cognitive-exercises-api.js constructor", ()=>
         //Assert
         expect( manager ).not.toBe( null );
         expect( manager.cognitiveExercisesApi ).not.toBe( null );
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetCurrentSessionInteractions()
+
+describe( "cognitive-exercises-api.js GetCurrentSessionInteractions()", () =>
+{
+    it('should fetch the current session interactions for a cognitive exercise successfully', async () =>
+    {
+        // Arrange
+        /** @type {CogexId} */
+        const cogexId = 'IMPULSE-1';
+
+        /** @type {InteractionsForCurrentSession} */
+        const mockInteractions = {
+            created_at: "2023-10-27T10:00:00Z",
+            cogex_id: cogexId,
+            user_id: USER_ID,
+            context: "daily_workout",
+            version: "alpha",
+            level: 1,
+            round_number: 1,
+            correct_assertiveness: 10,
+            incorrect_assertiveness: 2,
+            correct_prudence: 8,
+            incorrect_prudence: 1,
+            no_answer: 1,
+            average_reaction_time_correct: 500.5,
+            average_reaction_time_incorrect: 750.2,
+            score: "95",
+            interaction_duration: 120.5,
+            user_subscription_level_id: 1,
+            id: "some-interaction-id",
+            is_baseline_round: false
+        };
+
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/${cogexId}/interactions-for-current-session`, () => {
+                return HttpResponse.json(mockInteractions, { status: 200 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act
+        const interactions = await cognitiveExercisesApi.GetCurrentSessionInteractions(USER_ID, cogexId);
+
+        // Assert
+        expect(interactions).toEqual(mockInteractions);
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetCurrentSessionInteractions() - Error Handling
+
+describe("cognitive-exercises-api.js GetCurrentSessionInteractions() - Error Handling", () => {
+
+    /** @type {CogexId} */
+    const validCogexId = 'ATTENTION-1';
+
+    it('should throw an error if the passed in userId value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetCurrentSessionInteractions("", validCogexId)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCurrentSessionInteractions() Invalid userId: The userId must be a non-empty string.');
+        
+        await expect(
+            cognitiveExercisesApi.GetCurrentSessionInteractions("   ", validCogexId)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCurrentSessionInteractions() Invalid userId: The userId must be a non-empty string.');
+
+        await expect(
+            cognitiveExercisesApi.GetCurrentSessionInteractions(null, validCogexId)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCurrentSessionInteractions() Invalid userId: The userId must be a non-empty string.');
+    });
+
+    it('should throw an error if the passed in cogexId value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        const expectedError = 'web-nestre-api : cognitive-exercises-api.js GetCurrentSessionInteractions() Invalid cogexId: The cogexId must be a non-empty string and one of the following: ATTENTION-1, IMPULSE-1, SALIENCE-1, MEMORY-1.';
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetCurrentSessionInteractions(USER_ID, "")
+        ).rejects.toThrow(expectedError);
+        
+        await expect(
+            cognitiveExercisesApi.GetCurrentSessionInteractions(USER_ID, "   ")
+        ).rejects.toThrow(expectedError);
+
+        await expect(
+            cognitiveExercisesApi.GetCurrentSessionInteractions(USER_ID, null)
+        ).rejects.toThrow(expectedError);
+
+        await expect(
+            cognitiveExercisesApi.GetCurrentSessionInteractions(USER_ID, "INVALID-ID")
+        ).rejects.toThrow(expectedError);
+    });
+
+    it('should throw an error if the server returns an error', async () => {
+        // Arrange
+        const cogexId = 'MEMORY-1';
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/${cogexId}/interactions-for-current-session`, () => {
+                return HttpResponse.json({ message: 'Interactions not found' }, { status: 404 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetCurrentSessionInteractions(USER_ID, cogexId)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Interactions not found');
     });
 });
 

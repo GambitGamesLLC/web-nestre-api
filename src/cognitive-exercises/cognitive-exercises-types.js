@@ -74,5 +74,32 @@
 
 //#endregion
 
+//#region COGNITIVE EXERCISES API - INTERACTIONS FOR CURRENT SESSION
+
+/**
+ * @typedef {object} InteractionsForCurrentSession
+ * @property {string} created_at
+ * @property {string} cogex_id
+ * @property {string} user_id
+ * @property {string} context
+ * @property {string} version
+ * @property {number} level
+ * @property {number} round_number
+ * @property {number} correct_assertiveness
+ * @property {number} incorrect_assertiveness
+ * @property {number} correct_prudence
+ * @property {number} incorrect_prudence
+ * @property {number} no_answer
+ * @property {number} average_reaction_time_correct
+ * @property {number} average_reaction_time_incorrect
+ * @property {string} score
+ * @property {number} interaction_duration
+ * @property {number} user_subscription_level_id
+ * @property {string} id
+ * @property {boolean} is_baseline_round
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};
