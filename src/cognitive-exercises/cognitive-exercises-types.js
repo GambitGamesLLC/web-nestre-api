@@ -101,5 +101,25 @@
 
 //#endregion
 
+//#region COGNITIVE EXERCISES API - CURRENT STATISTICS FOR EXERCISES
+
+/**
+ * @typedef {object} CurrentStatisticsForExercise
+ * @property {string} exercise_id
+ * @property {string} average_accuracy
+ * @property {string} highest_accuracy
+ * @property {string} average_speed
+ * @property {string} fastest_speed
+ * @property {string} level_improvement
+ * @property {string} workout_improvement
+ */
+
+/**
+ * @typedef {object} CurrentStatisticsForExercises
+ * @property {CurrentStatisticsForExercise[]} current_statistics
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

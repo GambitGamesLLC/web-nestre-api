@@ -21,7 +21,8 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').CogexId } CogexId
  * @typedef {import('./cognitive-exercises-types.js').UserProgressForExercise } UserProgressForExercise
  * @typedef {import('./cognitive-exercises-types.js').InteractionsForCurrentSession } InteractionsForCurrentSession
- */
+ * @typedef {import('./cognitive-exercises-types.js').CurrentStatisticsForExercises } CurrentStatisticsForExercises 
+*/
 
 //#endregion
 
@@ -176,6 +177,31 @@ GetCurrentSessionInteractions(userId, cogexId)
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/${cogexId}/interactions-for-current-session`);
 
 } //END GetCurrentSessionInteractions Method
+
+//#endregion
+
+//#region PUBLIC - GET CURRENT EXERCISE STATISTICS
+
+ /**
+   * Get the current statistics for a all cognitive exercises.
+   * 
+   * @param {string} userId
+   * @returns {Promise<CurrentStatisticsForExercises>}
+   */
+//-----------------------------------------------------------------------//
+GetCurrentExerciseStatistics(userId)
+//-----------------------------------------------------------------------//
+{
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCurrentExerciseStatistics() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/stats`);
+
+} //END GetCurrentExerciseStatistics Method
 
 //#endregion
 

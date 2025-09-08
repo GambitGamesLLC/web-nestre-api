@@ -35,6 +35,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').UserProgressForExercise } UserProgressForExercise
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CogexId } CogexId
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').InteractionsForCurrentSession } InteractionsForCurrentSession
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CurrentStatisticsForExercises } CurrentStatisticsForExercises
  */
 
 //#endregion
@@ -54,6 +55,114 @@ describe( "cognitive-exercises-api.js constructor", ()=>
         //Assert
         expect( manager ).not.toBe( null );
         expect( manager.cognitiveExercisesApi ).not.toBe( null );
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetCurrentExerciseStatistics()
+
+describe( "cognitive-exercises-api.js GetCurrentExerciseStatistics()", () =>
+{
+    it('should fetch the current exercise statistics successfully', async () =>
+    {
+        // Arrange
+        /** @type {CurrentStatisticsForExercises} */
+        const mockStats = {
+            current_statistics: [
+                {
+                    exercise_id: "IMPULSE-1",
+                    average_accuracy: "92.5%",
+                    highest_accuracy: "98.0%",
+                    average_speed: "550ms",
+                    fastest_speed: "400ms",
+                    level_improvement: "+2",
+                    workout_improvement: "+5%"
+                },
+                {
+                    exercise_id: "ATTENTION-1",
+                    average_accuracy: "88.0%",
+                    highest_accuracy: "95.0%",
+                    average_speed: "600ms",
+                    fastest_speed: "450ms",
+                    level_improvement: "+1",
+                    workout_improvement: "+3%"
+                }
+            ]
+        };
+
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/stats`, () => {
+                return HttpResponse.json(mockStats, { status: 200 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act
+        const stats = await cognitiveExercisesApi.GetCurrentExerciseStatistics(USER_ID);
+
+        // Assert
+        expect(stats).toEqual(mockStats);
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetCurrentExerciseStatistics() - Error Handling
+
+describe("cognitive-exercises-api.js GetCurrentExerciseStatistics() - Error Handling", () => {
+
+    it('should throw an error if the passed in userId value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetCurrentExerciseStatistics("")
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCurrentExerciseStatistics() Invalid userId: The userId must be a non-empty string.');
+        
+        await expect(
+            cognitiveExercisesApi.GetCurrentExerciseStatistics("   ")
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCurrentExerciseStatistics() Invalid userId: The userId must be a non-empty string.');
+
+        await expect(
+            cognitiveExercisesApi.GetCurrentExerciseStatistics(null)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetCurrentExerciseStatistics() Invalid userId: The userId must be a non-empty string.');
+    });
+
+    it('should throw an error if the server returns an error', async () => {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/stats`, () => {
+                return HttpResponse.json({ message: 'Statistics not found' }, { status: 404 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetCurrentExerciseStatistics(USER_ID)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Statistics not found');
     });
 });
 
