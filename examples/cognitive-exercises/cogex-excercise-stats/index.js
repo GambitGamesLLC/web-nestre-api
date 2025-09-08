@@ -1,8 +1,8 @@
 /**
  * index.js
- * @file Frontend script for the get-current-exercise-statistics example web page.
+ * @file Frontend script for the get-current-round-statistics-for-cognitive-exercise example web page.
  * @description This script demonstrates how to use the `web-nestre-api` library 
- * to fetch the current statistics for all cognitive exercises for a user.
+ * to fetch the current round statistics for a specific cognitive exercise. 
  * It handles DOM interactions, sets the authentication token, 
  * and displays the API response on the page.
  * @requires {NestreApiManager} from '../../../src/index.js'
@@ -30,6 +30,12 @@ let userIdInput;
  * @type{HTMLElement | null}
  */
 let authTokenInput;
+
+/**
+ * Select field for the cogex id
+ * @type{HTMLElement | null}
+ */
+let cogexIdInput;
 
 /**
  * Run button that will execute the test when clicked
@@ -73,6 +79,7 @@ function AttachDomReferences()
 {
     userIdInput = document.getElementById('userIdInput');
     authTokenInput = document.getElementById('authTokenInput');
+    cogexIdInput = document.getElementById('cogexIdInput');
     runTestBtn = document.getElementById('runTestBtn');
     outputDiv = document.getElementById('output');
 
@@ -128,9 +135,10 @@ function RunButtonClicked()
     // Get current values from the input fields
     const userId = userIdInput.value;
     const authToken = authTokenInput.value;
+    const cogexId = cogexIdInput.value;
     
     // Run the test with the provided values
-    RunTest(userId, authToken);
+    RunTest(userId, authToken, cogexId);
 
 } //END RunButtonClicked Method
 
@@ -139,18 +147,25 @@ function RunButtonClicked()
 //#region PRIVATE - RUN TEST
 
 /**
- * Runs the test, requires a userId and authentication token
+ * Runs the test, requires a userId, authentication token, and cogexId
  * @param {string} userId 
  * @param {string} authToken 
+ * @param {string} cogexId
  * @returns 
  */
 //------------------------------------------------------------//
-async function RunTest(userId, authToken) 
+async function RunTest(userId, authToken, cogexId) 
 //------------------------------------------------------------//
 {
     if (!userId) 
     {
         Log('❌ Error: User ID is required.');
+        return;
+    }
+
+    if (!cogexId) 
+    {
+        Log('❌ Error: Cognitive Exercise ID is required.');
         return;
     }
 
@@ -170,17 +185,17 @@ async function RunTest(userId, authToken)
     
     try 
     {
-        Log(`Fetching current exercise statistics for user: ${userId}...`);
+        Log(`Fetching current round statistics for exercise: ${cogexId} for user: ${userId}...`);
         
         // Because of JSDoc, you get autocompletion here in VS Code!
-        const stats = await NestreApiManager.GetInstance().cognitiveExercisesApi.GetCurrentExerciseStatistics(userId);
+        const roundStats = await NestreApiManager.GetInstance().cognitiveExercisesApi.GetCurrentRoundExerciseStatistics(userId, cogexId);
 
         Log('✅ Test successful!');
-        Log('Exercise Statistics Loaded:');
+        Log('Round Statistics Loaded:');
         
         // Display result in a readable format
-        const statsString = JSON.stringify(stats, null, 2);
-        outputDiv.innerHTML += `<pre>${statsString}</pre>`;
+        const roundStatsString = JSON.stringify(roundStats, null, 2);
+        outputDiv.innerHTML += `<pre>${roundStatsString}</pre>`;
         
     } 
     catch (error) 

@@ -121,5 +121,33 @@
 
 //#endregion
 
+//#region COGNITIVE EXERCISES API - CURRENT ROUND STATISTICS FOR EXERCISE
+
+/**
+ * @typedef {object} CurrentRountStatisticsForExercise
+ * @property {number} level
+ * @property {string} accuracy
+ * @property {string} speed
+ */
+
+/**
+ * @typedef {object} CurrentRoundStatisticsForExercise
+ * @property {CurrentRountStatisticsForExercise[]} current_round_statistics
+ */
+
+//#endregion
+
+//#region COGNITIVE EXERCISES API - NBACK - DIFFICULTY
+
+/**
+ * @typedef NBackDifficulty
+ * @property {number} level_progression_score
+ * @property {number} level_progression_sessions
+ * @property {number} n_back
+ * @property {number} num_objects
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

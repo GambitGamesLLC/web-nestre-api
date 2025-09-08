@@ -22,6 +22,8 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').UserProgressForExercise } UserProgressForExercise
  * @typedef {import('./cognitive-exercises-types.js').InteractionsForCurrentSession } InteractionsForCurrentSession
  * @typedef {import('./cognitive-exercises-types.js').CurrentStatisticsForExercises } CurrentStatisticsForExercises 
+ * @typedef {import('./cognitive-exercises-types.js').CurrentRoundStatisticsForExercise } CurrentRoundStatisticsForExercise
+ * @typedef {import('./cognitive-exercises-types.js').NBackDifficulty } NBackDifficulty
 */
 
 //#endregion
@@ -202,6 +204,74 @@ GetCurrentExerciseStatistics(userId)
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/stats`);
 
 } //END GetCurrentExerciseStatistics Method
+
+//#endregion
+
+//#region PUBLIC - GET CURRENT ROUND EXERCISE STATISTICS
+
+ /**
+   * Get the current round statistics for a specific cognitive exercise.
+   * 
+   * @param {string} userId
+   * @param {CogexId} cogexId
+   * @returns {Promise<CurrentRoundStatisticsForExercise>}
+   */
+//-----------------------------------------------------------------------//
+GetCurrentRoundExerciseStatistics(userId, cogexId)
+//-----------------------------------------------------------------------//
+{
+    //Check if the cogexId is valid
+    if(typeof cogexId !== 'string' || 
+       cogexId.trim().length === 0 || 
+       !['ATTENTION-1', 'IMPULSE-1', 'SALIENCE-1', 'MEMORY-1'].includes(cogexId))
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCurrentRoundExerciseStatistics() Invalid cogexId: The cogexId must be a non-empty string and one of the following: ATTENTION-1, IMPULSE-1, SALIENCE-1, MEMORY-1."));
+    }
+
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetCurrentRoundExerciseStatistics() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/stats/${cogexId}`);
+
+} //END GetCurrentRoundExerciseStatistics Method
+
+//#endregion
+
+//#region PUBLIC - GET NBACK DIFFICULTY
+
+ /**
+   * Get the difficulty parameters for the N-Back exercise.
+   * 
+   * @param {string} userId
+   * @param {number} level
+   * @returns {Promise<NBackDifficulty>}
+   */
+//-----------------------------------------------------------------------//
+GetNBackDifficulty(userId, level)
+//-----------------------------------------------------------------------//
+{
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetNBackDifficulty() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the level is a valid number that is greater than or equal to 1.
+    if (typeof level !== 'number' || level <= 0)
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetNBackDifficulty() Invalid level: The level must be a positive number that's greater than or equal to 1"));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/nback/difficulty?level=${level}`);
+
+} //END GetNBackDifficulty Method
 
 //#endregion
 
