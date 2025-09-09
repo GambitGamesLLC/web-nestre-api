@@ -30,6 +30,7 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').CatchMeSequence } CatchMeSequence
  * @typedef {import('./cognitive-exercises-types.js').CatchMeVersion } CatchMeVersion
  * @typedef {import('./cognitive-exercises-types.js').CatchMeCriteriaType } CatchMeCriteriaType
+ * @typedef {import('./cognitive-exercises-types.js').SalienceDifficulty } SalienceDifficulty
 */
 
 //#endregion
@@ -415,6 +416,39 @@ GetCatchMeSequence(userId, level, version, criteria, criteriaType)
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/catchme/sequence?level=${level}&version=${version}&criteria=${criteria}&criteria_type=${criteriaType}`);
 
 } //END GetCatchMeSequence Method
+
+//#endregion
+
+//#region PUBLIC - GET SALIENCE DIFFICULTY
+
+ /**
+   * Get the difficulty parameters for the Salience exercise.
+   * 
+   * @param {string} userId
+   * @param {number} level
+   * @returns {Promise<SalienceDifficulty>}
+   */
+//-----------------------------------------------------------------------//
+GetSalienceDifficulty(userId, level)
+//-----------------------------------------------------------------------//
+{
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetSalienceDifficulty() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the level is a valid number that is greater than or equal to 1.
+    if (typeof level !== 'number' || level <= 0)
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetSalienceDifficulty() Invalid level: The level must be a positive number that's greater than or equal to 1"));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/salience/difficulty?level=${level}`);
+
+} //END GetSalienceDifficulty Method
 
 //#endregion
 

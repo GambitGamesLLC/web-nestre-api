@@ -44,6 +44,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeSequence } CatchMeSequence
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeVersion } CatchMeVersion
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeCriteriaType } CatchMeCriteriaType
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').SalienceDifficulty } SalienceDifficulty
  */
 
 //#endregion
@@ -63,6 +64,123 @@ describe( "cognitive-exercises-api.js constructor", ()=>
         //Assert
         expect( manager ).not.toBe( null );
         expect( manager.cognitiveExercisesApi ).not.toBe( null );
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetSalienceDifficulty()
+
+describe( "cognitive-exercises-api.js GetSalienceDifficulty()", () =>
+{
+    it('should fetch the Salience difficulty successfully', async () =>
+    {
+        // Arrange
+        const level = 1;
+        /** @type {SalienceDifficulty} */
+        const mockDifficulty = {
+            level_progression_score: 85,
+            level_progression_sessions: 2,
+            sample_exposure: 1500,
+            multispawn_exposure: 3000
+        };
+
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/salience/difficulty`, ({request}) => {
+                const url = new URL(request.url);
+                expect(url.searchParams.get('level')).toBe(level.toString());
+                return HttpResponse.json(mockDifficulty, { status: 200 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act
+        const difficulty = await cognitiveExercisesApi.GetSalienceDifficulty(USER_ID, level);
+
+        // Assert
+        expect(difficulty).toEqual(mockDifficulty);
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetSalienceDifficulty() - Error Handling
+
+describe("cognitive-exercises-api.js GetSalienceDifficulty() - Error Handling", () => {
+
+    const validLevel = 1;
+
+    it('should throw an error if the passed in userId value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetSalienceDifficulty("", validLevel)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetSalienceDifficulty() Invalid userId: The userId must be a non-empty string.');
+        
+        await expect(
+            cognitiveExercisesApi.GetSalienceDifficulty("   ", validLevel)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetSalienceDifficulty() Invalid userId: The userId must be a non-empty string.');
+
+        await expect(
+            cognitiveExercisesApi.GetSalienceDifficulty(null, validLevel)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetSalienceDifficulty() Invalid userId: The userId must be a non-empty string.');
+    });
+
+    it('should throw an error if the passed in level value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        const expectedError = "web-nestre-api : cognitive-exercises-api.js GetSalienceDifficulty() Invalid level: The level must be a positive number that's greater than or equal to 1";
+
+        // Act & Assert
+        await expect(cognitiveExercisesApi.GetSalienceDifficulty(USER_ID, 0)).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetSalienceDifficulty(USER_ID, -1)).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetSalienceDifficulty(USER_ID, null)).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetSalienceDifficulty(USER_ID, "a")).rejects.toThrow(expectedError);
+    });
+
+    it('should throw an error if the server returns an error', async () => {
+        // Arrange
+        const level = 1;
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/salience/difficulty`, () => {
+                return HttpResponse.json({ message: 'Difficulty not found' }, { status: 404 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetSalienceDifficulty(USER_ID, level)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Difficulty not found');
     });
 });
 

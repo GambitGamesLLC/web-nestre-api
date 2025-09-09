@@ -215,6 +215,17 @@
 
 //#endregion
 
+//#region COGNITIVE EXERCISES API - SALIENCE - DIFFICULTY
+
+/**
+ * @typedef SalienceDifficulty
+ * @property {number} level_progression_score
+ * @property {number} level_progression_sessions
+ * @property {number} sample_exposure
+ * @property {number} multispawn_exposure
+ */
+
+//#endregion
 
 // We just need to export an empty object for this file to be treated as a module.
 export {};
