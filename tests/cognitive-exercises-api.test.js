@@ -45,6 +45,8 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeVersion } CatchMeVersion
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeCriteriaType } CatchMeCriteriaType
  * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').SalienceDifficulty } SalienceDifficulty
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').SalienceSequence } SalienceSequence
+ * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').SalienceVersion } SalienceVersion
  */
 
 //#endregion
@@ -181,6 +183,144 @@ describe("cognitive-exercises-api.js GetSalienceDifficulty() - Error Handling", 
         await expect(
             cognitiveExercisesApi.GetSalienceDifficulty(USER_ID, level)
         ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Difficulty not found');
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetSalienceSequence()
+
+describe( "cognitive-exercises-api.js GetSalienceSequence()", () =>
+{
+    it('should fetch the Salience sequence successfully', async () =>
+    {
+        // Arrange
+        const level = 1;
+        /** @type {SalienceVersion} */
+        const version = 'alpha';
+        /** @type {SalienceSequence} */
+        const mockSequence = [
+            { "shape": ["1132", "2134", "1313"] },
+            { "color": ["2214", "2231", "1214"] }
+        ];
+
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/salience/sequence`, ({request}) => {
+                const url = new URL(request.url);
+                expect(url.searchParams.get('level')).toBe(level.toString());
+                expect(url.searchParams.get('version')).toBe(version);
+                return HttpResponse.json(mockSequence, { status: 200 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act
+        const sequence = await cognitiveExercisesApi.GetSalienceSequence(USER_ID, level, version);
+
+        // Assert
+        expect(sequence).toEqual(mockSequence);
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - cognitive-exercises-api.js - GetSalienceSequence() - Error Handling
+
+describe("cognitive-exercises-api.js GetSalienceSequence() - Error Handling", () => {
+
+    const validLevel = 1;
+    /** @type {SalienceVersion} */
+    const validVersion = 'alpha';
+
+    it('should throw an error if the passed in userId value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetSalienceSequence("", validLevel, validVersion)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetSalienceSequence() Invalid userId: The userId must be a non-empty string.');
+        
+        await expect(
+            cognitiveExercisesApi.GetSalienceSequence("   ", validLevel, validVersion)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetSalienceSequence() Invalid userId: The userId must be a non-empty string.');
+
+        await expect(
+            cognitiveExercisesApi.GetSalienceSequence(null, validLevel, validVersion)
+        ).rejects.toThrow('web-nestre-api : cognitive-exercises-api.js GetSalienceSequence() Invalid userId: The userId must be a non-empty string.');
+    });
+
+    it('should throw an error if the passed in level value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        const expectedError = "web-nestre-api : cognitive-exercises-api.js GetSalienceSequence() Invalid level: The level must be a positive number that's greater than or equal to 1";
+
+        // Act & Assert
+        await expect(cognitiveExercisesApi.GetSalienceSequence(USER_ID, 0, validVersion)).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetSalienceSequence(USER_ID, -1, validVersion)).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetSalienceSequence(USER_ID, null, validVersion)).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetSalienceSequence(USER_ID, "a", validVersion)).rejects.toThrow(expectedError);
+    });
+
+    it('should throw an error if the passed in version value is invalid', async()=>{
+        //Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        const expectedError = "web-nestre-api : cognitive-exercises-api.js GetSalienceSequence() Invalid version: The version must be a non-empty string and one of the following: 'alpha', 'cerebral'.";
+
+        // Act & Assert
+        await expect(cognitiveExercisesApi.GetSalienceSequence(USER_ID, validLevel, "")).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetSalienceSequence(USER_ID, validLevel, "   ")).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetSalienceSequence(USER_ID, validLevel, null)).rejects.toThrow(expectedError);
+        await expect(cognitiveExercisesApi.GetSalienceSequence(USER_ID, validLevel, "invalid-version")).rejects.toThrow(expectedError);
+    });
+
+    it('should throw an error if the server returns an error', async () => {
+        // Arrange
+        server.use(
+            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/salience/sequence`, () => {
+                return HttpResponse.json({ detail: 'Sequence generation failed' }, { status: 500 });
+            })
+        );
+
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const cognitiveExercisesApi = manager.cognitiveExercisesApi;
+
+        // Act & Assert
+        await expect(
+            cognitiveExercisesApi.GetSalienceSequence(USER_ID, validLevel, validVersion)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error (500). Internal server error.');
     });
 });
 

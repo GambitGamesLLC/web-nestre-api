@@ -227,5 +227,27 @@
 
 //#endregion
 
+//#region COGNITIVE EXERCISES API - SALIENCE - SEQUENCE
+
+/**
+ * A list of trials for a round in the Salience game.
+ * Each trial in the list is an object where keys are the trial type (e.g. "shape", "color", "size"),
+ * and the value is a list of strings of the form `["1132", "2134", "2313"]`.
+ * Each string in the list represents an object in the frame, and each digit represents a property
+ * like shape, number of shapes, color, and size, in that order.
+ * The first string in the list is the example object.
+ * @typedef {Array<Object.<string, string[]>>} SalienceSequence
+ */
+
+//#endregion
+
+//#region COGNITIVE EXERCISES API - SALIENCE - VERSION
+
+/**
+ * @typedef {'alpha' | 'cerebral'} SalienceVersion
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

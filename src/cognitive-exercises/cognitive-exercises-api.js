@@ -31,6 +31,8 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').CatchMeVersion } CatchMeVersion
  * @typedef {import('./cognitive-exercises-types.js').CatchMeCriteriaType } CatchMeCriteriaType
  * @typedef {import('./cognitive-exercises-types.js').SalienceDifficulty } SalienceDifficulty
+ * @typedef {import('./cognitive-exercises-types.js').SalienceSequence } SalienceSequence
+ * @typedef {import('./cognitive-exercises-types.js').SalienceVersion } SalienceVersion
 */
 
 //#endregion
@@ -449,6 +451,49 @@ GetSalienceDifficulty(userId, level)
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/salience/difficulty?level=${level}`);
 
 } //END GetSalienceDifficulty Method
+
+//#endregion
+
+//#region PUBLIC - GET SALIENCE SEQUENCE
+
+ /**
+   * Get a sequence for the Salience exercise.
+   * 
+   * @param {string} userId
+   * @param {number} level
+   * @param {SalienceVersion} version
+   * @returns {Promise<SalienceSequence>}
+   */
+//-----------------------------------------------------------------------//
+GetSalienceSequence(userId, level, version)
+//-----------------------------------------------------------------------//
+{
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetSalienceSequence() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the level is a valid number that is greater than or equal to 1.
+    if (typeof level !== 'number' || level <= 0)
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetSalienceSequence() Invalid level: The level must be a positive number that's greater than or equal to 1"));
+    }
+
+    //Check if the version is valid
+    if(typeof version !== 'string' || 
+       version.trim().length === 0 || 
+       !['alpha', 'cerebral'].includes(version))
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetSalienceSequence() Invalid version: The version must be a non-empty string and one of the following: 'alpha', 'cerebral'."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/salience/sequence?level=${level}&version=${version}`);
+
+} //END GetSalienceSequence Method
 
 //#endregion
 
