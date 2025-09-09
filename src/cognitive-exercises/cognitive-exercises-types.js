@@ -249,5 +249,18 @@
 
 //#endregion
 
+//#region COGNITIVE EXERCISES API - IMPULSE - DIFFICULTY
+
+/**
+ * @typedef ImpulseDifficulty
+ * @property {number} level_progression_score
+ * @property {number} level_progression_sessions
+ * @property {number} spawn_rate
+ * @property {number} start_speed
+ * @property {number} fall_speed
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

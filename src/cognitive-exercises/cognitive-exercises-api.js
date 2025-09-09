@@ -33,6 +33,7 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').SalienceDifficulty } SalienceDifficulty
  * @typedef {import('./cognitive-exercises-types.js').SalienceSequence } SalienceSequence
  * @typedef {import('./cognitive-exercises-types.js').SalienceVersion } SalienceVersion
+ * @typedef {import('./cognitive-exercises-types.js').ImpulseDifficulty } ImpulseDifficulty
 */
 
 //#endregion
@@ -494,6 +495,39 @@ GetSalienceSequence(userId, level, version)
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/salience/sequence?level=${level}&version=${version}`);
 
 } //END GetSalienceSequence Method
+
+//#endregion
+
+//#region PUBLIC - GET IMPULSE DIFFICULTY
+
+ /**
+   * Get the difficulty parameters for the Impulse exercise.
+   * 
+   * @param {string} userId
+   * @param {number} level
+   * @returns {Promise<ImpulseDifficulty>}
+   */
+//-----------------------------------------------------------------------//
+GetImpulseDifficulty(userId, level)
+//-----------------------------------------------------------------------//
+{
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetImpulseDifficulty() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the level is a valid number that is greater than or equal to 1.
+    if (typeof level !== 'number' || level <= 0)
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetImpulseDifficulty() Invalid level: The level must be a positive number that's greater than or equal to 1"));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/impulse/difficulty?level=${level}`);
+
+} //END GetImpulseDifficulty Method
 
 //#endregion
 
