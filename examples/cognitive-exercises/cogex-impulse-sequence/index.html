@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>web-nestre-api : Get Impulse Sequence Example</title>
+    <style>
+        body { font-family: sans-serif; padding: 1em; }
+        input, select { width: 300px; padding: 8px; margin-bottom: 10px; }
+        button { padding: 8px 15px; }
+        #output { margin-top: 20px; white-space: pre-wrap; background-color: #f4f4f4; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Get Impulse Sequence</h1>
+    <p>This example demonstrates how to use the <code>cognitiveExercisesApi.GetImpulseSequence()</code> method.</p>
+    
+    <div class="input-group">
+        <label for="userIdInput">User ID:</label>
+        <input type="text" id="userIdInput" placeholder="Enter User ID">
+    </div>
+    
+    <div class="input-group">
+        <label for="authTokenInput">Auth Token:</label>
+        <input type="text" id="authTokenInput" placeholder="Enter Auth Token">
+    </div>
+
+    <div class="input-group">
+        <label for="levelInput">Level:</label>
+        <input type="number" id="levelInput" placeholder="Enter Level" min="1" value="1">
+    </div>
+
+    <div class="input-group">
+        <label for="roundNumberInput">Round Number (1-5):</label>
+        <input type="number" id="roundNumberInput" placeholder="Enter Round Number" min="1" max="5" value="1">
+    </div>
+
+    <div class="input-group">
+        <label for="versionInput">Version:</label>
+        <select id="versionInput">
+            <option value="alpha">alpha</option>
+            <option value="cerebral">cerebral</option>
+            <option value="prime">prime</option>
+        </select>
+    </div>
+    
+    <button id="runTestBtn">Run Test</button>
+    
+    <h2>Output:</h2>
+    <div id="output"></div>
+    
+    <script type="module">
+        import { USER_ID, AUTH_TOKEN } from '../../environment-variables.js';
+
+        document.getElementById('userIdInput').value = USER_ID;
+        document.getElementById('authTokenInput').value = AUTH_TOKEN;
+    </script>
+
+    <script type="module" src="./index.js"></script>
+</body>
+</html>

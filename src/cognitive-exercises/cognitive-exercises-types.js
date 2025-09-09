@@ -262,5 +262,28 @@
 
 //#endregion
 
+//#region COGNITIVE EXERCISES API - IMPULSE - SEQUENCE
+
+/**
+ * Each element in the sequence is a list containing between 1 and max_synchronous_spawns.
+ * Each String is 2 digit number followed by the character "w" or "b".
+ * Each digit is between 1 and num_colors and represents a color.
+ * The first digit represents the semantic color and the second digit represents the visual color.
+ * 
+ * Example: [["11b"],["23b"],["41w","22w"],["11b","21w"],["14b"],["33w"],["31b","13b"],...]
+ * @typedef {string[][]} ImpulseSequence
+ */
+
+//#endregion
+
+//#region COGNITIVE EXERCISES API - IMPULSE - VERSION
+
+/**
+ * Enum for IMPULSE versions.
+ * @typedef {'alpha' | 'cerebral' | 'prime' } ImpulseVersion
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

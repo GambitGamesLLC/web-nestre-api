@@ -34,6 +34,8 @@ import { CognitiveExerciseRecordSchema } from './cognitive-exercises-schemas.js'
  * @typedef {import('./cognitive-exercises-types.js').SalienceSequence } SalienceSequence
  * @typedef {import('./cognitive-exercises-types.js').SalienceVersion } SalienceVersion
  * @typedef {import('./cognitive-exercises-types.js').ImpulseDifficulty } ImpulseDifficulty
+ * @typedef {import('./cognitive-exercises-types.js').ImpulseSequence } ImpulseSequence
+ * @typedef {import('./cognitive-exercises-types.js').ImpulseVersion } ImpulseVersion
 */
 
 //#endregion
@@ -528,6 +530,57 @@ GetImpulseDifficulty(userId, level)
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/impulse/difficulty?level=${level}`);
 
 } //END GetImpulseDifficulty Method
+
+//#endregion
+
+//#region PUBLIC - GET IMPULSE SEQUENCE
+
+ /**
+   * Get a sequence for the Impulse Control exercise for a specific round (1-5) and difficulty level
+   * 
+   * @param {string} userId
+   * @param {number} level
+   * @param {number} roundNumber
+   * @param {ImpulseVersion} version
+   * @returns {Promise<ImpulseSequence>}
+   */
+//-----------------------------------------------------------------------//
+GetImpulseSequence(userId, level, roundNumber, version)
+//-----------------------------------------------------------------------//
+{
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetImpulseSequence() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the level is a valid number that is greater than or equal to 1.
+    if (typeof level !== 'number' || level <= 0)
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetImpulseSequence() Invalid level: The level must be a positive number that's greater than or equal to 1"));
+    }
+
+    // Check if the roundNumber is a valid number that is between 1-5.
+    if (typeof roundNumber !== 'number' || roundNumber < 1 || roundNumber > 5 )
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetImpulseSequence() Invalid roundNumber: The roundNumber must be a positive number that's between 1 and 5"));
+    }
+
+    //Check if the version is valid
+    if(typeof version !== 'string' || 
+       version.trim().length === 0 || 
+       !['alpha', 'cerebral', 'prime'].includes(version))
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : cognitive-exercises-api.js GetImpulseSequence() Invalid version: The version must be a non-empty string and one of the following: 'alpha', 'cerebral', 'prime'."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/cogex/impulse/sequence?level=${level}&round_number=${roundNumber}&version=${version}`);
+
+} //END GetImpulseSequence Method
 
 //#endregion
 
