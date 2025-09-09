@@ -22,10 +22,14 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../../src/user/user-types.js').DeleteConfirmationMessage } DeleteConfirmationMessage
  * @typedef {import('../../src/user/user-types.js').CreateReferralCode } CreateReferralCode
  * @typedef {import('../../src/user/user-types.js').CreateReferralCodeConfirmationMessage } CreateReferralCodeConfirmationMessage
+ * @typedef {import('../../src/mental-framing/mental-framing-types.js').MentalFramingContentIds} MentalFramingContentIds
  */
 
 //Import the BASE_URL from our environment-variables.js
 import { API_BASE_URL } from '../../examples/environment-variables.js';
+
+//Import the API_VERSION from our environment-variables.js
+import { API_VERSION } from '../../examples/environment-variables.js';
 
 //Import the USER_ID from our environment-variables.js
 import { USER_ID } from '../../examples/environment-variables.js';
@@ -108,7 +112,7 @@ export let handlers = [];
 
 handlers.push
 (
-  http.post(`${API_BASE_URL}/v2/user/test-body`, async ({ request }) => {
+  http.post(`${API_BASE_URL}/v${API_VERSION}/user/test-body`, async ({ request }) => {
     const requestBody = await request.json();
     return HttpResponse.json(requestBody);
   })
@@ -121,7 +125,7 @@ handlers.push
 handlers.push
 (
   
-  http.get(`${API_BASE_URL}/v2/user/error-404`, async({ request }) => 
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/error-404`, async({ request }) => 
   {
     return new HttpResponse('Not found', { status: 404 });
   })
@@ -135,7 +139,7 @@ handlers.push
 handlers.push
 (
   
-  http.get(`${API_BASE_URL}/v2/user/error-500`, async({ request }) => 
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/error-500`, async({ request }) => 
   {
     return HttpResponse.json
     (
@@ -153,7 +157,7 @@ handlers.push
 handlers.push
 (
   
-  http.get(`${API_BASE_URL}/v2/user/no-content-204`, async({ request }) => 
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/no-content-204`, async({ request }) => 
   {
     return new HttpResponse(null, { status: 204 });
   })
@@ -167,7 +171,7 @@ handlers.push
 handlers.push
 (
   
-  http.get(`${API_BASE_URL}/v2/user/no-content-content-length-0`, async({ request }) => 
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/no-content-content-length-0`, async({ request }) => 
   {
     return new Response(null, {
       status: 200,
@@ -186,7 +190,7 @@ handlers.push
 handlers.push
 (
 
-  http.get(`${API_BASE_URL}/v2/user/get-by-email`, ({ request }) => 
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/get-by-email`, ({ request }) => 
   {
     // You can inspect the request URL to add logic
     /**
@@ -227,7 +231,7 @@ handlers.push
 handlers.push
 (
 
-  http.get(`${API_BASE_URL}/v2/user/${USER_ID}`, ({ request }) => 
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}`, ({ request }) => 
   {
     // You can inspect the request URL to add logic
     /**
@@ -257,7 +261,7 @@ handlers.push
 handlers.push
 (
   
-  http.patch(`${API_BASE_URL}/v2/user/${USER_ID}`, async({ request }) => 
+  http.patch(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}`, async({ request }) => 
   {
     
     // You can inspect the request URL to add logic
@@ -291,7 +295,7 @@ handlers.push
 handlers.push
 (
   
-  http.get(`${API_BASE_URL}/v2/user/${USER_ID}/profile`, async({ request }) => 
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/profile`, async({ request }) => 
   {
     
     // You can inspect the request URL to add logic
@@ -322,7 +326,7 @@ handlers.push
 handlers.push
 (
   
-  http.post(`${API_BASE_URL}/v2/user`, async({ request }) => 
+  http.post(`${API_BASE_URL}/v${API_VERSION}/user`, async({ request }) => 
   {
     return HttpResponse.json(mockBasicUserProfile);
   })
@@ -336,7 +340,7 @@ handlers.push
 handlers.push
 (
   
-  http.delete(`${API_BASE_URL}/v2/user`, async({ request }) => 
+  http.delete(`${API_BASE_URL}/v${API_VERSION}/user`, async({ request }) => 
   {
     /**
      * @type{DeleteConfirmationMessage}
@@ -357,7 +361,7 @@ handlers.push
 handlers.push
 (
   
-  http.post(`${API_BASE_URL}/v2/user/${USER_ID}/referral-code`, async({ request }) => 
+  http.post(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/referral-code`, async({ request }) => 
   {
     // You can inspect the request URL to add logic
     /**
@@ -388,6 +392,23 @@ handlers.push
     
   })
   
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - MENTAL FRAMING API - GET CONTENT IDS
+
+handlers.push
+(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/mental-framing`, ({ request }) => 
+  {
+    /**
+     * @type{MentalFramingContentIds}
+     */
+    const mockContentIds = ["mf_001", "mf_002", "mf_003"];
+
+    return HttpResponse.json(mockContentIds);
+  })
 );
 
 //#endregion

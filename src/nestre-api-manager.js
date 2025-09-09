@@ -17,6 +17,7 @@
 import { UserApi } from './user/user-api.js';
 import { DailyWorkoutApi } from './daily-workout/daily-workout-api.js';
 import { CognitiveExercisesApi } from './cognitive-exercises/cognitive-exercises-api.js';
+import { MentalFramingApi } from './mental-framing/mental-framing-api.js';
 
 //Custom error class returned by our Request() when we have a 500 status code in our server Api response
 import { InternalServerError } from './errors/internal-server-error.js';
@@ -116,6 +117,12 @@ export class NestreApiManager
    * */
   cognitiveExercisesApi = null;
 
+  /**
+   * Reference to the MentalFramingApi object
+   * @type {MentalFramingApi}
+   * */
+  mentalFramingApi = null;
+
 //#endregion
 
 //#region PUBLIC - CONSTRUCTOR
@@ -145,6 +152,9 @@ constructor()
 
     this.cognitiveExercisesApi = null;
     this.cognitiveExercisesApi = new CognitiveExercisesApi();
+
+    this.mentalFramingApi = null;
+    this.mentalFramingApi = new MentalFramingApi();
 
 } //END constructor Method
 
