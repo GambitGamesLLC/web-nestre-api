@@ -2,8 +2,8 @@
  * assessment-api.js
  * @file Handles API requests related to assessments.
  * @description Provides a singleton class, `AssessmentApi`. 
- * This file centralizes all cognitive-exercises specific API logic.
- * The `CognitiveExerciesApi` class here is created automatically by the NestreApiManager class during construction
+ * This file centralizes all assessment specific API logic.
+ * The `AssessmentApi` class here is created automatically by the NestreApiManager class during construction
  * @exports {AssessmentApi}
  * @requires {NestreApiManager} from '../nestre-api-manager.js'
  * @requires {Joi} for schema validation
