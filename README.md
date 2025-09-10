@@ -19,6 +19,7 @@ Currently only supports the following endpoints of the Nestre Api.
 - Daily Workout
 - Cognitive Exercises
 - Mental Framing
+- Assessment
 
 Further tagged releases of this library will support more endpoints.
 

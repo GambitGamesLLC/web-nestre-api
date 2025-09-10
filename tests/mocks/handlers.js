@@ -23,6 +23,8 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../../src/user/user-types.js').CreateReferralCode } CreateReferralCode
  * @typedef {import('../../src/user/user-types.js').CreateReferralCodeConfirmationMessage } CreateReferralCodeConfirmationMessage
  * @typedef {import('../../src/mental-framing/mental-framing-types.js').MentalFramingContentIds} MentalFramingContentIds
+ * @typedef {import('../../src/assessment/assessment-types.js').RandomizedAssessmentQuestions} RandomizedAssessmentQuestions
+ * @typedef {import('../../src/assessment/assessment-types.js').AssessmentResult} AssessmentResult
  */
 
 //Import the BASE_URL from our environment-variables.js
@@ -392,6 +394,87 @@ handlers.push
     
   })
   
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CREATE MOCK RANDOMIZED ASSESSMENT QUESTIONS JSON DATA
+
+/**
+ * Dummy randomized assessment questions returned when mock testing
+ * @type{RandomizedAssessmentQuestions}
+ */
+const mockRandomizedAssessmentQuestions = [
+    { id: "q1", title: "Question 1", section: 1 },
+    { id: "q2", title: "Question 2", section: 2 },
+    { id: "q3", title: "Question 3", section: 1 }
+];
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CREATE MOCK ASSESSMENT RESULT JSON DATA
+
+/**
+ * Dummy assessment result returned when mock testing
+ * @type{AssessmentResult}
+ */
+const mockAssessmentResult = {
+    id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    alpha: 0.8,
+    cerebral: 0.6,
+    prime: 0.9,
+    created_at: "2024-01-01T12:00:00Z",
+    assessment_summary: ["You are awesome.", "Keep it up."]
+};
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ASSESSMENT API - GET RANDOMIZED ASSESSMENT QUESTIONS
+
+handlers.push
+(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/assessment/randomized-questions`, ({ params }) => 
+  {
+    const { userId } = params;
+
+    if (userId === USER_ID) {
+      return HttpResponse.json(mockRandomizedAssessmentQuestions);
+    }
+
+    if (userId === 'non-existent-user') {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }
+    
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ASSESSMENT API - SUBMIT ASSESSMENT RESPONSES
+
+handlers.push(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/user/:userId/assessment`, ({ params }) => {
+    const { userId } = params;
+
+    if (userId === USER_ID) {
+      return HttpResponse.json(mockAssessmentResult);
+    }
+
+    if (userId === 'non-existent-user') {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }
+    
+  })
 );
 
 //#endregion

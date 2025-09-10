@@ -16,6 +16,7 @@ export * from './user/user-types.js';
 export * from './daily-workout/daily-workout-types.js';
 export * from './cognitive-exercises/cognitive-exercises-types.js';
 export * from './mental-framing/mental-framing-types.js';
+export * from './assessment/assessment-types.js';
 
 // Re-export the error classes
 export * from './errors/authorization-error.js';
