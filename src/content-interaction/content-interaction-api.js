@@ -12,7 +12,7 @@
 //#region IMPORTS
 
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
-import { ActivateInteractionSchema } from './content-interaction-schemas.js';
+import { ActivateInteractionSchema } from './content-interaction-schema.js';
 
 /**
  * @typedef {import('./content-interaction-types.js').ActivateInteraction } ActivateInteraction
@@ -26,7 +26,6 @@ import { ActivateInteractionSchema } from './content-interaction-schemas.js';
  */
 export class ContentInteractionApi 
 {
-
     
 //#region PRIVATE - VARIABLES
 
@@ -66,7 +65,15 @@ export class ContentInteractionApi
         return Promise.reject(new Error("web-nestre-api : content-interaction-api.js CreateActivateContentInteraction() Invalid userId: The userId must be a non-empty string."));
     }
 
-    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/assessment/activate-interaction`);
+    // Validate the activateInteraction object against the imported Joi schema
+    const { error } = ActivateInteractionSchema.validate(activateInteraction);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : content-interaction-api.js CreateActivateContentInteraction() Validation failed for activateInteraction: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/activate-interaction`, activateInteraction);
 
   } //END CreateActivateContentInteraction Method
 

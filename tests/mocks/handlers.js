@@ -25,6 +25,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../../src/mental-framing/mental-framing-types.js').MentalFramingContentIds} MentalFramingContentIds
  * @typedef {import('../../src/assessment/assessment-types.js').RandomizedAssessmentQuestions} RandomizedAssessmentQuestions
  * @typedef {import('../../src/assessment/assessment-types.js').AssessmentResult} AssessmentResult
+ * @typedef {import('../../src/content-interaction/content-interaction-types.js').ActivateInteractionSuccessMessage } ActivateInteractionSuccessMessage
  */
 
 //Import the BASE_URL from our environment-variables.js
@@ -491,6 +492,34 @@ handlers.push
     const mockContentIds = ["mf_001", "mf_002", "mf_003"];
 
     return HttpResponse.json(mockContentIds);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CONTENT INTERACTION API - CREATE ACTIVATE CONTENT INTERACTION
+
+handlers.push
+(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/user/:userId/activate-interaction`, async({ request, params }) => 
+  {
+    const { userId } = params;
+
+    if (userId !== USER_ID) {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    /**
+     * @type {ActivateInteractionSuccessMessage}
+     */
+    const successMessage = {
+        message: "Activate interaction recorded successfully."
+    };
+
+    return HttpResponse.json(successMessage);
   })
 );
 
