@@ -20,6 +20,7 @@ Currently only supports the following endpoints of the Nestre Api.
 - Cognitive Exercises
 - Mental Framing
 - Assessment
+- Content Interactions
 
 Further tagged releases of this library will support more endpoints.
 
