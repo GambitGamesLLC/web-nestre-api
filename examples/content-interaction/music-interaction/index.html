@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>web-nestre-api : Create Music Content Interaction Example</title>
+    <style>
+        body { font-family: sans-serif; padding: 1em; }
+        .input-group { margin-bottom: 10px; }
+        label { display: block; margin-bottom: 5px; }
+        input, textarea { width: 400px; padding: 8px; }
+        textarea { height: 300px; font-family: monospace; }
+        button { padding: 8px 15px; }
+        #output { margin-top: 20px; white-space: pre-wrap; background-color: #f4f4f4; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Create Music Content Interaction</h1>
+    <p>This example demonstrates how to use the <code>contentInteractionApi.CreateMusicContentInteraction()</code> method.</p>
+    
+    <div class="input-group">
+        <label for="userIdInput">User ID:</label>
+        <input type="text" id="userIdInput" placeholder="Enter User ID">
+    </div>
+    
+    <div class="input-group">
+        <label for="authTokenInput">Auth Token:</label>
+        <input type="text" id="authTokenInput" placeholder="Enter Auth Token">
+    </div>
+
+    <div class="input-group">
+        <label for="interactionInput">Music Interaction (JSON):</label>
+        <textarea id="interactionInput" placeholder="Enter music interaction object as JSON"></textarea>
+    </div>
+    
+    <button id="runTestBtn">Run Test</button>
+    
+    <h2>Output:</h2>
+    <div id="output"></div>
+    
+    <script type="module">
+        import { USER_ID, AUTH_TOKEN } from '../../environment-variables.js';
+
+        document.getElementById('userIdInput').value = USER_ID;
+        document.getElementById('authTokenInput').value = AUTH_TOKEN;
+
+        const mockInteraction = {
+            user_id: USER_ID,
+            interaction_duration: 185.3,
+            interaction_record: [30, 60, 90],
+            last_position: 90,
+            context: "daily_workout",
+            cms_version: 1,
+            user_subscription_level_id: 1,
+            content_id: "1JkYnNdVg4CIRLcTp3e8On"
+        };
+
+        document.getElementById('interactionInput').value = JSON.stringify(mockInteraction, null, 2);
+    </script>
+
+    <script type="module" src="./index.js"></script>
+</body>
+</html>

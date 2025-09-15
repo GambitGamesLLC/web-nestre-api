@@ -133,7 +133,7 @@ export class ContentInteractionApi
         return Promise.reject(new Error("web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Invalid userId: The userId must be a non-empty string."));
     }
 
-    // Validate the mentalFrameInteraction object against the imported Joi schema
+    // Validate the contentInteraction object against the imported Joi schema
     const { error } = ContentInteractionSchema.validate(contentInteraction);
 
     if (error) {
@@ -147,24 +147,24 @@ export class ContentInteractionApi
 
 //#endregion
 
-//#region PUBLIC - CREATE MENTAL FRAME INTERACTION
+//#region PUBLIC - CREATE MINDSET MINUTE INTERACTION
 
  /**
-   * Record a user's interaction with mental frame content.
+   * Record a user's interaction with mindset minute content.
    * 
    * @param {string} userId
    * @param {ContentInteraction} contentInteraction
    * @returns {Promise<ContentInteractionSuccessMessage>}
    */
   //-----------------------------------------------------------------------//
-  CreateMentalFrameContentInteraction(userId, contentInteraction) 
+  CreateMindsetMinuteContentInteraction(userId, contentInteraction) 
   //-----------------------------------------------------------------------//
   {
     // Check if the userId is a valid non-empty string.
     if (typeof userId !== 'string' || userId.trim().length === 0) 
     {
         // Return a rejected promise with a descriptive error.
-        return Promise.reject(new Error("web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Invalid userId: The userId must be a non-empty string."));
+        return Promise.reject(new Error("web-nestre-api : content-interaction-api.js CreateMindsetMinuteContentInteraction() Invalid userId: The userId must be a non-empty string."));
     }
 
     // Validate the contentInteraction object against the imported Joi schema
@@ -172,12 +172,46 @@ export class ContentInteractionApi
 
     if (error) {
         // Return a rejected promise with a descriptive error.
-        return Promise.reject(new Error(`web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Validation failed for contentInteraction: ${error.details[0].message}`));
+        return Promise.reject(new Error(`web-nestre-api : content-interaction-api.js CreateMindsetMinuteContentInteraction() Validation failed for contentInteraction: ${error.details[0].message}`));
     }
 
-    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/mental-framing-interaction`, contentInteraction);
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/mindset-minute-interaction`, contentInteraction);
 
-  } //END CreateMentalFrameContentInteraction Method
+  } //END CreateMindsetMinuteContentInteraction Method
+
+//#endregion
+
+//#region PUBLIC - CREATE MUSIC INTERACTION
+
+ /**
+   * Record a user's interaction with music content.
+   * 
+   * @param {string} userId
+   * @param {ContentInteraction} contentInteraction
+   * @returns {Promise<ContentInteractionSuccessMessage>}
+   */
+  //-----------------------------------------------------------------------//
+  CreateMusicContentInteraction(userId, contentInteraction) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : content-interaction-api.js CreateMusicContentInteraction() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Validate the contentInteraction object against the imported Joi schema
+    const { error } = ContentInteractionSchema.validate(contentInteraction);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : content-interaction-api.js CreateMusicContentInteraction() Validation failed for contentInteraction: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/music-interaction`, contentInteraction);
+
+  } //END CreateMusicContentInteraction Method
 
 //#endregion
 

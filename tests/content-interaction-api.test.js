@@ -191,4 +191,98 @@ describe('ContentInteractionApi', () => {
                 .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
         });
     });
+
+    describe('CreateMindsetMinuteContentInteraction', () => {
+        const validInteraction = {
+            user_id: USER_ID,
+            interaction_duration: 60.2,
+            interaction_record: [10, 20, 30],
+            last_position: 30,
+            context: "daily_workout",
+            cms_version: 1,
+            user_subscription_level_id: 1,
+            content_id: "2L6hZoDJJ5Z1m1fCI7lbOT"
+        };
+
+        test('should record a mindset minute content interaction successfully', async () => {
+            const response = await contentInteractionApi.CreateMindsetMinuteContentInteraction(USER_ID, validInteraction);
+            expect(response).toEqual({ message: "Mindset minute interaction created successfully" });
+        });
+
+        test('should reject if userId is not a non-empty string', async () => {
+            await expect(contentInteractionApi.CreateMindsetMinuteContentInteraction(null, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMindsetMinuteContentInteraction() Invalid userId: The userId must be a non-empty string.');
+            
+            await expect(contentInteractionApi.CreateMindsetMinuteContentInteraction('  ', validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMindsetMinuteContentInteraction() Invalid userId: The userId must be a non-empty string.');
+
+            await expect(contentInteractionApi.CreateMindsetMinuteContentInteraction(123, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMindsetMinuteContentInteraction() Invalid userId: The userId must be a non-empty string.');
+        });
+
+        test('should reject if contentInteraction object is invalid', async () => {
+            const invalidInteraction = { ...validInteraction, content_id: undefined }; // Make it invalid
+
+            await expect(contentInteractionApi.CreateMindsetMinuteContentInteraction(USER_ID, invalidInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMindsetMinuteContentInteraction() Validation failed for contentInteraction: "content_id" is required');
+        });
+
+        test('should fail if a non-existent userId is provided for the API call', async () => {
+            const differentUserId = 'different-user';
+            await expect(contentInteractionApi.CreateMindsetMinuteContentInteraction(differentUserId, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
+        });
+    });
+
+    describe('CreateMusicContentInteraction', () => {
+        const validInteraction = {
+            user_id: USER_ID,
+            interaction_duration: 185.3,
+            interaction_record: [30, 60, 90],
+            last_position: 90,
+            context: "daily_workout",
+            cms_version: 1,
+            user_subscription_level_id: 1,
+            content_id: "1JkYnNdVg4CIRLcTp3e8On"
+        };
+
+        test('should record a music content interaction successfully', async () => {
+            const response = await contentInteractionApi.CreateMusicContentInteraction(USER_ID, validInteraction);
+            expect(response).toEqual({ message: "Music interaction created successfully" });
+        });
+
+        test('should reject if userId is not a non-empty string', async () => {
+            await expect(contentInteractionApi.CreateMusicContentInteraction(null, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMusicContentInteraction() Invalid userId: The userId must be a non-empty string.');
+            
+            await expect(contentInteractionApi.CreateMusicContentInteraction('  ', validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMusicContentInteraction() Invalid userId: The userId must be a non-empty string.');
+
+            await expect(contentInteractionApi.CreateMusicContentInteraction(123, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMusicContentInteraction() Invalid userId: The userId must be a non-empty string.');
+        });
+
+        test('should reject if contentInteraction object is invalid', async () => {
+            const invalidInteraction = { ...validInteraction, content_id: undefined }; // Make it invalid
+
+            await expect(contentInteractionApi.CreateMusicContentInteraction(USER_ID, invalidInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMusicContentInteraction() Validation failed for contentInteraction: "content_id" is required');
+        });
+
+        test('should fail if a non-existent userId is provided for the API call', async () => {
+            const differentUserId = 'different-user';
+            await expect(contentInteractionApi.CreateMusicContentInteraction(differentUserId, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
+        });
+    });
 });

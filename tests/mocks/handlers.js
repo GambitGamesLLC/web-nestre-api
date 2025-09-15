@@ -580,3 +580,59 @@ handlers.push
 );
 
 //#endregion
+
+//#region MOCK SERVICE WORKERS - CONTENT INTERACTION API - CREATE MINDSET MINUTE CONTENT INTERACTION
+
+handlers.push
+(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/user/:userId/mindset-minute-interaction`, async({ request, params }) => 
+  {
+    const { userId } = params;
+
+    if (userId !== USER_ID) {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    /**
+     * @type {ContentInteractionSuccessMessage}
+     */
+    const successMessage = {
+        message: "Mindset minute interaction created successfully"
+    };
+
+    return HttpResponse.json(successMessage);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CONTENT INTERACTION API - CREATE MUSIC CONTENT INTERACTION
+
+handlers.push
+(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/user/:userId/music-interaction`, async({ request, params }) => 
+  {
+    const { userId } = params;
+
+    if (userId !== USER_ID) {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    /**
+     * @type {ContentInteractionSuccessMessage}
+     */
+    const successMessage = {
+        message: "Music interaction created successfully"
+    };
+
+    return HttpResponse.json(successMessage);
+  })
+);
+
+//#endregion
