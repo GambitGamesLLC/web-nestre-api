@@ -20,6 +20,7 @@ import { CognitiveExercisesApi } from './cognitive-exercises/cognitive-exercises
 import { MentalFramingApi } from './mental-framing/mental-framing-api.js';
 import { AssessmentApi } from './assessment/assessment-api.js';
 import { ContentInteractionApi } from './content-interaction/content-interaction-api.js';
+import { ContentRecommendationsApi  } from './content-recommendations/content-recommendations-api.js';
 
 //Custom error class returned by our Request() when we have a 500 status code in our server Api response
 import { InternalServerError } from './errors/internal-server-error.js';
@@ -137,6 +138,12 @@ export class NestreApiManager
    * */
   contentInteractionApi = null;
 
+  /**
+   * Reference to the ContentRecommendationsApi object
+   * @type {ContentRecommendationsApi}
+   * */
+  contentRecommendationsApi = null;
+
 //#endregion
 
 //#region PUBLIC - CONSTRUCTOR
@@ -175,6 +182,9 @@ constructor()
 
     this.contentInteractionApi = null;
     this.contentInteractionApi = new ContentInteractionApi();
+
+    this.contentRecommendationsApi = null;
+    this.contentRecommendationsApi = new ContentRecommendationsApi();
 
 } //END constructor Method
 
