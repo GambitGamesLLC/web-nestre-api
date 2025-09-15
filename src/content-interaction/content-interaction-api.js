@@ -99,7 +99,7 @@ export class ContentInteractionApi
         return Promise.reject(new Error("web-nestre-api : content-interaction-api.js CreateGuidedFrameContentInteraction() Invalid userId: The userId must be a non-empty string."));
     }
 
-    // Validate the guidedFrameInteraction object against the imported Joi schema
+    // Validate the contentInteraction object against the imported Joi schema
     const { error } = ContentInteractionSchema.validate(contentInteraction);
 
     if (error) {
@@ -110,6 +110,74 @@ export class ContentInteractionApi
     return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/guided-frame-interaction`, contentInteraction);
 
   } //END CreateGuidedFrameContentInteraction Method
+
+//#endregion
+
+//#region PUBLIC - CREATE MENTAL FRAME INTERACTION
+
+ /**
+   * Record a user's interaction with mental frame content.
+   * 
+   * @param {string} userId
+   * @param {ContentInteraction} contentInteraction
+   * @returns {Promise<ContentInteractionSuccessMessage>}
+   */
+  //-----------------------------------------------------------------------//
+  CreateMentalFrameContentInteraction(userId, contentInteraction) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Validate the mentalFrameInteraction object against the imported Joi schema
+    const { error } = ContentInteractionSchema.validate(contentInteraction);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Validation failed for contentInteraction: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/mental-framing-interaction`, contentInteraction);
+
+  } //END CreateMentalFrameContentInteraction Method
+
+//#endregion
+
+//#region PUBLIC - CREATE MENTAL FRAME INTERACTION
+
+ /**
+   * Record a user's interaction with mental frame content.
+   * 
+   * @param {string} userId
+   * @param {ContentInteraction} contentInteraction
+   * @returns {Promise<ContentInteractionSuccessMessage>}
+   */
+  //-----------------------------------------------------------------------//
+  CreateMentalFrameContentInteraction(userId, contentInteraction) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Validate the contentInteraction object against the imported Joi schema
+    const { error } = ContentInteractionSchema.validate(contentInteraction);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Validation failed for contentInteraction: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/mental-framing-interaction`, contentInteraction);
+
+  } //END CreateMentalFrameContentInteraction Method
 
 //#endregion
 

@@ -144,4 +144,51 @@ describe('ContentInteractionApi', () => {
                 .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
         });
     });
+
+    describe('CreateMentalFrameContentInteraction', () => {
+        const validInteraction = {
+            user_id: USER_ID,
+            interaction_duration: 240.7,
+            interaction_record: [5, 10, 15],
+            last_position: 15,
+            context: "daily_workout",
+            cms_version: 1,
+            user_subscription_level_id: 1,
+            content_id: "LSdmO2qK3Lw23A7BetNTm"
+        };
+
+        test('should record a mental frame content interaction successfully', async () => {
+            const response = await contentInteractionApi.CreateMentalFrameContentInteraction(USER_ID, validInteraction);
+            expect(response).toEqual({ message: "Mental frame interaction created successfully" });
+        });
+
+        test('should reject if userId is not a non-empty string', async () => {
+            await expect(contentInteractionApi.CreateMentalFrameContentInteraction(null, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Invalid userId: The userId must be a non-empty string.');
+            
+            await expect(contentInteractionApi.CreateMentalFrameContentInteraction('  ', validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Invalid userId: The userId must be a non-empty string.');
+
+            await expect(contentInteractionApi.CreateMentalFrameContentInteraction(123, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Invalid userId: The userId must be a non-empty string.');
+        });
+
+        test('should reject if contentInteraction object is invalid', async () => {
+            const invalidInteraction = { ...validInteraction, content_id: undefined }; // Make it invalid
+
+            await expect(contentInteractionApi.CreateMentalFrameContentInteraction(USER_ID, invalidInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateMentalFrameContentInteraction() Validation failed for contentInteraction: "content_id" is required');
+        });
+
+        test('should fail if a non-existent userId is provided for the API call', async () => {
+            const differentUserId = 'different-user';
+            await expect(contentInteractionApi.CreateMentalFrameContentInteraction(differentUserId, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
+        });
+    });
 });

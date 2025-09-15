@@ -552,3 +552,31 @@ handlers.push
 );
 
 //#endregion
+
+//#region MOCK SERVICE WORKERS - CONTENT INTERACTION API - CREATE MENTAL FRAME CONTENT INTERACTION
+
+handlers.push
+(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/user/:userId/mental-framing-interaction`, async({ request, params }) => 
+  {
+    const { userId } = params;
+
+    if (userId !== USER_ID) {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    /**
+     * @type {ContentInteractionSuccessMessage}
+     */
+    const successMessage = {
+        message: "Mental frame interaction created successfully"
+    };
+
+    return HttpResponse.json(successMessage);
+  })
+);
+
+//#endregion
