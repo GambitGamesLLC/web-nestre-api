@@ -25,7 +25,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../../src/mental-framing/mental-framing-types.js').MentalFramingContentIds} MentalFramingContentIds
  * @typedef {import('../../src/assessment/assessment-types.js').RandomizedAssessmentQuestions} RandomizedAssessmentQuestions
  * @typedef {import('../../src/assessment/assessment-types.js').AssessmentResult} AssessmentResult
- * @typedef {import('../../src/content-interaction/content-interaction-types.js').ActivateInteractionSuccessMessage } ActivateInteractionSuccessMessage
+ * @typedef {import('../../src/content-interaction/content-interaction-types.js').ContentInteractionSuccessMessage } ContentInteractionSuccessMessage
  */
 
 //Import the BASE_URL from our environment-variables.js
@@ -513,10 +513,38 @@ handlers.push
     }
 
     /**
-     * @type {ActivateInteractionSuccessMessage}
+     * @type {ContentInteractionSuccessMessage}
      */
     const successMessage = {
-        message: "Activate interaction recorded successfully."
+        message: "Activate interaction created successfully"
+    };
+
+    return HttpResponse.json(successMessage);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CONTENT INTERACTION API - CREATE GUIDED FRAME CONTENT INTERACTION
+
+handlers.push
+(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/user/:userId/guided-frame-interaction`, async({ request, params }) => 
+  {
+    const { userId } = params;
+
+    if (userId !== USER_ID) {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    /**
+     * @type {ContentInteractionSuccessMessage}
+     */
+    const successMessage = {
+        message: "Guided frame interaction created successfully"
     };
 
     return HttpResponse.json(successMessage);

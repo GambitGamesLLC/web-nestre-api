@@ -13,12 +13,12 @@ import Joi from '../../vendor/joi/joi.js';
 //#endregion
 
 
-//#region CONTENT INTERACTION - ACTIVATE INTERACTION SCHEMA
+//#region CONTENT INTERACTION - CONTENT INTERACTION SCHEMA
 
 /**
- * Joi schema for validating the ActivateInteraction object.
+ * Joi schema for validating the ContentInteraction object.
  */
-export const ActivateInteractionSchema = Joi.object({
+export const ContentInteractionSchema = Joi.object({
     user_id: Joi.string().required(),
     interaction_duration: Joi.number().required(),
     interaction_record: Joi.array().items(Joi.number()).required(),

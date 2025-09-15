@@ -12,11 +12,11 @@
 //#region IMPORTS
 
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
-import { ActivateInteractionSchema } from './content-interaction-schema.js';
+import { ContentInteractionSchema } from './content-interaction-schema.js';
 
 /**
- * @typedef {import('./content-interaction-types.js').ActivateInteraction } ActivateInteraction
- * @typedef {import('./content-interaction-types.js').ActivateInteractionSuccessMessage } ActivateInteractionSuccessMessage
+ * @typedef {import('./content-interaction-types.js').ContentInteraction } ContentInteraction
+ * @typedef {import('./content-interaction-types.js').ContentInteractionSuccessMessage } ContentInteractionSuccessMessage
 */
 
 //#endregion
@@ -51,11 +51,11 @@ export class ContentInteractionApi
    * Record a user's interaction with activate content.
    * 
    * @param {string} userId
-   * @param {ActivateInteraction} activateInteraction
-   * @returns {Promise<ActivateInteractionSuccessMessage>}
+   * @param {ContentInteraction} contentInteraction
+   * @returns {Promise<ContentInteractionSuccessMessage>}
    */
   //-----------------------------------------------------------------------//
-  CreateActivateContentInteraction(userId, activateInteraction) 
+  CreateActivateContentInteraction(userId, contentInteraction) 
   //-----------------------------------------------------------------------//
   {
     // Check if the userId is a valid non-empty string.
@@ -65,17 +65,51 @@ export class ContentInteractionApi
         return Promise.reject(new Error("web-nestre-api : content-interaction-api.js CreateActivateContentInteraction() Invalid userId: The userId must be a non-empty string."));
     }
 
-    // Validate the activateInteraction object against the imported Joi schema
-    const { error } = ActivateInteractionSchema.validate(activateInteraction);
+    // Validate the contentInteraction object against the imported Joi schema
+    const { error } = ContentInteractionSchema.validate(contentInteraction);
 
     if (error) {
         // Return a rejected promise with a descriptive error.
-        return Promise.reject(new Error(`web-nestre-api : content-interaction-api.js CreateActivateContentInteraction() Validation failed for activateInteraction: ${error.details[0].message}`));
+        return Promise.reject(new Error(`web-nestre-api : content-interaction-api.js CreateActivateContentInteraction() Validation failed for contentInteraction: ${error.details[0].message}`));
     }
 
-    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/activate-interaction`, activateInteraction);
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/activate-interaction`, contentInteraction);
 
   } //END CreateActivateContentInteraction Method
+
+//#endregion
+
+//#region PUBLIC - CREATE GUIDE FRAME INTERACTION
+
+ /**
+   * Record a user's interaction with guided frame content.
+   * 
+   * @param {string} userId
+   * @param {ContentInteraction} contentInteraction
+   * @returns {Promise<ContentInteractionSuccessMessage>}
+   */
+  //-----------------------------------------------------------------------//
+  CreateGuidedFrameContentInteraction(userId, contentInteraction) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : content-interaction-api.js CreateGuidedFrameContentInteraction() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Validate the guidedFrameInteraction object against the imported Joi schema
+    const { error } = ContentInteractionSchema.validate(contentInteraction);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : content-interaction-api.js CreateGuidedFrameContentInteraction() Validation failed for contentInteraction: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/guided-frame-interaction`, contentInteraction);
+
+  } //END CreateGuidedFrameContentInteraction Method
 
 //#endregion
 

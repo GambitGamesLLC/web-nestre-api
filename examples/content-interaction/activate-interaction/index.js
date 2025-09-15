@@ -159,7 +159,7 @@ async function RunTest(userId, authToken, interactionText)
     }
 
     if (!interactionText) {
-        Log('❌ Error: Activate Interaction data is required.');
+        Log('❌ Error: Content Interaction data is required.');
         return;
     }
 

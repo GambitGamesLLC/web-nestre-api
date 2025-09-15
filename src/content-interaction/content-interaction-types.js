@@ -7,11 +7,11 @@
  * @exports {object}
  */
 
-//#region CONTENT INTERACTION API - ACTIVATE INTERACTION
+//#region CONTENT INTERACTION API - CONTENT INTERACTION
 
 /**
- * Request body for the CreateActivateContentInteraction() function of the content-interaction-api
- * @typedef {object} ActivateInteraction
+ * Request body for the functions the content-interaction-api
+ * @typedef {object} ContentInteraction
  * @property {string} user_id
  * @property {number} interaction_duration
  * @property {number[]} interaction_record
@@ -19,15 +19,15 @@
  * @property {string} context
  * @property {number} cms_version
  * @property {number} user_subscription_level_id
- * @property {string} content_id
+ * @property {string} content_id                    matches the content_id for a piece of content in 'contentful'
  */
 
 //#endregion
 
-//#region CONTENT INTERACTION API - ACTIVATE INTERACTION SUCCESS MESSAGE
+//#region CONTENT INTERACTION API - CONTENT INTERACTION SUCCESS MESSAGE
 
 /**
- * @typedef {object} ActivateInteractionSuccessMessage
+ * @typedef {object} ContentInteractionSuccessMessage
  * @property {string} message
  */
 

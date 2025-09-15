@@ -60,9 +60,9 @@ describe('ContentInteractionApi', () => {
             content_id: "some-content-id"
         };
 
-        test('should record an activate interaction successfully', async () => {
+        test('should record an content interaction successfully', async () => {
             const response = await contentInteractionApi.CreateActivateContentInteraction(USER_ID, validInteraction);
-            expect(response).toEqual({ message: "Activate interaction recorded successfully." });
+            expect(response).toEqual({ message: "Activate interaction created successfully" });
         });
 
         test('should reject if userId is not a non-empty string', async () => {
@@ -79,13 +79,13 @@ describe('ContentInteractionApi', () => {
                 .toThrow('web-nestre-api : content-interaction-api.js CreateActivateContentInteraction() Invalid userId: The userId must be a non-empty string.');
         });
 
-        test('should reject if activateInteraction object is invalid', async () => {
+        test('should reject if contentInteraction object is invalid', async () => {
             const invalidInteraction = { ...validInteraction };
             delete invalidInteraction.content_id; // Missing required field
 
             await expect(contentInteractionApi.CreateActivateContentInteraction(USER_ID, invalidInteraction))
                 .rejects
-                .toThrow('web-nestre-api : content-interaction-api.js CreateActivateContentInteraction() Validation failed for activateInteraction: "content_id" is required');
+                .toThrow('web-nestre-api : content-interaction-api.js CreateActivateContentInteraction() Validation failed for contentInteraction: "content_id" is required');
         });
 
         test('should fail if a non-existent userId is provided for the API call', async () => {
@@ -93,6 +93,53 @@ describe('ContentInteractionApi', () => {
             // The mock handler will return a 404 for this user ID.
             // The NestreApiManager's Request method will catch this and throw a generic error.
             await expect(contentInteractionApi.CreateActivateContentInteraction(differentUserId, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
+        });
+    });
+
+    describe('CreateGuidedFrameContentInteraction', () => {
+        const validInteraction = {
+            user_id: USER_ID,
+            interaction_duration: 180.2,
+            interaction_record: [10, 20, 30],
+            last_position: 30,
+            context: "guided_frame",
+            cms_version: 2,
+            user_subscription_level_id: 1,
+            content_id: "thye2n10m2TuAVXfTPE2U"
+        };
+
+        test('should record a guided frame content interaction successfully', async () => {
+            const response = await contentInteractionApi.CreateGuidedFrameContentInteraction(USER_ID, validInteraction);
+            expect(response).toEqual({ message: "Guided frame interaction created successfully" });
+        });
+
+        test('should reject if userId is not a non-empty string', async () => {
+            await expect(contentInteractionApi.CreateGuidedFrameContentInteraction(null, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateGuidedFrameContentInteraction() Invalid userId: The userId must be a non-empty string.');
+            
+            await expect(contentInteractionApi.CreateGuidedFrameContentInteraction('  ', validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateGuidedFrameContentInteraction() Invalid userId: The userId must be a non-empty string.');
+
+            await expect(contentInteractionApi.CreateGuidedFrameContentInteraction(123, validInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateGuidedFrameContentInteraction() Invalid userId: The userId must be a non-empty string.');
+        });
+
+        test('should reject if contentInteraction object is invalid', async () => {
+            const invalidInteraction = { ...validInteraction, content_id: undefined }; // Make it invalid
+
+            await expect(contentInteractionApi.CreateGuidedFrameContentInteraction(USER_ID, invalidInteraction))
+                .rejects
+                .toThrow('web-nestre-api : content-interaction-api.js CreateGuidedFrameContentInteraction() Validation failed for contentInteraction: "content_id" is required');
+        });
+
+        test('should fail if a non-existent userId is provided for the API call', async () => {
+            const differentUserId = 'different-user';
+            await expect(contentInteractionApi.CreateGuidedFrameContentInteraction(differentUserId, validInteraction))
                 .rejects
                 .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
         });
