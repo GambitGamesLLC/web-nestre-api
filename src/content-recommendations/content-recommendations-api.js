@@ -178,5 +178,3 @@ export class ContentRecommendationsApi
 
 
 } //END ContentRecommendationsApi Class
-
-//#endregion

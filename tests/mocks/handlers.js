@@ -23,6 +23,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../../src/user/user-types.js').CreateReferralCode } CreateReferralCode
  * @typedef {import('../../src/user/user-types.js').CreateReferralCodeConfirmationMessage } CreateReferralCodeConfirmationMessage
  * @typedef {import('../../src/mental-framing/mental-framing-types.js').MentalFramingContentIds} MentalFramingContentIds
+ * @typedef {import('../../src/frame-it/frame-it-types.js').PersonalizedFrameIt} PersonalizedFrameIt
  * @typedef {import('../../src/assessment/assessment-types.js').RandomizedAssessmentQuestions} RandomizedAssessmentQuestions
  * @typedef {import('../../src/assessment/assessment-types.js').AssessmentResult} AssessmentResult
  * @typedef {import('../../src/content-interaction/content-interaction-types.js').ContentInteractionSuccessMessage } ContentInteractionSuccessMessage
@@ -119,152 +120,6 @@ handlers.push
   http.post(`${API_BASE_URL}/v${API_VERSION}/user/test-body`, async ({ request }) => {
     const requestBody = await request.json();
     return HttpResponse.json(requestBody);
-  })
-);
-
-//#endregion
-
-//#region MOCK SERVICE WORKERS - CONTENT RECOMMENDATIONS API - GET ACTIVATE RECOMMENDATIONS
-
-handlers.push
-(
-  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/activate/recommendations`, ({ request, params }) => 
-  {
-    const { userId } = params;
-    const url = new URL(request.url);
-    const num_recommendations = parseInt(url.searchParams.get('num_recommendations'), 10);
-
-    if (userId === 'non-existent-user') {
-        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
-            status: 404,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
-
-    if (userId === USER_ID) {
-        /**
-         * @type {ContentRecommendations}
-         */
-        const mockRecommendations = [
-            "rec_001", 
-            "rec_002", 
-            "rec_003",
-            "rec_004",
-            "rec_005"
-        ].slice(0, num_recommendations);
-
-        return HttpResponse.json(mockRecommendations);
-    }
-
-    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
-  })
-);
-
-//#endregion
-
-//#region MOCK SERVICE WORKERS - CONTENT RECOMMENDATIONS API - GET GUIDED FRAMES RECOMMENDATIONS
-
-handlers.push
-(
-  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/guided-frames/recommendations`, ({ request, params }) => 
-  {
-    const { userId } = params;
-    const url = new URL(request.url);
-    const num_recommendations = parseInt(url.searchParams.get('num_recommendations'), 10);
-
-    if (userId === 'non-existent-user') {
-        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
-            status: 404,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
-
-    if (userId === USER_ID) {
-        /**
-         * @type {ContentRecommendations}
-         */
-        const mockRecommendations = [
-            "gf_rec_001", 
-            "gf_rec_002", 
-            "gf_rec_003"
-        ].slice(0, num_recommendations);
-
-        return HttpResponse.json(mockRecommendations);
-    }
-
-    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
-  })
-);
-
-//#endregion
-
-//#region MOCK SERVICE WORKERS - CONTENT RECOMMENDATIONS API - GET MINDSET MINUTES RECOMMENDATIONS
-
-handlers.push
-(
-  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/mindset-minutes/recommendations`, ({ request, params }) => 
-  {
-    const { userId } = params;
-    const url = new URL(request.url);
-    const num_recommendations = parseInt(url.searchParams.get('num_recommendations'), 10);
-
-    if (userId === 'non-existent-user') {
-        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
-            status: 404,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
-
-    if (userId === USER_ID) {
-        /**
-         * @type {ContentRecommendations}
-         */
-        const mockRecommendations = [
-            "mm_rec_001", 
-            "mm_rec_002", 
-            "mm_rec_003"
-        ].slice(0, num_recommendations);
-
-        return HttpResponse.json(mockRecommendations);
-    }
-
-    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
-  })
-);
-
-//#endregion
-
-//#region MOCK SERVICE WORKERS - CONTENT RECOMMENDATIONS API - GET MUSIC RECOMMENDATIONS
-
-handlers.push
-(
-  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/music/recommendations`, ({ request, params }) => 
-  {
-    const { userId } = params;
-    const url = new URL(request.url);
-    const num_recommendations = parseInt(url.searchParams.get('num_recommendations'), 10);
-
-    if (userId === 'non-existent-user') {
-        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
-            status: 404,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
-
-    if (userId === USER_ID) {
-        /**
-         * @type {ContentRecommendations}
-         */
-        const mockRecommendations = [
-            "music_rec_001", 
-            "music_rec_002", 
-            "music_rec_003"
-        ].slice(0, num_recommendations);
-
-        return HttpResponse.json(mockRecommendations);
-    }
-
-    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
   })
 );
 
@@ -779,6 +634,191 @@ handlers.push
     };
 
     return HttpResponse.json(successMessage);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CONTENT RECOMMENDATIONS API - GET ACTIVATE RECOMMENDATIONS
+
+handlers.push
+(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/activate/recommendations`, ({ request, params }) => 
+  {
+    const { userId } = params;
+    const url = new URL(request.url);
+    const num_recommendations = parseInt(url.searchParams.get('num_recommendations'), 10);
+
+    if (userId === 'non-existent-user') {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    if (userId === USER_ID) {
+        /**
+         * @type {ContentRecommendations}
+         */
+        const mockRecommendations = [
+            "rec_001", 
+            "rec_002", 
+            "rec_003",
+            "rec_004",
+            "rec_005"
+        ].slice(0, num_recommendations);
+
+        return HttpResponse.json(mockRecommendations);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CONTENT RECOMMENDATIONS API - GET GUIDED FRAMES RECOMMENDATIONS
+
+handlers.push
+(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/guided-frames/recommendations`, ({ request, params }) => 
+  {
+    const { userId } = params;
+    const url = new URL(request.url);
+    const num_recommendations = parseInt(url.searchParams.get('num_recommendations'), 10);
+
+    if (userId === 'non-existent-user') {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    if (userId === USER_ID) {
+        /**
+         * @type {ContentRecommendations}
+         */
+        const mockRecommendations = [
+            "gf_rec_001", 
+            "gf_rec_002", 
+            "gf_rec_003"
+        ].slice(0, num_recommendations);
+
+        return HttpResponse.json(mockRecommendations);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CONTENT RECOMMENDATIONS API - GET MINDSET MINUTES RECOMMENDATIONS
+
+handlers.push
+(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/mindset-minutes/recommendations`, ({ request, params }) => 
+  {
+    const { userId } = params;
+    const url = new URL(request.url);
+    const num_recommendations = parseInt(url.searchParams.get('num_recommendations'), 10);
+
+    if (userId === 'non-existent-user') {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    if (userId === USER_ID) {
+        /**
+         * @type {ContentRecommendations}
+         */
+        const mockRecommendations = [
+            "mm_rec_001", 
+            "mm_rec_002", 
+            "mm_rec_003"
+        ].slice(0, num_recommendations);
+
+        return HttpResponse.json(mockRecommendations);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CONTENT RECOMMENDATIONS API - GET MUSIC RECOMMENDATIONS
+
+handlers.push
+(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/music/recommendations`, ({ request, params }) => 
+  {
+    const { userId } = params;
+    const url = new URL(request.url);
+    const num_recommendations = parseInt(url.searchParams.get('num_recommendations'), 10);
+
+    if (userId === 'non-existent-user') {
+        return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    if (userId === USER_ID) {
+        /**
+         * @type {ContentRecommendations}
+         */
+        const mockRecommendations = [
+            "music_rec_001", 
+            "music_rec_002", 
+            "music_rec_003"
+        ].slice(0, num_recommendations);
+
+        return HttpResponse.json(mockRecommendations);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - FRAME IT API - CREATE PERSONALIZED FRAME
+
+/**
+ * Dummy personalized frame it object returned when mock testing
+ * @type {PersonalizedFrameIt}
+ */
+const mockPersonalizedFrameIt = {
+    updated_at: "2024-01-01T12:00:00Z",
+    created_at: "2024-01-01T12:00:00Z",
+    id: "frame_123abc",
+    phrases: [], // This will be populated from the request body
+    wins: [],
+    completed: false,
+    image_url: "https://nestre-development.s3.amazonaws.com/frame-it/frame_123abc.png"
+};
+
+handlers.push(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/user/:userId/frame`, async ({ request, params }) => {
+    const { userId } = params;
+    const body = await request.json();
+
+    if (userId === 'non-existent-user') {
+      return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (userId === USER_ID) {
+      const response = { ...mockPersonalizedFrameIt, phrases: body };
+      return HttpResponse.json(response);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
   })
 );
 
