@@ -11,7 +11,7 @@
 //#region CONTENT RECOMMENDATIONS API - CONTENT RECOMMENDATIONS
 
 /**
- * Request body for the functions the content-interaction-api
+ * Response body for the functions in the content-recommendations-api
  * @typedef {string[]} ContentRecommendations
  */
 

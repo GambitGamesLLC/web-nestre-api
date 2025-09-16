@@ -1,8 +1,8 @@
 /**
  * index.js
- * @file Frontend script for the get-activate-content-recommendations example web page.
+ * @file Frontend script for the get-guided-frames-content-recommendations example web page.
  * @description This script demonstrates how to use the `web-nestre-api` library 
- * to fetch activate content recommendations for a user.
+ * to fetch guided frames content recommendations for a user.
  * It handles DOM interactions, sets the authentication token, 
  * and displays the API response on the page.
  * @requires {NestreApiManager} from '../../../src/index.js'
@@ -169,9 +169,9 @@ async function RunTest(userId, authToken, numRecommendations)
     Log('Auth token has been set.');
     
     try {
-        Log(`Fetching activate recommendations for user: ${userId}...`);
+        Log(`Fetching guided frames recommendations for user: ${userId}...`);
         
-        const recommendations = await NestreApiManager.GetInstance().contentRecommendationsApi.GetActivateContentRecommendations(userId, numRecommendations);
+        const recommendations = await NestreApiManager.GetInstance().contentRecommendationsApi.GetGuidedFramesContentRecommendations(userId, numRecommendations);
 
         Log('✅ Test successful!');
         Log('Recommendations Loaded:');
