@@ -32,5 +32,16 @@
 
 //#endregion
 
+//#region FRAME IT API - UPDATE FRAME DATA
+
+/**
+ * Data for updating a personalized frame.
+ * @typedef {object} UpdateFrameData
+ * @property {string[]} [wins]
+ * @property {boolean} [completed]
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

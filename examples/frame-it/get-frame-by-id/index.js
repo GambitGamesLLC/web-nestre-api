@@ -1,8 +1,8 @@
 /**
  * index.js
- * @file Frontend script for the update-frame example web page.
+ * @file Frontend script for the get-frame-by-id example web page.
  * @description This script demonstrates how to use the `web-nestre-api` library 
- * to update a frame-it object.
+ * to fetch a specific frame-it object by its ID.
  * It handles DOM interactions, sets the authentication token, 
  * and displays the API response on the page.
  * @requires {NestreApiManager} from '../../../src/index.js'
@@ -29,9 +29,6 @@ let authTokenInput;
 let frameIdInput;
 
 /** @type{HTMLElement | null} */
-let updateDataInput;
-
-/** @type{HTMLElement | null} */
 let runTestBtn;
 
 /** @type{HTMLElement | null} */
@@ -55,7 +52,6 @@ function AttachDomReferences() {
     userIdInput = document.getElementById('userIdInput');
     authTokenInput = document.getElementById('authTokenInput');
     frameIdInput = document.getElementById('frameIdInput');
-    updateDataInput = document.getElementById('updateDataInput');
     runTestBtn = document.getElementById('runTestBtn');
     outputDiv = document.getElementById('output');
 }
@@ -88,16 +84,15 @@ function RunButtonClicked() {
     const userId = userIdInput.value;
     const authToken = authTokenInput.value;
     const frameId = frameIdInput.value;
-    const updateDataText = updateDataInput.value;
     
-    RunTest(userId, authToken, frameId, updateDataText);
+    RunTest(userId, authToken, frameId);
 }
 
 //#endregion
 
 //#region PRIVATE - RUN TEST
 
-async function RunTest(userId, authToken, frameId, updateDataText) {
+async function RunTest(userId, authToken, frameId) {
     if (!userId) {
         Log('❌ Error: User ID is required.');
         return;
@@ -113,33 +108,20 @@ async function RunTest(userId, authToken, frameId, updateDataText) {
         return;
     }
 
-    if (!updateDataText) {
-        Log('❌ Error: Update Frame Data is required.');
-        return;
-    }
-
-    let updateDataObject;
-    try {
-        updateDataObject = JSON.parse(updateDataText);
-    } catch (e) {
-        Log(`❌ Error: Invalid JSON in Update Frame Data. ${e.message}`);
-        return;
-    }
-
     Log('Initializing test...');
 
     NestreApiManager.GetInstance().SetAuthToken(authToken);
     Log('Auth token has been set.');
     
     try {
-        Log(`Updating frame for user: ${userId} with frame ID: ${frameId}...`);
+        Log(`Fetching frame for user: ${userId} with frame ID: ${frameId}...`);
         
-        const updatedFrame = await NestreApiManager.GetInstance().frameItApi.UpdateFrame(userId, frameId, updateDataObject);
+        const frame = await NestreApiManager.GetInstance().frameItApi.GetFrameById(userId, frameId);
 
         Log('✅ Test successful!');
-        Log('Frame Updated:');
+        Log('Frame Loaded:');
         
-        const resultString = JSON.stringify(updatedFrame, null, 2);
+        const resultString = JSON.stringify(frame, null, 2);
         outputDiv.innerHTML += `<pre>${resultString}</pre>`;
         
     } catch (error) {

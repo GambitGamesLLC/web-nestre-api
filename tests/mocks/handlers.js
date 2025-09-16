@@ -823,3 +823,75 @@ handlers.push(
 );
 
 //#endregion
+
+//#region MOCK SERVICE WORKERS - FRAME IT API - GET FRAME BY ID
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/frame/:frameId`, ({ params }) => {
+    const { userId, frameId } = params;
+
+    if (userId !== USER_ID) {
+      return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (frameId === 'some-frame-id') {
+      const response = { 
+        ...mockPersonalizedFrameIt, 
+        id: frameId,
+        phrases: ["I am strong", "I am capable"],
+        image_url: `https://nestre-development.s3.amazonaws.com/frame-it/${frameId}.png`
+      };
+      return HttpResponse.json(response);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'Frame not found' }), {
+      status: 404,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - FRAME IT API - UPDATE FRAME
+
+handlers.push(
+  http.patch(`${API_BASE_URL}/v${API_VERSION}/user/:userId/frame/:frameId`, async ({ request, params }) => {
+    const { userId, frameId } = params;
+    const updateData = await request.json();
+
+    if (userId === 'non-existent-user') {
+      return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (frameId === 'non-existent-frame') {
+      return new HttpResponse(JSON.stringify({ message: 'Frame not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (userId === USER_ID && frameId === 'some-frame-id') {
+      const existingFrame = { 
+        ...mockPersonalizedFrameIt, 
+        id: frameId,
+        phrases: ["I am strong", "I am capable"],
+        image_url: `https://nestre-development.s3.amazonaws.com/frame-it/${frameId}.png`
+      };
+
+      const updatedFrame = { ...existingFrame, ...updateData };
+      
+      return HttpResponse.json(updatedFrame);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'Frame not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+  })
+);
+
+//#endregion

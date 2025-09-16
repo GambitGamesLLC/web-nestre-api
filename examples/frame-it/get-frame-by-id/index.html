@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NESTRE API Client Test - Update Frame</title>
+    <title>NESTRE API Client Test - Frame It - Get Frame By ID</title>
     <style>
         body { font-family: sans-serif; padding: 1em; }
-        input, textarea { width: 300px; padding: 8px; margin-bottom: 10px; box-sizing: border-box; }
-        textarea { height: 100px; }
+        input { width: 300px; padding: 8px; margin-bottom: 10px; }
         button { padding: 8px 15px; }
         #output { margin-top: 20px; white-space: pre-wrap; background-color: #f4f4f4; padding: 1em; border-radius: 5px; }
     </style>
 </head>
 <body>
-    <h1>NESTRE API Client Test - Update Frame</h1>
+    <h1>NESTRE API Client Test - Frame It - Get Frame By ID</h1>
 
     <div>
         <label for="userIdInput">User ID:</label><br>
@@ -30,13 +29,6 @@
         <input type="text" id="frameIdInput" value="some-frame-id">
     </div>
 
-    <div>
-        <label for="updateDataInput">Update Frame Data (JSON):</label><br>
-        <textarea id="updateDataInput">{
-    "wins": ["Completed a major project", "Learned a new skill"]
-}</textarea>
-    </div>
-
     <button id="runTestBtn">Run Test</button>
 
     <div id="output">Test results will appear here...</div>
@@ -46,7 +38,6 @@
 
         document.getElementById('userIdInput').value = USER_ID;
         document.getElementById('authTokenInput').value = AUTH_TOKEN;
-
     </script>
 
     <script type="module" src="index.js"></script>

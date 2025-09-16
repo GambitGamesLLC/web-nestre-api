@@ -13,11 +13,12 @@
 //#region IMPORTS
 
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
-import { FrameItPhrasesSchema } from './frame-it-schema.js';
+import { FrameItPhrasesSchema, UpdateFrameDataSchema } from './frame-it-schema.js';
 
 /**
  * @typedef {import('./frame-it-types.js').FrameItPhrases } FrameItPhrases
  * @typedef {import('./frame-it-types.js').PersonalizedFrameIt } PersonalizedFrameIt
+ * @typedef {import('./frame-it-types.js').UpdateFrameData } UpdateFrameData
 */
 
 //#endregion
@@ -78,6 +79,81 @@ export class FrameItApi
     return NestreApiManager.GetInstance().Request( HttpMethod.POST, `user/${userId}/frame`, frameItPhrases);
 
   } //END CreatePersonalizedFrame Method
+
+//#endregion
+
+//#region PUBLIC - GET FRAME BY ID
+
+ /**
+   * Retrieve a specific frame by its unique identifier
+   * 
+   * @param {string} userId
+   * @param {string} frameId
+   * @returns {Promise<PersonalizedFrameIt>}
+   */
+  //-----------------------------------------------------------------------//
+  GetFrameById(userId, frameId) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : frame-it-api.js GetFrameById() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the frameId is a valid non-empty string.
+    if (typeof frameId !== 'string' || frameId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : frame-it-api.js GetFrameById() Invalid frameId: The frameId must be a non-empty string."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/frame/${frameId}`);
+
+  } //END GetFrameById Method
+
+//#endregion
+
+//#region PUBLIC - UPDATE FRAME DATA
+
+ /**
+   * Update frame metadata or properties using partial data
+   * 
+   * @param {string} userId
+   * @param {string} frameId
+   * @param {UpdateFrameData} updateFrameData
+   * @returns {Promise<PersonalizedFrameIt>}
+   */
+  //-----------------------------------------------------------------------//
+  UpdateFrame(userId, frameId, updateFrameData) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : frame-it-api.js UpdateFrame() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the frameId is a valid non-empty string.
+    if (typeof frameId !== 'string' || frameId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : frame-it-api.js UpdateFrame() Invalid frameId: The frameId must be a non-empty string."));
+    }
+
+    // Validate the updateFrameData object against the imported Joi schema
+    const { error } = UpdateFrameDataSchema.validate(updateFrameData);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : frame-it-api.js UpdateFrame() Validation failed for updateFrameData: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.PATCH, `user/${userId}/frame/${frameId}`, updateFrameData);
+
+  } //END UpdateFrame Method
 
 //#endregion
 
