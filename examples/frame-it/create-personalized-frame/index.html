@@ -10,6 +10,7 @@
         textarea { height: 100px; }
         button { padding: 8px 15px; }
         #output { margin-top: 20px; white-space: pre-wrap; background-color: #f4f4f4; padding: 1em; border-radius: 5px; }
+        #frameImage { margin-top: 20px; max-width: 100%; border: 1px solid #ccc; border-radius: 5px; display: none; }
     </style>
 </head>
 <body>
@@ -33,6 +34,8 @@
     <button id="runTestBtn">Run Test</button>
 
     <div id="output">Test results will appear here...</div>
+
+    <img id="frameImage" src="" alt="Personalized Frame" />
 
     <script type="module">
         import {USER_ID, AUTH_TOKEN } from '../../environment-variables.js';

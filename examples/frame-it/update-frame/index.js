@@ -37,6 +37,9 @@ let runTestBtn;
 /** @type{HTMLElement | null} */
 let outputDiv;
 
+/** @type{HTMLImageElement | null} */
+let frameImage;
+
 //#endregion
 
 //#region PRIVATE - LIFECYCLE - ADD EVENT LISTENER - DOM CONTENT LOADED
@@ -58,6 +61,7 @@ function AttachDomReferences() {
     updateDataInput = document.getElementById('updateDataInput');
     runTestBtn = document.getElementById('runTestBtn');
     outputDiv = document.getElementById('output');
+    frameImage = document.getElementById('frameImage');
 }
 
 //#endregion
@@ -84,6 +88,8 @@ function CreateNestreApi() {
 
 function RunButtonClicked() {
     outputDiv.innerHTML = '';
+    frameImage.style.display = 'none';
+    frameImage.src = '';
     
     const userId = userIdInput.value;
     const authToken = authTokenInput.value;
@@ -141,6 +147,12 @@ async function RunTest(userId, authToken, frameId, updateDataText) {
         
         const resultString = JSON.stringify(updatedFrame, null, 2);
         outputDiv.innerHTML += `<pre>${resultString}</pre>`;
+
+        if (updatedFrame.image_url) {
+            Log('Displaying updated frame image...');
+            frameImage.src = updatedFrame.image_url;
+            frameImage.style.display = 'block';
+        }
         
     } catch (error) {
         Log(`❌ Test failed: ${error.message} : ${error.details}`);
