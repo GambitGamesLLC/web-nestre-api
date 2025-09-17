@@ -127,88 +127,6 @@ handlers.push
 
 //#endregion
 
-//#region MOCK SERVICE WORKERS - FRAME IT API - GET FRAME GALLERY
-
-/**
- * Dummy personalized frame gallery object returned when mock testing
- * @type {PersonalizedFrameGallery}
- */
-const mockPersonalizedFrameGallery = {
-    frames: [
-        {
-            updated_at: "2024-01-01T12:00:00Z",
-            created_at: "2024-01-01T12:00:00Z",
-            id: "frame_123abc",
-            phrases: ["I am strong", "I am capable"],
-            wins: [],
-            completed: false,
-            image_url: "https://nestre-development.s3.amazonaws.com/frame-it/frame_123abc.png"
-        },
-        {
-            updated_at: "2024-01-02T12:00:00Z",
-            created_at: "2024-01-02T12:00:00Z",
-            id: "frame_456def",
-            phrases: ["I am focused", "I am calm"],
-            wins: ["Completed a project"],
-            completed: true,
-            image_url: "https://nestre-development.s3.amazonaws.com/frame-it/frame_456def.png"
-        }
-    ]
-};
-
-handlers.push(
-  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/frames`, ({ params }) => {
-    const { userId } = params;
-
-    if (userId === 'non-existent-user') {
-      return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    if (userId === USER_ID) {
-      return HttpResponse.json(mockPersonalizedFrameGallery);
-    }
-
-    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
-  })
-);
-
-//#endregion
-
-//#region MOCK SERVICE WORKERS - FRAME IT API - DELETE FRAME BY ID
-
-handlers.push(
-  http.delete(`${API_BASE_URL}/v${API_VERSION}/user/:userId/frame/:frameId`, ({ params }) => {
-    const { userId, frameId } = params;
-
-    if (userId === 'non-existent-user') {
-      return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    if (frameId === 'non-existent-frame') {
-      return new HttpResponse(JSON.stringify({ message: 'Frame not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    if (userId === USER_ID && frameId === 'some-frame-id') {
-      /** @type {DeleteFrameConfirmationMessage} */
-      const response = { message: 'Frame deleted successfully.' };
-      return HttpResponse.json(response);
-    }
-
-    return new HttpResponse(JSON.stringify({ message: 'Frame not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
-  })
-);
-
-//#endregion
-
 //#region MOCK SERVICE WORKERS - USER API - GET - ERROR - 404
 
 handlers.push
@@ -975,6 +893,181 @@ handlers.push(
     }
 
     return new HttpResponse(JSON.stringify({ message: 'Frame not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - FRAME IT API - GET FRAME GALLERY
+
+/**
+ * Dummy personalized frame gallery object returned when mock testing
+ * @type {PersonalizedFrameGallery}
+ */
+const mockPersonalizedFrameGallery = {
+    frames: [
+        {
+            updated_at: "2024-01-01T12:00:00Z",
+            created_at: "2024-01-01T12:00:00Z",
+            id: "frame_123abc",
+            phrases: ["I am strong", "I am capable"],
+            wins: [],
+            completed: false,
+            image_url: "https://nestre-development.s3.amazonaws.com/frame-it/frame_123abc.png"
+        },
+        {
+            updated_at: "2024-01-02T12:00:00Z",
+            created_at: "2024-01-02T12:00:00Z",
+            id: "frame_456def",
+            phrases: ["I am focused", "I am calm"],
+            wins: ["Completed a project"],
+            completed: true,
+            image_url: "https://nestre-development.s3.amazonaws.com/frame-it/frame_456def.png"
+        }
+    ]
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/frames`, ({ params }) => {
+    const { userId } = params;
+
+    if (userId === 'non-existent-user') {
+      return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (userId === USER_ID) {
+      return HttpResponse.json(mockPersonalizedFrameGallery);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - FRAME IT API - DELETE FRAME BY ID
+
+handlers.push(
+  http.delete(`${API_BASE_URL}/v${API_VERSION}/user/:userId/frame/:frameId`, ({ params }) => {
+    const { userId, frameId } = params;
+
+    if (userId === 'non-existent-user') {
+      return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (frameId === 'non-existent-frame') {
+      return new HttpResponse(JSON.stringify({ message: 'Frame not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (userId === USER_ID && frameId === 'some-frame-id') {
+      /** @type {DeleteFrameConfirmationMessage} */
+      const response = { message: 'Frame deleted successfully.' };
+      return HttpResponse.json(response);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'Frame not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - LOOKUP API - GET GENDER OPTIONS
+
+/**
+ * Dummy gender options returned when mock testing
+ * @type {import('../../src/lookup/lookup-types.js').GenderOptions}
+ */
+const mockGenderOptions = {
+    gender_options: [
+        { id: 1, name: 'Male' },
+        { id: 2, name: 'Female' },
+        { id: 3, name: 'Non-binary / Non-conforming' }
+    ]
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/lookup/gender`, () => {
+    return HttpResponse.json(mockGenderOptions);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - LOOKUP API - GET EDUCATION OPTIONS
+
+/**
+ * Dummy education options returned when mock testing
+ * @type {import('../../src/lookup/lookup-types.js').EducationOptions}
+ */
+const mockEducationOptions = {
+    education_options: [
+        { id: 1, name: 'Less than High School', value: 1 },
+        { id: 2, name: 'High School', value: 2 },
+        { id: 3, name: 'Vocational or Trade Qualification', value: 3 },
+        { id: 4, name: 'Bachelor Degree', value: 4 },
+        { id: 5, name: 'Master Degree', value: 5 },
+        { id: 6, name: 'Doctorate Degree', value: 6 }
+    ]
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/lookup/education-level`, () => {
+    return HttpResponse.json(mockEducationOptions);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - LOOKUP API - GET MARITAL OPTIONS
+
+/**
+ * Dummy marital options returned when mock testing
+ * @type {import('../../src/lookup/lookup-types.js').MaritalOptions}
+ */
+const mockMaritalOptions = {
+    marital_options: [
+        { id: 1, name: 'Single, never married' },
+        { id: 2, name: 'Married or domestic partnership' },
+        { id: 3, name: 'Widowed' },
+        { id: 4, name: 'Divorced or separated' }
+    ]
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/lookup/marital-status`, () => {
+    return HttpResponse.json(mockMaritalOptions);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - LOOKUP API - GET SUBSCRIPTION OPTIONS
+
+/**
+ * Dummy subscription options returned when mock testing
+ * @type {import('../../src/lookup/lookup-types.js').SubscriptionOptions}
+ */
+const mockSubscriptionOptions = {
+    subscription_options: [
+        { id: 1, name: 'Free', value: 0 },
+        { id: 2, name: 'Trial', value: 1 },
+        { id: 3, name: 'Basic', value: 1 },
+        { id: 4, name: 'Premium', value: 2 }
+    ]
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/lookup/subscription-level`, () => {
+    return HttpResponse.json(mockSubscriptionOptions);
   })
 );
 
