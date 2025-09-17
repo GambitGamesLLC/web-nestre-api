@@ -24,6 +24,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../../src/user/user-types.js').CreateReferralCodeConfirmationMessage } CreateReferralCodeConfirmationMessage
  * @typedef {import('../../src/mental-framing/mental-framing-types.js').MentalFramingContentIds} MentalFramingContentIds
  * @typedef {import('../../src/frame-it/frame-it-types.js').PersonalizedFrameIt} PersonalizedFrameIt
+ * @typedef {import('../../src/frame-it/frame-it-types.js').DeleteFrameConfirmationMessage} DeleteFrameConfirmationMessage
  * @typedef {import('../../src/assessment/assessment-types.js').RandomizedAssessmentQuestions} RandomizedAssessmentQuestions
  * @typedef {import('../../src/assessment/assessment-types.js').AssessmentResult} AssessmentResult
  * @typedef {import('../../src/content-interaction/content-interaction-types.js').ContentInteractionSuccessMessage } ContentInteractionSuccessMessage
@@ -120,6 +121,38 @@ handlers.push
   http.post(`${API_BASE_URL}/v${API_VERSION}/user/test-body`, async ({ request }) => {
     const requestBody = await request.json();
     return HttpResponse.json(requestBody);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - FRAME IT API - DELETE FRAME BY ID
+
+handlers.push(
+  http.delete(`${API_BASE_URL}/v${API_VERSION}/user/:userId/frame/:frameId`, ({ params }) => {
+    const { userId, frameId } = params;
+
+    if (userId === 'non-existent-user') {
+      return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (frameId === 'non-existent-frame') {
+      return new HttpResponse(JSON.stringify({ message: 'Frame not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (userId === USER_ID && frameId === 'some-frame-id') {
+      /** @type {DeleteFrameConfirmationMessage} */
+      const response = { message: 'Frame deleted successfully.' };
+      return HttpResponse.json(response);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'Frame not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
   })
 );
 

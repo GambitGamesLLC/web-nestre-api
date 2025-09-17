@@ -190,4 +190,47 @@ describe('FrameItApi', () => {
                 .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Frame not found');
         });
     });
+
+    describe('DeleteFrameById', () => {
+        const validFrameId = 'some-frame-id';
+
+        test('should delete a frame successfully', async () => {
+            const response = await frameItApi.DeleteFrameById(USER_ID, validFrameId);
+            expect(response).toEqual({ message: 'Frame deleted successfully.' });
+        });
+
+        test('should reject if userId is not a non-empty string', async () => {
+            await expect(frameItApi.DeleteFrameById(null, validFrameId))
+                .rejects
+                .toThrow('web-nestre-api : frame-it-api.js DeleteFrameById() Invalid userId: The userId must be a non-empty string.');
+            
+            await expect(frameItApi.DeleteFrameById('  ', validFrameId))
+                .rejects
+                .toThrow('web-nestre-api : frame-it-api.js DeleteFrameById() Invalid userId: The userId must be a non-empty string.');
+        });
+
+        test('should reject if frameId is not a non-empty string', async () => {
+            await expect(frameItApi.DeleteFrameById(USER_ID, null))
+                .rejects
+                .toThrow('web-nestre-api : frame-it-api.js DeleteFrameById() Invalid frameId: The frameId must be a non-empty string.');
+
+            await expect(frameItApi.DeleteFrameById(USER_ID, '  '))
+                .rejects
+                .toThrow('web-nestre-api : frame-it-api.js DeleteFrameById() Invalid frameId: The frameId must be a non-empty string.');
+        });
+
+        test('should fail if a non-existent userId is provided for the API call', async () => {
+            const nonExistentUserId = 'non-existent-user';
+            await expect(frameItApi.DeleteFrameById(nonExistentUserId, validFrameId))
+                .rejects
+                .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
+        });
+
+        test('should fail if a non-existent frameId is provided for the API call', async () => {
+            const nonExistentFrameId = 'non-existent-frame';
+            await expect(frameItApi.DeleteFrameById(USER_ID, nonExistentFrameId))
+                .rejects
+                .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Frame not found');
+        });
+    });
 });

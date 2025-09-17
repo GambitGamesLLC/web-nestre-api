@@ -43,5 +43,14 @@
 
 //#endregion
 
+//#region FRAME IT API - DELETE FRAME CONFIRMATION MESSAGE
+
+/**
+ * @typedef {object} DeleteFrameConfirmationMessage
+ * @property {string} message
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

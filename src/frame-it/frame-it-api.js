@@ -19,6 +19,7 @@ import { FrameItPhrasesSchema, UpdateFrameDataSchema } from './frame-it-schema.j
  * @typedef {import('./frame-it-types.js').FrameItPhrases } FrameItPhrases
  * @typedef {import('./frame-it-types.js').PersonalizedFrameIt } PersonalizedFrameIt
  * @typedef {import('./frame-it-types.js').UpdateFrameData } UpdateFrameData
+ * @typedef {import('./frame-it-types.js').DeleteFrameConfirmationMessage } DeleteFrameConfirmationMessage
 */
 
 //#endregion
@@ -154,6 +155,39 @@ export class FrameItApi
     return NestreApiManager.GetInstance().Request( HttpMethod.PATCH, `user/${userId}/frame/${frameId}`, updateFrameData);
 
   } //END UpdateFrame Method
+
+//#endregion
+
+//#region PUBLIC - DELETE FRAME BY ID
+
+ /**
+   * Permanently delete a frame and its associated image
+   * 
+   * @param {string} userId
+   * @param {string} frameId
+   * @returns {Promise<DeleteFrameConfirmationMessage>}
+   */
+  //-----------------------------------------------------------------------//
+  DeleteFrameById(userId, frameId) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : frame-it-api.js DeleteFrameById() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    // Check if the frameId is a valid non-empty string.
+    if (typeof frameId !== 'string' || frameId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : frame-it-api.js DeleteFrameById() Invalid frameId: The frameId must be a non-empty string."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.DELETE, `user/${userId}/frame/${frameId}`);
+
+  } //END DeleteFrameById Method
 
 //#endregion
 
