@@ -25,6 +25,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../../src/mental-framing/mental-framing-types.js').MentalFramingContentIds} MentalFramingContentIds
  * @typedef {import('../../src/frame-it/frame-it-types.js').PersonalizedFrameIt} PersonalizedFrameIt
  * @typedef {import('../../src/frame-it/frame-it-types.js').DeleteFrameConfirmationMessage} DeleteFrameConfirmationMessage
+ * @typedef {import('../../src/frame-it/frame-it-types.js').PersonalizedFrameGallery} PersonalizedFrameGallery
  * @typedef {import('../../src/assessment/assessment-types.js').RandomizedAssessmentQuestions} RandomizedAssessmentQuestions
  * @typedef {import('../../src/assessment/assessment-types.js').AssessmentResult} AssessmentResult
  * @typedef {import('../../src/content-interaction/content-interaction-types.js').ContentInteractionSuccessMessage } ContentInteractionSuccessMessage
@@ -121,6 +122,56 @@ handlers.push
   http.post(`${API_BASE_URL}/v${API_VERSION}/user/test-body`, async ({ request }) => {
     const requestBody = await request.json();
     return HttpResponse.json(requestBody);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - FRAME IT API - GET FRAME GALLERY
+
+/**
+ * Dummy personalized frame gallery object returned when mock testing
+ * @type {PersonalizedFrameGallery}
+ */
+const mockPersonalizedFrameGallery = {
+    frames: [
+        {
+            updated_at: "2024-01-01T12:00:00Z",
+            created_at: "2024-01-01T12:00:00Z",
+            id: "frame_123abc",
+            phrases: ["I am strong", "I am capable"],
+            wins: [],
+            completed: false,
+            image_url: "https://nestre-development.s3.amazonaws.com/frame-it/frame_123abc.png"
+        },
+        {
+            updated_at: "2024-01-02T12:00:00Z",
+            created_at: "2024-01-02T12:00:00Z",
+            id: "frame_456def",
+            phrases: ["I am focused", "I am calm"],
+            wins: ["Completed a project"],
+            completed: true,
+            image_url: "https://nestre-development.s3.amazonaws.com/frame-it/frame_456def.png"
+        }
+    ]
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/user/:userId/frames`, ({ params }) => {
+    const { userId } = params;
+
+    if (userId === 'non-existent-user') {
+      return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (userId === USER_ID) {
+      return HttpResponse.json(mockPersonalizedFrameGallery);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'User not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
   })
 );
 

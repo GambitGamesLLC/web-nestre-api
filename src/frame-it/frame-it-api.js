@@ -20,6 +20,7 @@ import { FrameItPhrasesSchema, UpdateFrameDataSchema } from './frame-it-schema.j
  * @typedef {import('./frame-it-types.js').PersonalizedFrameIt } PersonalizedFrameIt
  * @typedef {import('./frame-it-types.js').UpdateFrameData } UpdateFrameData
  * @typedef {import('./frame-it-types.js').DeleteFrameConfirmationMessage } DeleteFrameConfirmationMessage
+ * @typedef {import('./frame-it-types.js').PersonalizedFrameGallery } PersonalizedFrameGallery
 */
 
 //#endregion
@@ -188,6 +189,31 @@ export class FrameItApi
     return NestreApiManager.GetInstance().Request( HttpMethod.DELETE, `user/${userId}/frame/${frameId}`);
 
   } //END DeleteFrameById Method
+
+//#endregion
+
+//#region PUBLIC - GET FRAME GALLERY
+
+ /**
+   * Retrieve all frames created by the authenticated user
+   * 
+   * @param {string} userId
+   * @returns {Promise<PersonalizedFrameGallery>}
+   */
+  //-----------------------------------------------------------------------//
+  GetFrameGallery(userId) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the userId is a valid non-empty string.
+    if (typeof userId !== 'string' || userId.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : frame-it-api.js GetFrameGallery() Invalid userId: The userId must be a non-empty string."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `user/${userId}/frames`);
+
+  } //END GetFrameGallery Method
 
 //#endregion
 

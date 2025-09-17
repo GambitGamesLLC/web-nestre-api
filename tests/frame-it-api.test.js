@@ -233,4 +233,35 @@ describe('FrameItApi', () => {
                 .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Frame not found');
         });
     });
+
+    describe('GetFrameGallery', () => {
+        test('should get a frame gallery successfully', async () => {
+            const response = await frameItApi.GetFrameGallery(USER_ID);
+            expect(response).toHaveProperty('frames');
+            expect(Array.isArray(response.frames)).toBe(true);
+            expect(response.frames.length).toBeGreaterThan(0);
+            expect(response.frames[0]).toHaveProperty('id');
+        });
+
+        test('should reject if userId is not a non-empty string', async () => {
+            await expect(frameItApi.GetFrameGallery(null))
+                .rejects
+                .toThrow('web-nestre-api : frame-it-api.js GetFrameGallery() Invalid userId: The userId must be a non-empty string.');
+            
+            await expect(frameItApi.GetFrameGallery('  '))
+                .rejects
+                .toThrow('web-nestre-api : frame-it-api.js GetFrameGallery() Invalid userId: The userId must be a non-empty string.');
+
+            await expect(frameItApi.GetFrameGallery(123))
+                .rejects
+                .toThrow('web-nestre-api : frame-it-api.js GetFrameGallery() Invalid userId: The userId must be a non-empty string.');
+        });
+
+        test('should fail if a non-existent userId is provided for the API call', async () => {
+            const nonExistentUserId = 'non-existent-user';
+            await expect(frameItApi.GetFrameGallery(nonExistentUserId))
+                .rejects
+                .toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - User not found');
+        });
+    });
 });

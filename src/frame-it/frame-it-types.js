@@ -52,5 +52,15 @@
 
 //#endregion
 
+//#region FRAME IT API - FRAME GALLERY
+
+/**
+ * List of all user's frames with metadata
+ * @typedef {object} PersonalizedFrameGallery
+ * @property {PersonalizedFrameIt[]} frames
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};
