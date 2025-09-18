@@ -1072,3 +1072,60 @@ handlers.push(
 );
 
 //#endregion
+
+//#region MOCK SERVICE WORKERS - UTILITY API - SHORTEN URL
+
+handlers.push(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/util/shorten-url`, async ({ request }) => {
+    const originalUrl = await request.json();
+    // In a real scenario, we'd call a URL shortener. Here, we just return a mock.
+    if (typeof originalUrl === 'string' && originalUrl.startsWith('http')) {
+      return HttpResponse.json('https://sh.rt/url123');
+    }
+    return new HttpResponse('Invalid URL provided', { status: 400 });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - UTILITY API - IS AFTER NESTRE DAWN
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/util/is-after-nestre-dawn`, ({ request }) => {
+    const url = new URL(request.url);
+    const timestamp = url.searchParams.get('timestamp');
+
+    if (!timestamp) {
+      return new HttpResponse('Timestamp is required', { status: 400 });
+    }
+
+    try {
+      const date = new Date(timestamp);
+      // Mock Nestre dawn as 4 AM UTC for testing purposes
+      const dawnHourUTC = 4; 
+      const isAfter = date.getUTCHours() >= dawnHourUTC;
+      
+      return HttpResponse.json(isAfter);
+    } catch (e) {
+      return new HttpResponse('Invalid timestamp format', { status: 400 });
+    }
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - UTILITY API - LOG CLIENT ERROR
+
+handlers.push(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/util/log-client-error`, async ({ request }) => {
+    const errorLog = await request.json();
+    
+    if (errorLog && errorLog.message && errorLog.log_level) {
+      return HttpResponse.json('Client error logged successfully.');
+    }
+    
+    return new HttpResponse('Invalid error log provided', { status: 400 });
+  })
+);
+
+//#endregion
