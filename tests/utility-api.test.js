@@ -173,7 +173,7 @@ describe("utility-api.js LogClientError()", () => {
         /** @type {ErrorLog} */
         const errorLog = {
             message: 'Client-side test error',
-            log_level: 'error'
+            log_level: 'ERROR'
         };
 
         // Act
@@ -206,7 +206,7 @@ describe("utility-api.js LogClientError()", () => {
         const utilityApi = manager.utilityApi;
         const invalidErrorLogWithExtra = {
             message: 'This is a message',
-            log_level: 'warn',
+            log_level: 'WARN',
             extra_field: 'should not be here'
         };
 

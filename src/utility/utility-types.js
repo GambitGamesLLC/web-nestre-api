@@ -19,10 +19,14 @@
 //#region UTILITY API - ERROR LOG
 
 /**
+ * @typedef {'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'FATAL'} LogLevel
+ */
+
+/**
  * Request body for LogClientError() in the utility-api
  * @typedef {object} ErrorLog
  * @property {string} message
- * @property {string} log_level
+ * @property {LogLevel} log_level
  */
 
 //#endregion

@@ -28,7 +28,7 @@ export const UrlSchema = Joi.string().uri().required();
  */
 export const ErrorLogSchema = Joi.object({
     message: Joi.string().required(),
-    log_level: Joi.string().required()
+    log_level: Joi.string().valid('TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL').required()
 }).unknown(false); // Prevents unknown keys
 
 //#endregion
