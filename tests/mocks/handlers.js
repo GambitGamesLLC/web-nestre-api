@@ -22,6 +22,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../../src/user/user-types.js').DeleteConfirmationMessage } DeleteConfirmationMessage
  * @typedef {import('../../src/user/user-types.js').CreateReferralCode } CreateReferralCode
  * @typedef {import('../../src/user/user-types.js').CreateReferralCodeConfirmationMessage } CreateReferralCodeConfirmationMessage
+ * @typedef {import('../../src/user-search/user-search-types.js').UserProfileData} UserProfileData
  * @typedef {import('../../src/mental-framing/mental-framing-types.js').MentalFramingContentIds} MentalFramingContentIds
  * @typedef {import('../../src/frame-it/frame-it-types.js').PersonalizedFrameIt} PersonalizedFrameIt
  * @typedef {import('../../src/frame-it/frame-it-types.js').DeleteFrameConfirmationMessage} DeleteFrameConfirmationMessage
@@ -399,6 +400,52 @@ handlers.push
     
   })
   
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - CREATE MOCK USER PROFILE DATA JSON DATA
+
+/**
+ * Dummy user profile data returned when mock testing
+ * @type {UserProfileData}
+ */
+const mockUserProfileData = {
+    user_id: USER_ID,
+    firstname: "Derrick",
+    lastname: "Barra",
+    email: USER_EMAIL,
+    date_of_birth: "1980-01-01",
+    profile_photo: "https://example.com/photo.jpg",
+    mindset_profile: {
+        id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        alpha: 0.8,
+        cerebral: 0.6,
+        prime: 0.9,
+        created_at: "2024-01-01T12:00:00Z",
+        assessment_summary: ["You are awesome.", "Keep it up."]
+    }
+};
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - USER SEARCH API - GET USER PROFILE FROM ASSESSMENT
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/search/profile-for-assessment`, ({ request }) => {
+    const url = new URL(request.url);
+    const assessmentId = url.searchParams.get('assessment_id');
+    const ASSESSMENT_ID = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+
+    if (assessmentId === ASSESSMENT_ID) {
+      return HttpResponse.json(mockUserProfileData);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'Assessment not found' }), {
+      status: 404,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  })
 );
 
 //#endregion

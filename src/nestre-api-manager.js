@@ -24,6 +24,7 @@ import { ContentRecommendationsApi  } from './content-recommendations/content-re
 import { FrameItApi  } from './frame-it/frame-it-api.js';
 import { LookupApi } from './lookup/lookup-api.js';
 import { UtilityApi } from './utility/utility-api.js';
+import { UserSearchApi } from './user-search/user-search-api.js';
 
 //Custom error class returned by our Request() when we have a 500 status code in our server Api response
 import { InternalServerError } from './errors/internal-server-error.js';
@@ -165,6 +166,12 @@ export class NestreApiManager
    * */
   utilityApi = null;
 
+  /**
+   * Reference to the LookupApi object
+   * @type {UserSearchApi}
+   * */
+  userSearchApi = null;
+
 //#endregion
 
 //#region PUBLIC - CONSTRUCTOR
@@ -215,6 +222,9 @@ constructor()
 
     this.utilityApi = null;
     this.utilityApi = new UtilityApi();
+
+    this.userSearchApi = null;
+    this.userSearchApi = new UserSearchApi();
 
 } //END constructor Method
 

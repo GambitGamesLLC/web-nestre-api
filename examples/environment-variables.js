@@ -27,6 +27,12 @@ export const API_VERSION = 2;
 export const USER_ID = "2480b679-93ca-49e8-9de0-515aac99846a";
 
 /**
+ * Assessment identifier to user for lookups
+ * @type{string}
+ */
+export const ASSESSMENT_ID = "2480b679-93ca-49e8-9de0-515aac99846a";
+
+/**
  * Authorization token granted for us to access the Nestre API
  * @type{string}
  */
