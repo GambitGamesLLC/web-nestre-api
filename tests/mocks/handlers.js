@@ -1129,3 +1129,13 @@ handlers.push(
 );
 
 //#endregion
+
+//#region MOCK SERVICE WORKERS - UTILITY API - PING
+
+handlers.push(
+  http.get(`${API_BASE_URL}/ping`, () => {
+    return HttpResponse.text('Hello, Appservices are alive.');
+  })
+);
+
+//#endregion

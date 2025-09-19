@@ -331,10 +331,11 @@ SetApiVersion( version )
    * @param {HttpMethodValue} httpMethodValue - The HTTP method to use (GET, POST, PATCH, DELETE).
    * @param {string} endpoint - The API endpoint path.
    * @param {object} [body] - The request body for POST/PATCH requests.
+   * @param {boolean} ignoreApiVersion - Should we exclude the /v#/ from the Request url?
    * @returns {Promise<T>}
    */
   //----------------------------------------------------------------------------//
-  async Request(httpMethodValue, endpoint, body)
+  async Request(httpMethodValue, endpoint, body, ignoreApiVersion)
   //----------------------------------------------------------------------------//
   {
     if( NestreApiManager.instance === null || NestreApiManager.instance === undefined )
@@ -373,7 +374,12 @@ SetApiVersion( version )
     }
 
     //Combine our baseUrl and the endpoint to form the full url
-    const url = `${this._baseUrl}/v${this._version}/${endpoint}`;
+    let url = `${this._baseUrl}/v${this._version}/${endpoint}`;
+
+    if( ignoreApiVersion )
+    {
+      url = `${this._baseUrl}/${endpoint}`;
+    }
 
     //Our response content-type will always be a JSON object
     const headers = { 'Content-Type': 'application/json' };

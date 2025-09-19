@@ -218,3 +218,40 @@ describe("utility-api.js LogClientError()", () => {
 });
 
 //#endregion
+
+//#region DESCRIBE - utility-api.js - Ping()
+
+describe("utility-api.js Ping()", () => {
+    it('should ping the service and return a success message', async () => {
+        // Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        manager.SetAuthToken(AUTH_TOKEN);
+
+        const utilityApi = manager.utilityApi;
+
+        // Act
+        const result = await utilityApi.Ping();
+
+        // Assert
+        expect(result).toBe('Hello, Appservices are alive.');
+    });
+
+    it('should throw an error if auth token is not set', async () => {
+        // Arrange
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+        // No auth token set
+
+        const utilityApi = manager.utilityApi;
+
+        // Act & Assert
+        await expect(utilityApi.Ping()).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string');
+    });
+});
+
+//#endregion

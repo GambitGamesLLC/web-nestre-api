@@ -125,5 +125,23 @@ export class UtilityApi
 
 //#endregion
 
+//#region PUBLIC - PING
+
+ /**
+   * Simple ping endpoint to verify service availability.
+   * 
+   * @returns {Promise<string>} A simple text response indicating the service is running.
+   */
+  //-----------------------------------------------------------------------//
+  Ping() 
+  //-----------------------------------------------------------------------//
+  {
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `ping`, null, true);
+
+  } //END Ping Method
+
+//#endregion
+
 
 } //END UtilityApi Class
