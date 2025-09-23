@@ -26,6 +26,7 @@ import { LookupApi } from './lookup/lookup-api.js';
 import { UtilityApi } from './utility/utility-api.js';
 import { UserSearchApi } from './user-search/user-search-api.js';
 import { AssessmentSearchApi } from './assessment-search/assessment-search-api.js';
+import { OrganizationApi } from './organization/organization-api.js';
 
 //Custom error class returned by our Request() when we have a 500 status code in our server Api response
 import { InternalServerError } from './errors/internal-server-error.js';
@@ -162,22 +163,28 @@ export class NestreApiManager
   lookupApi = null;
 
   /**
-   * Reference to the LookupApi object
+   * Reference to the UtilityApi object
    * @type {UtilityApi}
    * */
   utilityApi = null;
 
   /**
-   * Reference to the LookupApi object
+   * Reference to the UserSearchApi object
    * @type {UserSearchApi}
    * */
   userSearchApi = null;
 
   /**
-   * Reference to the AssessnentSearchApi object
+   * Reference to the AssessmentSearchApi object
    * @type {AssessmentSearchApi}
    * */
-  AssessmentSearchApi = null;
+  assessmentSearchApi = null;
+
+  /**
+   * Reference to the OrganizationApi object
+   * @type {OrganizationApi}
+   * */
+  OrganizationApi = null;
 
 //#endregion
 
@@ -234,7 +241,10 @@ constructor()
     this.userSearchApi = new UserSearchApi();
 
     this.assessmentSearchApi = null;
-    this.assessmentSearchApi = new AssessmentSearchApi();
+    this.assessmentSearchApi = new AssessmentSearchApi(); // Corrected property name
+
+    this.organizationApi = null;
+    this.organizationApi = new OrganizationApi();
 
 } //END constructor Method
 

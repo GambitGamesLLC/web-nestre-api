@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NESTRE API Client Test - Get Organization User Details</title>
+    <style>
+        body { font-family: sans-serif; padding: 1em; }
+        .input-group { margin-bottom: 10px; }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 300px; padding: 8px; }
+        button { padding: 8px 15px; margin-top: 10px; }
+        #output { margin-top: 20px; white-space: pre-wrap; background-color: #f4f4f4; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>NESTRE API Client Test - Get Organization User Details</h1>
+    <p>Retrieve detailed user information for registered users in an organization. You can optionally filter by tag (though tag filtering is primarily for members, not user details directly) or a partial email string.</p>
+
+    <div class="input-group">
+        <label for="organizationIdInput">Organization ID:</label>
+        <input type="text" id="organizationIdInput" value="org_123">
+    </div>
+    <div class="input-group">
+        <label for="tagInput">Tag (optional):</label>
+        <input type="text" id="tagInput" value="">
+    </div>
+    <div class="input-group">
+        <label for="emailSearchInput">Email Search (optional, min 3 chars):</label>
+        <input type="text" id="emailSearchInput" value="">
+    </div>
+    
+    <div class="input-group">
+        <label for="authTokenInput">Auth Token (JWT):</label>
+        <input type="text" id="authTokenInput" value="">
+    </div>
+
+    <button id="runTestBtn">Run Test</button>
+
+    <div id="output">Test results will appear here...</div>
+
+    <script type="module">
+        import { AUTH_TOKEN } from '../../environment-variables.js';
+        document.getElementById('authTokenInput').value = AUTH_TOKEN;
+    </script>
+
+    <script type="module" src="index.js"></script>
+</body>
+</html>

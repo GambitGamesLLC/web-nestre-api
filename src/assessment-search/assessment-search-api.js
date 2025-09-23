@@ -3,7 +3,7 @@
  * @file Handles API requests related to assessments.
  * @description Provides a singleton class, `AssessmentSearchApi`. 
  * This file centralizes all assessment search specific API logic.
- * The `AssessmentApi` class here is created automatically by the NestreApiManager class during construction
+ * The `AssessmentSearchApi` class here is created automatically by the NestreApiManager class during construction
  * @exports {AssessmentSearchApi}
  * @requires {NestreApiManager} from '../nestre-api-manager.js'
  * @requires {Joi} for schema validation
