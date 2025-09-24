@@ -18,6 +18,7 @@ import { AuthenticationRequestSchema } from './development-schemas.js';
 /**
  * @typedef {import('./development-types.js').AuthenticationRequest } AuthenticationRequest
  * @typedef {import('./development-types.js').AuthenticationData } AuthenticationData
+ * @typedef {import('./development-types.js').DeveloperAccessData } DeveloperAccessData
 */
 
 //#endregion
@@ -70,6 +71,23 @@ export class DevelopmentApi
 
   } //END Authenticate Method
 
+//#endregion
+
+//#region PUBLIC - GET STAFF ACCESS TOKEN
+
+ /**
+   * This endpoint retrieves the access token for the currently logged-in staff user. Required for calling Admin App or Neurolabs endpoints.
+   * 
+   * @returns {Promise<DeveloperAccessData>}
+   */
+  //-----------------------------------------------------------------------//
+  GetStaffAccessToken() 
+  //-----------------------------------------------------------------------//
+  {
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `dev/staff-access-token`, null, true, false);
+
+  } //END GetStaffAccessToken Method
 
 //#endregion
 

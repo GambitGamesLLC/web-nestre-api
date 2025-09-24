@@ -36,6 +36,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../../src/organization/organization-types.js').OrganizationMembers} OrganizationMembers
  * @typedef {import('../../src/organization/organization-types.js').OrganizationData} OrganizationData
  * @typedef {import('../../src/development/development-types.js').AuthenticationData} AuthenticationData
+ * @typedef {import('../../src/development/development-types.js').DeveloperAccessData} DeveloperAccessData
  */
 
 //Import the BASE_URL from our environment-variables.js
@@ -163,6 +164,28 @@ handlers.push(
   })
 );
 
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - DEVELOPMENT API - GET STAFF ACCESS TOKEN
+
+/**
+ * @type {DeveloperAccessData}
+ */
+const mockDeveloperAccessData = {
+    AccessToken: "mock-staff-access-token"
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/dev/staff-access-token`, ({ request }) => {
+    const authHeader = request.headers.get('Authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      return HttpResponse.json(mockDeveloperAccessData);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'Authorization header missing or invalid.' }), { status: 401 });
+  })
+);
 
 //#endregion
 

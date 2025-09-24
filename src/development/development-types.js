@@ -31,5 +31,14 @@
 
 //#endregion
 
+//#region DEVELOPMENT API - DEVELOPER ACCESS DATA
+
+/**
+ * @typedef {object} DeveloperAccessData
+ * @property {string} AccessToken
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

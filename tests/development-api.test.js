@@ -16,12 +16,16 @@ import { NestreApiManager } from '../src/nestre-api-manager.js';
 //Import the BASE_URL from our environment-variables.js
 import { API_BASE_URL } from '../examples/environment-variables.js';
 
+//Import the AUTH_TOKEN from our environment-variables.js
+import { AUTH_TOKEN } from '../examples/environment-variables.js';
+
 //Import the API_VERSION from our environment-variables.js
 import { API_VERSION } from '../examples/environment-variables.js';
 
 /**
  * @typedef {import('../src/development/development-types.js').AuthenticationRequest } AuthenticationRequest
  * @typedef {import('../src/development/development-types.js').AuthenticationData } AuthenticationData
+ * @typedef {import('../src/development/development-types.js').DeveloperAccessData } DeveloperAccessData
  */
 
 //#endregion
@@ -41,6 +45,46 @@ describe( "development-api.js constructor", ()=>
         //Assert
         expect( manager.developmentApi ).not.toBe( null );
         expect( manager.developmentApi ).toBeDefined();
+    });
+});
+
+//#endregion
+
+//#region DESCRIBE - development-api.js - GetStaffAccessToken()
+
+describe( "development-api.js GetStaffAccessToken()", () =>
+{
+    beforeEach(() => {
+        NestreApiManager.instance = null;
+        const manager = NestreApiManager.GetInstance();
+        manager.SetBaseUrl(API_BASE_URL);
+        manager.SetApiVersion(API_VERSION);
+    });
+
+    it('should get a staff access token and return developer access data', async () =>
+    {
+        // Arrange
+        const manager = NestreApiManager.GetInstance();
+        manager.SetAuthToken(AUTH_TOKEN);
+        const developmentApi = manager.developmentApi;
+
+        // Act
+        const accessData = await developmentApi.GetStaffAccessToken();
+
+        // Assert
+        expect(accessData).toBeDefined();
+        expect(accessData.AccessToken).toBe('mock-staff-access-token');
+    });
+
+    it('should throw an authorization error if no auth token is provided', async () => {
+        // Arrange
+        const developmentApi = NestreApiManager.GetInstance().developmentApi;
+        // Note: No auth token is set in this test.
+
+        // Act & Assert
+        await expect(
+            developmentApi.GetStaffAccessToken()
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string');
     });
 });
 
