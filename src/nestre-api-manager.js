@@ -27,6 +27,7 @@ import { UtilityApi } from './utility/utility-api.js';
 import { UserSearchApi } from './user-search/user-search-api.js';
 import { AssessmentSearchApi } from './assessment-search/assessment-search-api.js';
 import { OrganizationApi } from './organization/organization-api.js';
+import { DevelopmentApi } from './development/development-api.js';
 
 //Custom error class returned by our Request() when we have a 500 status code in our server Api response
 import { InternalServerError } from './errors/internal-server-error.js';
@@ -186,6 +187,12 @@ export class NestreApiManager
    * */
   OrganizationApi = null;
 
+  /**
+   * Reference to the DevelopmentApi object
+   * @type {DevelopmentApi}
+   * */
+  DevelopmentApi = null;
+
 //#endregion
 
 //#region PUBLIC - CONSTRUCTOR
@@ -241,10 +248,13 @@ constructor()
     this.userSearchApi = new UserSearchApi();
 
     this.assessmentSearchApi = null;
-    this.assessmentSearchApi = new AssessmentSearchApi(); // Corrected property name
+    this.assessmentSearchApi = new AssessmentSearchApi();
 
     this.organizationApi = null;
     this.organizationApi = new OrganizationApi();
+
+    this.developmentApi = null;
+    this.developmentApi = new DevelopmentApi();
 
 } //END constructor Method
 
@@ -362,10 +372,11 @@ SetApiVersion( version )
    * @param {string} endpoint - The API endpoint path.
    * @param {object} [body] - The request body for POST/PATCH requests.
    * @param {boolean} ignoreApiVersion - Should we exclude the /v#/ from the Request url?
+   * @param {boolean} ignoreAuthToken - Should we ignore if the auth token is not set?
    * @returns {Promise<T>}
    */
   //----------------------------------------------------------------------------//
-  async Request(httpMethodValue, endpoint, body, ignoreApiVersion)
+  async Request(httpMethodValue, endpoint, body, ignoreApiVersion, ignoreAuthToken)
   //----------------------------------------------------------------------------//
   {
     if( NestreApiManager.instance === null || NestreApiManager.instance === undefined )
@@ -385,7 +396,10 @@ SetApiVersion( version )
 
     if( this._authToken === null || this._authToken === undefined || this._authToken === '')
     {
-      throw new Error( "web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string");
+      if( !ignoreAuthToken )
+      {
+        throw new Error( "web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string");
+      }
     }
 
     if( httpMethodValue === null || httpMethodValue === undefined || httpMethodValue === '' )

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NESTRE API Client Test - Development Authenticate</title>
+    <style>
+        body { font-family: sans-serif; padding: 1em; }
+        input { width: 300px; padding: 8px; margin-bottom: 10px; }
+        button { padding: 8px 15px; }
+        #output { margin-top: 20px; white-space: pre-wrap; background-color: #f4f4f4; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>NESTRE API Client Test - Development Authenticate</h1>
+
+    <div>
+        <label for="usernameInput">Username:</label><br>
+        <input type="text" id="usernameInput" value="derrick@nestrehealthandperformance.com">
+    </div>
+    
+    <div>
+        <label for="passwordInput">Password:</label><br>
+        <input type="password" id="passwordInput" value="Nestre!@2025">
+    </div>
+
+    <button id="runTestBtn">Run Test</button>
+
+    <div id="output">Test results will appear here...</div>
+
+    <script type="module">
+        // For this example, you can manually enter credentials.
+        // You might want to add environment variables for these for automated testing.
+        const usernameInput = document.getElementById('usernameInput');
+        
+    </script>
+
+    <script type="module" src="index.js"></script>
+</body>
+</html>

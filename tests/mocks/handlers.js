@@ -35,6 +35,7 @@ import { http, HttpResponse } from 'msw';
  * @typedef {import('../../src/organization/organization-types.js').Organizations} Organizations
  * @typedef {import('../../src/organization/organization-types.js').OrganizationMembers} OrganizationMembers
  * @typedef {import('../../src/organization/organization-types.js').OrganizationData} OrganizationData
+ * @typedef {import('../../src/development/development-types.js').AuthenticationData} AuthenticationData
  */
 
 //Import the BASE_URL from our environment-variables.js
@@ -129,6 +130,39 @@ handlers.push
     return HttpResponse.json(requestBody);
   })
 );
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - DEVELOPMENT API - AUTHENTICATE
+
+/**
+ * @type {AuthenticationData}
+ */
+const mockAuthenticationData = {
+    AccessToken: "mock-access-token",
+    ExpiresIn: 3600,
+    TokenType: "Bearer",
+    RefreshToken: "mock-refresh-token",
+    IdToken: "mock-id-token"
+};
+
+handlers.push(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/dev/app-user-cognito-login`, async ({ request }) => {
+    const body = await request.json();
+
+    if (body.username === 'testuser' && body.password === 'testpassword') {
+      return HttpResponse.json(mockAuthenticationData);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'Incorrect username or password.' }), {
+      status: 400,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  })
+);
+
 
 //#endregion
 

@@ -24,6 +24,7 @@ export * from './lookup/lookup-types.js';
 export * from './utility/utility-types.js';
 export * from './user-search/user-search-types.js';
 export * from './assessment-search/assessment-search-types.js';
+export * from './organization/organization-types.js';
 
 // Re-export the error classes
 export * from './errors/authorization-error.js';
