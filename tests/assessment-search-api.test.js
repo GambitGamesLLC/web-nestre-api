@@ -276,6 +276,36 @@ describe("assessment-search-api.js GetUsersWithTheirAssessments()", () => {
         expect(users[0].assessments).toBeDefined();
         expect(users[0].assessments.length).toBeGreaterThan(0);
     });
+
+    it('should fetch users with their assessments successfully using Date objects', async () => {
+        // Arrange
+        const assessmentSearchApi = NestreApiManager.GetInstance().assessmentSearchApi;
+        const fromDate = new Date('2023-01-01T00:00:00.000Z');
+        const toDate = new Date('2024-01-01T00:00:00.000Z');
+
+        const searchParams = {
+            firstname: null,
+            lastname: null,
+            email: null,
+            date_of_birth: null,
+            account_created_date_from: fromDate,
+            account_created_date_to: toDate
+        };
+
+        // Act
+        const users = await assessmentSearchApi.GetUsersWithTheirAssessments(
+            searchParams.firstname,
+            searchParams.lastname,
+            searchParams.email,
+            searchParams.date_of_birth,
+            searchParams.account_created_date_from,
+            searchParams.account_created_date_to
+        );
+
+        // Assert
+        expect(users).toBeDefined();
+        expect(Array.isArray(users)).toBe(true);
+    });
 });
 
 //#endregion

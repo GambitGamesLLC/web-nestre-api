@@ -134,61 +134,6 @@ handlers.push
 
 //#endregion
 
-//#region MOCK SERVICE WORKERS - DEVELOPMENT API - AUTHENTICATE
-
-/**
- * @type {AuthenticationData}
- */
-const mockAuthenticationData = {
-    AccessToken: "mock-access-token",
-    ExpiresIn: 3600,
-    TokenType: "Bearer",
-    RefreshToken: "mock-refresh-token",
-    IdToken: "mock-id-token"
-};
-
-handlers.push(
-  http.post(`${API_BASE_URL}/v${API_VERSION}/dev/app-user-cognito-login`, async ({ request }) => {
-    const body = await request.json();
-
-    if (body.username === 'testuser' && body.password === 'testpassword') {
-      return HttpResponse.json(mockAuthenticationData);
-    }
-
-    return new HttpResponse(JSON.stringify({ message: 'Incorrect username or password.' }), {
-      status: 400,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  })
-);
-
-
-//#endregion
-
-//#region MOCK SERVICE WORKERS - DEVELOPMENT API - GET STAFF ACCESS TOKEN
-
-/**
- * @type {DeveloperAccessData}
- */
-const mockDeveloperAccessData = {
-    AccessToken: "mock-staff-access-token"
-};
-
-handlers.push(
-  http.get(`${API_BASE_URL}/dev/staff-access-token`, ({ request }) => {
-    const authHeader = request.headers.get('Authorization');
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      return HttpResponse.json(mockDeveloperAccessData);
-    }
-
-    return new HttpResponse(JSON.stringify({ message: 'Authorization header missing or invalid.' }), { status: 401 });
-  })
-);
-
-//#endregion
-
 //#region MOCK SERVICE WORKERS - USER API - GET - ERROR - 404
 
 handlers.push
@@ -1522,6 +1467,61 @@ handlers.push(
     }
 
     return HttpResponse.json(mockUsersMatchingAssessmentCriteria);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - DEVELOPMENT API - AUTHENTICATE
+
+/**
+ * @type {AuthenticationData}
+ */
+const mockAuthenticationData = {
+    AccessToken: "mock-access-token",
+    ExpiresIn: 3600,
+    TokenType: "Bearer",
+    RefreshToken: "mock-refresh-token",
+    IdToken: "mock-id-token"
+};
+
+handlers.push(
+  http.post(`${API_BASE_URL}/dev/app-user-cognito-login`, async ({ request }) => {
+    const body = await request.json();
+
+    if (body.username === 'testuser' && body.password === 'testpassword') {
+      return HttpResponse.json(mockAuthenticationData);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'Incorrect username or password.' }), {
+      status: 400,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  })
+);
+
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - DEVELOPMENT API - GET STAFF ACCESS TOKEN
+
+/**
+ * @type {DeveloperAccessData}
+ */
+const mockDeveloperAccessData = {
+    AccessToken: "mock-staff-access-token"
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/dev/staff-access-token`, ({ request }) => {
+    const authHeader = request.headers.get('Authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      return HttpResponse.json(mockDeveloperAccessData);
+    }
+
+    return new HttpResponse(JSON.stringify({ message: 'Authorization header missing or invalid.' }), { status: 401 });
   })
 );
 

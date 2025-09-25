@@ -85,7 +85,7 @@ export class DevelopmentApi
   //-----------------------------------------------------------------------//
   {
 
-    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `dev/staff-access-token`, null, true, false);
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `dev/staff-access-token`, null, true);
 
   } //END GetStaffAccessToken Method
 
