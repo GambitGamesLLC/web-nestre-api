@@ -12,25 +12,25 @@
 //#region IMPORTS
 
 // Import what we want to test
-import { NestreApiManager } from '../src/nestre-api-manager.js';
+import { NestreApiManager } from '../../src/nestre-api-manager.js';
 
 //Import the BASE_URL from our environment-variables.js
-import { API_BASE_URL } from '../examples/environment-variables.js';
+import { API_BASE_URL } from '../../examples/environment-variables.js';
 
 //Import the API_VERSION from our environment-variables.js
-import { API_VERSION } from '../examples/environment-variables.js';
+import { API_VERSION } from '../../examples/environment-variables.js';
 
 //Import the AUTH_TOKEN from our environment-variables.js
-import { AUTH_TOKEN } from '../examples/environment-variables.js';
+import { AUTH_TOKEN } from '../../examples/environment-variables.js';
 
 //Import the USER_ID from our environment-variables.js
-import { USER_ID } from '../examples/environment-variables.js';
+import { USER_ID } from '../../examples/environment-variables.js';
 
-import { server } from './mocks/server.js';
+import { server } from '../mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
 /**
- * @typedef {import('../src/mental-framing/mental-framing-types.js').MentalFramingContentIds } MentalFramingContentIds
+ * @typedef {import('../../src/mental-framing/mental-framing-types.js').MentalFramingContentIds } MentalFramingContentIds
  */
 
 //#endregion
@@ -129,15 +129,11 @@ describe("mental-framing-api.js GetMentalFramingContentIds - Error Handling", ()
     it("should throw an error when the API returns an error", async () => 
     {
         // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/mental-framing`, () => {
-                return HttpResponse.json({ detail: 'Internal Server Error' }, { status: 500 });
-            })
-        );
         const manager = NestreApiManager.GetInstance();
+        const errorUserId = 'error-user';
 
         // Act & Assert
-        await expect(manager.mentalFramingApi.GetMentalFramingContentIds(USER_ID)).rejects.toThrow("web-nestre-api : nestre-api-manager.js API Error (500). Internal server error.");
+        await expect(manager.mentalFramingApi.GetMentalFramingContentIds(errorUserId)).rejects.toThrow("web-nestre-api : nestre-api-manager.js API Error (500). Internal server error.");
     });
 });
 

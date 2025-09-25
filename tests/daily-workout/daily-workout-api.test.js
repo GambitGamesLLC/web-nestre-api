@@ -11,25 +11,25 @@
 //#region IMPORTS
 
 // Import what we want to test
-import { NestreApiManager } from '../src/nestre-api-manager.js';
+import { NestreApiManager } from '../../src/nestre-api-manager.js';
 
 //Import the BASE_URL from our environment-variables.js
-import { API_BASE_URL } from '../examples/environment-variables.js';
+import { API_BASE_URL } from '../../examples/environment-variables.js';
 
 //Import the API_VERSION from our environment-variables.js
-import { API_VERSION } from '../examples/environment-variables.js';
+import { API_VERSION } from '../../examples/environment-variables.js';
 
 //Import the AUTH_TOKEN from our environment-variables.js
-import { AUTH_TOKEN } from '../examples/environment-variables.js';
+import { AUTH_TOKEN } from '../../examples/environment-variables.js';
 
 //Import the USER_ID from our environment-variables.js
-import { USER_ID } from '../examples/environment-variables.js';
+import { USER_ID } from '../../examples/environment-variables.js';
 
-import { server } from '../tests/mocks/server.js';
+import { server } from '../mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
 /**
- * @typedef {import('../src/daily-workout/daily-workout-types.js').DailyWorkoutRecommendation } DailyWorkoutRecommendation
+ * @typedef {import('../../src/daily-workout/daily-workout-types.js').DailyWorkoutRecommendation } DailyWorkoutRecommendation
  */
 
 //#endregion
@@ -80,19 +80,6 @@ describe( "daily-workout-api.js GetDailyWorkoutRecommendation()", () =>
                 },
             ],
         };
-
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/daily-workout`, () => {
-                return HttpResponse.json(mockRecommendation, 
-                {
-                    status: 200,
-                    headers: 
-                    {
-                        'Content-Type': 'application/json',
-                    },
-                });
-            })
-        );
 
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
@@ -153,17 +140,7 @@ describe("daily-workout-api.js GetDailyWorkoutRecommendation() - Error Handling"
     it('should throw an error if the user is not found', async () => {
         // Arrange
         const nonExistentUserId = 'non-existent-user-id';
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${nonExistentUserId}/daily-workout`, () => {
-                return new HttpResponse(JSON.stringify({ message: 'User not found' }), {
-                    status: 404,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-            })
-        );
-
+        
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
         manager.SetBaseUrl(API_BASE_URL);

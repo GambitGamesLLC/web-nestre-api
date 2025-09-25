@@ -11,12 +11,12 @@
 //#region IMPORTS
 
 // Import what we want to test
-import { NestreApiManager } from '../src/nestre-api-manager.js';
-import { server } from './mocks/server.js';
-import { API_BASE_URL, API_VERSION, USER_ID, AUTH_TOKEN } from '../examples/environment-variables.js';
+import { NestreApiManager } from '../../src/nestre-api-manager.js';
+import { server } from '../mocks/server.js';
+import { API_BASE_URL, API_VERSION, USER_ID, AUTH_TOKEN } from '../../examples/environment-variables.js';
 
 /**
- * @typedef {import('../src/lookup/lookup-api.js').LookupApi } LookupApi
+ * @typedef {import('../../src/lookup/lookup-api.js').LookupApi } LookupApi
  */
 
 //#endregion

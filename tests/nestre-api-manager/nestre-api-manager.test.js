@@ -13,42 +13,42 @@
 //#region IMPORTS
 
 // Import what we want to test
-import { NestreApiManager, HttpMethod } from '../src/nestre-api-manager.js';
+import { NestreApiManager, HttpMethod } from '../../src/nestre-api-manager/nestre-api-manager.js';
 
 //Import the BASE_URL from our environment-variables.js
-import { API_BASE_URL } from '../examples/environment-variables.js';
+import { API_BASE_URL } from '../../examples/environment-variables.js';
 
 //Import the API_VERSION from our environment-variables.js
-import { API_VERSION } from '../examples/environment-variables.js';
+import { API_VERSION } from '../../examples/environment-variables.js';
 
 //Import the AUTH_TOKEN from our environment-variables.js
-import { AUTH_TOKEN } from '../examples/environment-variables.js';
+import { AUTH_TOKEN } from '../../examples/environment-variables.js';
 
 //Import the USER_ID from our environment-variables.js
-import { USER_ID } from '../examples/environment-variables.js';
+import { USER_ID } from '../../examples/environment-variables.js';
 
 //Import the USER_EMAIL from our environment-variables.js
-import { USER_EMAIL } from '../examples/environment-variables.js';
+import { USER_EMAIL } from '../../examples/environment-variables.js';
 
 //Import the BasicUserProfile used to mock the return data from the get-user-by-email call
 /**
- * @typedef {import('../src/user/user-types.js').BasicUserProfile } BasicUserProfile
+ * @typedef {import('../../src/user/user-types.js').BasicUserProfile } BasicUserProfile
  */
 
 //Import the ValidationError json message shape
 /**
- * @typedef {import('../src/errors/validation-error.js').ValidationDetail } ValidationDetail
+ * @typedef {import('../../src/errors/validation-error.js').ValidationDetail } ValidationDetail
  */
 
-import { server } from '../tests/mocks/server.js';
+import { server } from '../mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
 //Custom error class returned by our nestre-api-manager.js Request()
-import { ValidationError } from '../src/errors/validation-error.js';
-import { AuthorizationError } from '../src/errors/authorization-error.js';
-import { InternalServerError } from '../src/errors/internal-server-error.js';
-import { GeneralError } from '../src/errors/general-error.js';
-import { ForbiddenError } from '../src/errors/forbidden-error.js';
+import { ValidationError } from '../../src/errors/validation-error.js';
+import { AuthorizationError } from '../../src/errors/authorization-error.js';
+import { InternalServerError } from '../../src/errors/internal-server-error.js';
+import { GeneralError } from '../../src/errors/general-error.js';
+import { ForbiddenError } from '../../src/errors/forbidden-error.js';
 
 //#endregion
 
@@ -775,53 +775,16 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         expect(result).toBe(null);
     });
 
-    it('should return an "Unknown Error" if the errorData.message is null', async () =>
-    {
-        // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/general-error`, () => {
-                return new HttpResponse(null, {
-                    status: 499,
-                    headers: {
-                        'Content-Type': 'text/html',
-                    },
-                });
-            })
-        );
-
-        NestreApiManager.instance = null;
-        const instance = NestreApiManager.GetInstance();
-        instance.SetBaseUrl(API_BASE_URL);
-        instance.SetApiVersion(API_VERSION);
-        instance.SetAuthToken(AUTH_TOKEN);
-
-        // Act
-        await expect(
-            instance.Request(HttpMethod.GET, `user/general-error`)
-        ).rejects.toThrow(Error);
-    });
-
     it('should return an General Error if the response status is 400', async () =>
     {
         // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/general-error`, () => {
-                return new HttpResponse('General Error', {
-                    status: 400,
-                    headers: {
-                        'Content-Type': 'text/html',
-                    },
-                });
-            })
-        );
-
         NestreApiManager.instance = null;
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
         instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
-        // Act
+        // Act & Assert
         await expect(
             instance.Request(HttpMethod.GET, `user/general-error`)
         ).rejects.toThrow(GeneralError);
@@ -830,24 +793,13 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
     it('should return an Authorization Error if the response status is 401', async () =>
     {
         // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/no-auth-token`, () => {
-                return new HttpResponse('Authorization failed', {
-                    status: 401,
-                    headers: {
-                        'Content-Type': 'text/html',
-                    },
-                });
-            })
-        );
-
         NestreApiManager.instance = null;
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
         instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken("totally-not-an-auth-token");
 
-        // Act
+        // Act & Assert
         await expect(
             instance.Request(HttpMethod.GET, `user/no-auth-token`)
         ).rejects.toThrow(AuthorizationError);
@@ -856,24 +808,13 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
     it('should return an Forbidden Error if the response status is 403', async () =>
     {
         // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/forbidden`, () => {
-                return new HttpResponse('Forbidden', {
-                    status: 403,
-                    headers: {
-                        'Content-Type': 'text/html',
-                    },
-                });
-            })
-        );
-
         NestreApiManager.instance = null;
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
         instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
-        // Act
+        // Act & Assert
         await expect(
             instance.Request(HttpMethod.GET, `user/forbidden`)
         ).rejects.toThrow(ForbiddenError);
@@ -887,27 +828,6 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         instance.SetApiVersion(API_VERSION);
         instance.SetAuthToken(AUTH_TOKEN);
 
-        /**
-         * The validation error json response
-         * @type {ValidationDetail}
-         */
-        const mockValidationErrorResponse = {
-            "detail": [
-                {
-                    "loc": [ "body", "firstname" ],
-                    "msg": "field required",
-                    "type": "value_error.missing"
-                }
-            ]
-        };
-
-        // Add a mock handler for this specific test
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/error-422`, () => {
-                return HttpResponse.json(mockValidationErrorResponse, { status: 422 });
-            })
-        );
-
         // Act & Assert
         await expect(
             instance.Request(HttpMethod.GET, `user/error-422`)
@@ -916,17 +836,6 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
 
     it('should reject the promise with a generic error for a 422 status with a non-JSON body', async () => {
         // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/error-422-non-json`, () => {
-                return new HttpResponse('Validation failed', {
-                    status: 422,
-                    headers: {
-                        'Content-Type': 'text/html',
-                    },
-                });
-            })
-        );
-
         NestreApiManager.instance = null;
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
@@ -941,17 +850,6 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
 
     it('should throw an error for a 500 server error', async () => {
         // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/error`, () => {
-                return new HttpResponse( "Internal Server Error", {
-                    status: 500,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-            })
-        );
-
         NestreApiManager.instance = null;
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
@@ -967,16 +865,6 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
     // Test for the `Request` method branch that handles non-JSON errors
     it('should handle non-JSON error responses gracefully (500 status)', async () => {
         // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/html-error`, () => {
-                return new HttpResponse('<h1>Server Error</h1>', {
-                    status: 500,
-                    headers: {
-                        'Content-Type': 'text/html',
-                    },
-                });
-            })
-        );
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
         instance.SetApiVersion(API_VERSION);
@@ -991,16 +879,6 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
     // Test to ensure the content-length: 0 branch is properly covered
     it('should return null if the response status is 200 and the content-length is 0', async () => {
         // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/no-content-content-length-0`, () => {
-                return new HttpResponse(null, {
-                    status: 200,
-                    headers: {
-                        'Content-Length': '0',
-                    },
-                });
-            })
-        );
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
         instance.SetApiVersion(API_VERSION);
@@ -1015,17 +893,6 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
 
     it('should handle non-JSON error responses gracefully', async () => {
         // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/html-error`, () => {
-                return new HttpResponse('<h1>Server Error</h1>', {
-                    status: 500,
-                    headers: {
-                        'Content-Type': 'text/html',
-                    },
-                });
-            })
-        );
-
         NestreApiManager.instance = null;
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
@@ -1040,18 +907,6 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
 
     it('should handle plain text responses for successful requests', async () => {
         // Arrange
-        const responseText = 'OK';
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/text-response`, () => {
-                return new HttpResponse(responseText, {
-                    status: 200,
-                    headers: {
-                        'Content-Type': 'text/plain',
-                    },
-                });
-            })
-        );
-
         NestreApiManager.instance = null;
         const instance = NestreApiManager.GetInstance();
         instance.SetBaseUrl(API_BASE_URL);
@@ -1062,7 +917,21 @@ describe("nestre-api-manager.js Request() - Error Handling", () => {
         const result = await instance.Request(HttpMethod.GET, 'user/text-response');
 
         // Assert
-        expect(result).toBe(responseText);
+        expect(result).toBe('OK');
+    });
+
+    it('should throw an "Unknown error" for a 404 with a JSON body without a message property', async () => {
+        // Arrange
+        NestreApiManager.instance = null;
+        const instance = NestreApiManager.GetInstance();
+        instance.SetBaseUrl(API_BASE_URL);
+        instance.SetApiVersion(API_VERSION);
+        instance.SetAuthToken(AUTH_TOKEN);
+
+        // Act & Assert
+        await expect(
+            instance.Request(HttpMethod.GET, `user/unknown-error`)
+        ).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Unknown error');
     });
 });
 

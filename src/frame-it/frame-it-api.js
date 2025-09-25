@@ -13,7 +13,7 @@
 //#region IMPORTS
 
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
-import { FrameItPhrasesSchema, UpdateFrameDataSchema } from './frame-it-schema.js';
+import { FrameItPhrasesSchema, UpdateFrameDataSchema } from './frame-it-schemas.js';
 
 /**
  * @typedef {import('./frame-it-types.js').FrameItPhrases } FrameItPhrases

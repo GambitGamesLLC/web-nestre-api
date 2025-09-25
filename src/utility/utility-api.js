@@ -68,7 +68,7 @@ export class UtilityApi
         return Promise.reject(new Error(`web-nestre-api : utility-api.js CreateShortenedUrl() Validation failed for url: ${error.details[0].message}`));
     }
 
-    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `util/shorten-url`, url);
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `util/shorten-url`, { url });
 
   } //END CreateShortenedUrl Method
 

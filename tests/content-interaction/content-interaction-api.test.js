@@ -7,12 +7,12 @@
 
 //#region IMPORTS
 
-import { NestreApiManager } from '../src/nestre-api-manager.js';
-import { server } from './mocks/server.js';
-import { API_BASE_URL, API_VERSION, USER_ID, AUTH_TOKEN } from '../examples/environment-variables.js';
+import { NestreApiManager } from '../../src/nestre-api-manager.js';
+import { server } from '../mocks/server.js';
+import { API_BASE_URL, API_VERSION, USER_ID, AUTH_TOKEN } from '../../examples/environment-variables.js';
 
 /**
- * @typedef {import('../src/content-interaction/content-interaction-api.js').ContentInteractionApi } ContentInteractionApi
+ * @typedef {import('../../src/content-interaction/content-interaction-api.js').ContentInteractionApi } ContentInteractionApi
  */
 
 //#endregion

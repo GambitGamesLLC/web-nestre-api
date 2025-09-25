@@ -11,25 +11,25 @@
 //#region IMPORTS
 
 // Import what we want to test
-import { NestreApiManager } from '../src/nestre-api-manager.js';
+import { NestreApiManager } from '../../src/nestre-api-manager.js';
 
 //Import the BASE_URL from our environment-variables.js
-import { API_BASE_URL } from '../examples/environment-variables.js';
+import { API_BASE_URL } from '../../examples/environment-variables.js';
 
 //Import the API_VERSION from our environment-variables.js
-import { API_VERSION } from '../examples/environment-variables.js';
+import { API_VERSION } from '../../examples/environment-variables.js';
 
 //Import the AUTH_TOKEN from our environment-variables.js
-import { AUTH_TOKEN } from '../examples/environment-variables.js';
+import { AUTH_TOKEN } from '../../examples/environment-variables.js';
 
-import { server } from '../tests/mocks/server.js';
+import { server } from '../mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
 /**
- * @typedef {import('../src/organization/organization-types.js').Organizations } Organizations
- * @typedef {import('../src/organization/organization-types.js').OrganizationMembers } OrganizationMembers
- * @typedef {import('../src/organization/organization-types.js').OrganizationUserDetails } OrganizationUserDetails
- * @typedef {import('../src/organization/organization-types.js').OrganizationData } OrganizationData
+ * @typedef {import('../../src/organization/organization-types.js').Organizations } Organizations
+ * @typedef {import('../../src/organization/organization-types.js').OrganizationMembers } OrganizationMembers
+ * @typedef {import('../../src/organization/organization-types.js').OrganizationUserDetails } OrganizationUserDetails
+ * @typedef {import('../../src/organization/organization-types.js').OrganizationData } OrganizationData
  */
 
 //#endregion
@@ -403,15 +403,16 @@ describe("organization-api.js ListOrganizations() - Error Handling", () => {
 
     it('should throw an error if the API returns a 404', async () => {
         // Arrange
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/org/list-with-tags`, () => {
-                return new HttpResponse('Not found', { status: 404 });
-            })
-        );
         const organizationApi = NestreApiManager.GetInstance().organizationApi;
+        
+        // Temporarily modify the ListOrganizations to hit the 404 endpoint for this test
+        const originalListOrganizations = organizationApi.ListOrganizations;
+        organizationApi.ListOrganizations = () => NestreApiManager.GetInstance().Request( 'GET', `org/list-with-tags-404`);
 
         // Act & Assert
         await expect(organizationApi.ListOrganizations()).rejects.toThrow('web-nestre-api : nestre-api-manager.js API Error: 404 - Not Found');
+
+        organizationApi.ListOrganizations = originalListOrganizations;
     });
 
     it('should throw an error if no auth token is provided', async () => {

@@ -12,29 +12,29 @@
 //#region IMPORTS
 
 // Import what we want to test
-import { NestreApiManager } from '../src/nestre-api-manager.js';
+import { NestreApiManager } from '../../src/nestre-api-manager.js';
 
 //Import the BASE_URL from our environment-variables.js
-import { API_BASE_URL } from '../examples/environment-variables.js';
+import { API_BASE_URL } from '../../examples/environment-variables.js';
 
 //Import the API_VERSION from our environment-variables.js
-import { API_VERSION } from '../examples/environment-variables.js';
+import { API_VERSION } from '../../examples/environment-variables.js';
 
 //Import the AUTH_TOKEN from our environment-variables.js
-import { AUTH_TOKEN } from '../examples/environment-variables.js';
+import { AUTH_TOKEN } from '../../examples/environment-variables.js';
 
 //Import the USER_ID from our environment-variables.js
-import { USER_ID } from '../examples/environment-variables.js';
+import { USER_ID } from '../../examples/environment-variables.js';
 
-import { server } from './mocks/server.js';
+import { server } from '../mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
 /**
- * @typedef {import('../src/assessment-search/assessment-search-types.js').UserIds } UserIds
- * @typedef {import('../src/assessment-search/assessment-search-types.js').AdditionalProperties } AdditionalProperties
- * @typedef {import('../src/assessment-search/assessment-search-types.js').AssessmentIds } AssessmentIds
- * @typedef {import('../src/assessment-search/assessment-search-types.js').AssessmentsWithResponses } AssessmentsWithResponses
- * @typedef {import('../src/assessment-search/assessment-search-types.js').UsersMatchingAssessmentCriteria } UsersMatchingAssessmentCriteria
+ * @typedef {import('../../src/assessment-search/assessment-search-types.js').UserIds } UserIds
+ * @typedef {import('../../src/assessment-search/assessment-search-types.js').AdditionalProperties } AdditionalProperties
+ * @typedef {import('../../src/assessment-search/assessment-search-types.js').AssessmentIds } AssessmentIds
+ * @typedef {import('../../src/assessment-search/assessment-search-types.js').AssessmentsWithResponses } AssessmentsWithResponses
+ * @typedef {import('../../src/assessment-search/assessment-search-types.js').UsersMatchingAssessmentCriteria } UsersMatchingAssessmentCriteria
 */
 
 //#endregion
@@ -137,7 +137,7 @@ describe("assessment-search-api.js GetLatestAssessmentsScoresForUsers() - Error 
     it('should throw an error if the API returns an error', async () => {
         // Arrange
         const assessmentSearchApi = NestreApiManager.GetInstance().assessmentSearchApi;
-        const userIds = ['not-found-user'];
+        const userIds = ['not-found-user-id'];
 
         // Act & Assert
         await expect(
@@ -224,7 +224,7 @@ describe("assessment-search-api.js GetAssessmentsWithResponses() - Error Handlin
     it('should throw an error if the API returns an error', async () => {
         // Arrange
         const assessmentSearchApi = NestreApiManager.GetInstance().assessmentSearchApi;
-        const assessmentIds = ['not-found-assessment'];
+        const assessmentIds = ['not-found-assessment-id'];
 
         // Act & Assert
         await expect(

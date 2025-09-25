@@ -12,7 +12,7 @@
 //#region IMPORTS
 
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
-import { ContentInteractionSchema } from './content-interaction-schema.js';
+import { ContentInteractionSchema } from './content-interaction-schemas.js';
 
 /**
  * @typedef {import('./content-interaction-types.js').ContentInteraction } ContentInteraction

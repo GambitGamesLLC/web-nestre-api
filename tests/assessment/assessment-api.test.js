@@ -12,29 +12,27 @@
 //#region IMPORTS
 
 // Import what we want to test
-import { NestreApiManager } from '../src/nestre-api-manager.js';
+import { NestreApiManager } from '../../src/nestre-api-manager.js';
 
 //Import the BASE_URL from our environment-variables.js
-import { API_BASE_URL } from '../examples/environment-variables.js';
+import { API_BASE_URL } from '../../examples/environment-variables.js';
 
 //Import the API_VERSION from our environment-variables.js
-import { API_VERSION } from '../examples/environment-variables.js';
+import { API_VERSION } from '../../examples/environment-variables.js';
 
 //Import the AUTH_TOKEN from our environment-variables.js
-import { AUTH_TOKEN } from '../examples/environment-variables.js';
+import { AUTH_TOKEN } from '../../examples/environment-variables.js';
 
 //Import the USER_ID from our environment-variables.js
-import { USER_ID } from '../examples/environment-variables.js';
+import { USER_ID } from '../../examples/environment-variables.js';
 
-import { server } from './mocks/server.js';
+import { server } from '../mocks/server.js';
 import { http, HttpResponse } from 'msw';
-import { validQuestionIds } from '../src/assessment/assessment-types.js';
+import { validQuestionIds } from '../../src/assessment/assessment-types.js';
 
 /**
- * @typedef {import('../src/assessment/assessment-types.js').RandomizedAssessmentQuestions } RandomizedAssessmentQuestions
- */
-/**
- * @typedef {import('../src/assessment/assessment-types.js').AssessmentResult } AssessmentResult
+ * @typedef {import('../../src/assessment/assessment-types.js').RandomizedAssessmentQuestions } RandomizedAssessmentQuestions
+ * @typedef {import('../../src/assessment/assessment-types.js').AssessmentResult } AssessmentResult
  */
 
 //#endregion
@@ -159,14 +157,15 @@ describe("assessment-api.js SubmitAssessmentResponses() - Error Handling", () =>
 //#region DESCRIBE - assessment-api.js - GetRandomizedAssessmentQuestions() - Error Handling
 
 describe("assessment-api.js GetRandomizedAssessmentQuestions() - Error Handling", () => {
-
-    it('should throw an error if the passed in userId value is invalid', async()=>{
-        //Arrange
+    beforeEach(() => {
         NestreApiManager.instance = null;
         NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
         NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
         NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
+    });
 
+    it('should throw an error if the passed in userId value is invalid', async()=>{
+        //Arrange
         const assessmentApi = NestreApiManager.GetInstance().assessmentApi;
 
         // Act & Assert
@@ -177,11 +176,6 @@ describe("assessment-api.js GetRandomizedAssessmentQuestions() - Error Handling"
 
     it('should throw an error if the user is not found', async () => {
         // Arrange
-        NestreApiManager.instance = null;
-        NestreApiManager.GetInstance().SetBaseUrl(API_BASE_URL);
-        NestreApiManager.GetInstance().SetApiVersion(API_VERSION);
-        NestreApiManager.GetInstance().SetAuthToken(AUTH_TOKEN);
-
         const assessmentApi = NestreApiManager.GetInstance().assessmentApi;
 
         // Act & Assert

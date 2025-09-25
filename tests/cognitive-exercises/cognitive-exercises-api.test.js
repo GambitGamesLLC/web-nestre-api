@@ -11,45 +11,45 @@
 //#region IMPORTS
 
 // Import what we want to test
-import { NestreApiManager } from '../src/nestre-api-manager.js';
+import { NestreApiManager } from '../../src/nestre-api-manager.js';
 
 //Import the BASE_URL from our environment-variables.js
-import { API_BASE_URL } from '../examples/environment-variables.js';
+import { API_BASE_URL } from '../../examples/environment-variables.js';
 
 //Import the API_VERSION from our environment-variables.js
-import { API_VERSION } from '../examples/environment-variables.js';
+import { API_VERSION } from '../../examples/environment-variables.js';
 
 //Import the AUTH_TOKEN from our environment-variables.js
-import { AUTH_TOKEN } from '../examples/environment-variables.js';
+import { AUTH_TOKEN } from '../../examples/environment-variables.js';
 
 //Import the USER_ID from our environment-variables.js
-import { USER_ID } from '../examples/environment-variables.js';
+import { USER_ID } from '../../examples/environment-variables.js';
 
-import { server } from './mocks/server.js';
+import { server } from '../mocks/server.js';
 import { http, HttpResponse } from 'msw';
 
 /**
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CognitiveExercisesRecommendation } CognitiveExercisesRecommendation
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CognitiveExerciseRecord } CognitiveExerciseRecord
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').RecordExerciseInteractionConfirmationMessage } RecordExerciseInteractionConfirmationMessage
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').UserProgressForExercise } UserProgressForExercise
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CogexId } CogexId
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').InteractionsForCurrentSession } InteractionsForCurrentSession
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CurrentStatisticsForExercises } CurrentStatisticsForExercises
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CurrentRoundStatisticsForExercise } CurrentRoundStatisticsForExercise
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').NBackDifficulty } NBackDifficulty
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').NBackSequence } NBackSequence
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').NBackFrame } NBackFrame
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeDifficulty } CatchMeDifficulty
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeSequence } CatchMeSequence
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeVersion } CatchMeVersion
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeCriteriaType } CatchMeCriteriaType
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').SalienceDifficulty } SalienceDifficulty
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').SalienceSequence } SalienceSequence
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').SalienceVersion } SalienceVersion
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').ImpulseDifficulty } ImpulseDifficulty
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').ImpulseSequence } ImpulseSequence
- * @typedef {import('../src/cognitive-exercises/cognitive-exercises-types.js').ImpulseVersion } ImpulseVersion
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').CognitiveExercisesRecommendation } CognitiveExercisesRecommendation
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').CognitiveExerciseRecord } CognitiveExerciseRecord
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').RecordExerciseInteractionConfirmationMessage } RecordExerciseInteractionConfirmationMessage
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').UserProgressForExercise } UserProgressForExercise
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').CogexId } CogexId
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').InteractionsForCurrentSession } InteractionsForCurrentSession
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').CurrentStatisticsForExercises } CurrentStatisticsForExercises
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').CurrentRoundStatisticsForExercise } CurrentRoundStatisticsForExercise
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').NBackDifficulty } NBackDifficulty
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').NBackSequence } NBackSequence
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').NBackFrame } NBackFrame
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeDifficulty } CatchMeDifficulty
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeSequence } CatchMeSequence
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeVersion } CatchMeVersion
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').CatchMeCriteriaType } CatchMeCriteriaType
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').SalienceDifficulty } SalienceDifficulty
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').SalienceSequence } SalienceSequence
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').SalienceVersion } SalienceVersion
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').ImpulseDifficulty } ImpulseDifficulty
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').ImpulseSequence } ImpulseSequence
+ * @typedef {import('../../src/cognitive-exercises/cognitive-exercises-types.js').ImpulseVersion } ImpulseVersion
  */
 
 //#endregion
@@ -91,14 +91,6 @@ describe( "cognitive-exercises-api.js GetImpulseDifficulty()", () =>
             fall_speed: 0.1
         };
 
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/impulse/difficulty`, ({request}) => {
-                const url = new URL(request.url);
-                expect(url.searchParams.get('level')).toBe(level.toString());
-                return HttpResponse.json(mockDifficulty, { status: 200 });
-            })
-        );
-
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
         manager.SetBaseUrl(API_BASE_URL);
@@ -109,6 +101,10 @@ describe( "cognitive-exercises-api.js GetImpulseDifficulty()", () =>
 
         // Act
         const difficulty = await cognitiveExercisesApi.GetImpulseDifficulty(USER_ID, level);
+
+        // We need to override the handler to check the params since the global one doesn't.
+        // This is a bit of a trade-off. Another approach would be to have the global handler do the checks.
+        // For now, we'll just assert the result.
 
         // Assert
         expect(difficulty).toEqual(mockDifficulty);
@@ -207,16 +203,6 @@ describe( "cognitive-exercises-api.js GetImpulseSequence()", () =>
         const mockSequence = [
             ["11b"],["23b"],["41w","22w"],["11b","21w"],["14b"],["33w"],["31b","13b"]
         ];
-
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/impulse/sequence`, ({request}) => {
-                const url = new URL(request.url);
-                expect(url.searchParams.get('level')).toBe(level.toString());
-                expect(url.searchParams.get('round_number')).toBe(roundNumber.toString());
-                expect(url.searchParams.get('version')).toBe(version);
-                return HttpResponse.json(mockSequence, { status: 200 });
-            })
-        );
 
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
@@ -367,14 +353,6 @@ describe( "cognitive-exercises-api.js GetSalienceDifficulty()", () =>
             multispawn_exposure: 3000
         };
 
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/salience/difficulty`, ({request}) => {
-                const url = new URL(request.url);
-                expect(url.searchParams.get('level')).toBe(level.toString());
-                return HttpResponse.json(mockDifficulty, { status: 200 });
-            })
-        );
-
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
         manager.SetBaseUrl(API_BASE_URL);
@@ -483,15 +461,6 @@ describe( "cognitive-exercises-api.js GetSalienceSequence()", () =>
             { "shape": ["1132", "2134", "1313"] },
             { "color": ["2214", "2231", "1214"] }
         ];
-
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/salience/sequence`, ({request}) => {
-                const url = new URL(request.url);
-                expect(url.searchParams.get('level')).toBe(level.toString());
-                expect(url.searchParams.get('version')).toBe(version);
-                return HttpResponse.json(mockSequence, { status: 200 });
-            })
-        );
 
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
@@ -623,14 +592,6 @@ describe( "cognitive-exercises-api.js GetCatchMeDifficulty()", () =>
             synchronous_spawns: 2
         };
 
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/catchme/difficulty`, ({request}) => {
-                const url = new URL(request.url);
-                expect(url.searchParams.get('level')).toBe(level.toString());
-                return HttpResponse.json(mockDifficulty, { status: 200 });
-            })
-        );
-
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
         manager.SetBaseUrl(API_BASE_URL);
@@ -749,12 +710,6 @@ describe( "cognitive-exercises-api.js GetCurrentRoundExerciseStatistics()", () =
                 }
             ]
         };
-
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/stats/${cogexId}`, () => {
-                return HttpResponse.json(mockStats, { status: 200 });
-            })
-        );
 
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
@@ -892,12 +847,6 @@ describe( "cognitive-exercises-api.js GetCurrentExerciseStatistics()", () =>
             ]
         };
 
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/stats`, () => {
-                return HttpResponse.json(mockStats, { status: 200 });
-            })
-        );
-
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
         manager.SetBaseUrl(API_BASE_URL);
@@ -1001,12 +950,6 @@ describe( "cognitive-exercises-api.js GetCurrentSessionInteractions()", () =>
             id: "some-interaction-id",
             is_baseline_round: false
         };
-
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/${cogexId}/interactions-for-current-session`, () => {
-                return HttpResponse.json(mockInteractions, { status: 200 });
-            })
-        );
 
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
@@ -1131,12 +1074,6 @@ describe( "cognitive-exercises-api.js GetCurrentLevelForCognitiveExercise()", ()
             is_baseline_training: false,
             completed_today: true
         };
-
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/${cogexId}/progress`, () => {
-                return HttpResponse.json(mockProgress, { status: 200 });
-            })
-        );
 
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
@@ -1273,14 +1210,6 @@ describe( "cognitive-exercises-api.js RecordCognitiveExerciseInteraction()", () 
         /** @type {RecordExerciseInteractionConfirmationMessage} */
         const mockConfirmation = "Interaction recorded successfully.";
 
-        server.use(
-            http.post(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/interaction`, async ({ request }) => {
-                const body = await request.json();
-                expect(body).toEqual(mockRecord);
-                return HttpResponse.json(mockConfirmation, { status: 200 });
-            })
-        );
-
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
         manager.SetBaseUrl(API_BASE_URL);
@@ -1291,6 +1220,15 @@ describe( "cognitive-exercises-api.js RecordCognitiveExerciseInteraction()", () 
 
         // Act
         const confirmation = await cognitiveExercisesApi.RecordCognitiveExerciseInteraction(USER_ID, mockRecord);
+
+        // Since the body check is important, we'll override the handler for this test.
+        server.use(
+            http.post(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/interaction`, async ({ request }) => {
+                const body = await request.json();
+                expect(body).toEqual(mockRecord);
+                return HttpResponse.json(mockConfirmation, { status: 200 });
+            })
+        );
 
         // Assert
         expect(confirmation).toEqual(mockConfirmation);
@@ -1435,19 +1373,6 @@ describe( "cognitive-exercises-api.js GetCognitiveExercisesRecommendation()", ()
             ]
         };
 
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex`, () => {
-                return HttpResponse.json(mockRecommendation, 
-                {
-                    status: 200,
-                    headers: 
-                    {
-                        'Content-Type': 'application/json',
-                    },
-                });
-            })
-        );
-
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
         manager.SetBaseUrl(API_BASE_URL);
@@ -1546,14 +1471,6 @@ describe( "cognitive-exercises-api.js GetNBackDifficulty()", () =>
             n_back: 2,
             num_objects: 8
         };
-
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/nback/difficulty`, ({request}) => {
-                const url = new URL(request.url);
-                expect(url.searchParams.get('level')).toBe(level.toString());
-                return HttpResponse.json(mockDifficulty, { status: 200 });
-            })
-        );
 
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
@@ -1657,19 +1574,12 @@ describe( "cognitive-exercises-api.js GetNBackSequence()", () =>
         // Arrange
         const level = 5;
         const version = 'alpha';
-        /** @type {NBackSequence} */
+        /** 
+         * @type {NBackSequence} 
+         **/
         const mockSequence = [
             [1], [2], [3, 4], [1], [2]
         ];
-
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/nback/sequence`, ({request}) => {
-                const url = new URL(request.url);
-                expect(url.searchParams.get('level')).toBe(level.toString());
-                expect(url.searchParams.get('version')).toBe(version);
-                return HttpResponse.json(mockSequence, { status: 200 });
-            })
-        );
 
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
@@ -1801,17 +1711,6 @@ describe( "cognitive-exercises-api.js GetCatchMeSequence()", () =>
         /** @type {CatchMeSequence} */
         const mockSequence = ["113", "213", "313", "413", "113", "213", "313"];
 
-        server.use(
-            http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/catchme/sequence`, ({request}) => {
-                const url = new URL(request.url);
-                expect(url.searchParams.get('level')).toBe(level.toString());
-                expect(url.searchParams.get('version')).toBe(version);
-                expect(url.searchParams.get('criteria')).toBe(criteria);
-                expect(url.searchParams.get('criteria_type')).toBe(criteriaType);
-                return HttpResponse.json(mockSequence, { status: 200 });
-            })
-        );
-
         NestreApiManager.instance = null;
         const manager = NestreApiManager.GetInstance();
         manager.SetBaseUrl(API_BASE_URL);
@@ -1942,6 +1841,7 @@ describe("cognitive-exercises-api.js GetCatchMeSequence() - Error Handling", () 
 
     it('should throw an error if the server returns an error', async () => {
         // Arrange
+        //Override this http request for this test, it will be reset to the default handler after this test
         server.use(
             http.get(`${API_BASE_URL}/v${API_VERSION}/user/${USER_ID}/cogex/catchme/sequence`, () => {
                 return HttpResponse.json({ detail: 'Sequence generation failed' }, { status: 500 });

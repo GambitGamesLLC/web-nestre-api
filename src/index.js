@@ -12,19 +12,36 @@ export { NestreApiManager, HttpMethod } from './nestre-api-manager.js';
 
 // Re-export the empty object for each types definition file. This allows JSDoc-aware
 // editors to find and use the JSDoc @typedefs for type checking.
-export * from './user/user-types.js';
-export * from './daily-workout/daily-workout-types.js';
-export * from './cognitive-exercises/cognitive-exercises-types.js';
-export * from './mental-framing/mental-framing-types.js';
 export * from './assessment/assessment-types.js';
+export * from './assessment-search/assessment-search-types.js';
+export * from './cognitive-exercises/cognitive-exercises-types.js';
 export * from './content-interaction/content-interaction-types.js';
 export * from './content-recommendations/content-recommendations-types.js';
+export * from './daily-workout/daily-workout-types.js';
+export * from './development/development-types.js';
 export * from './frame-it/frame-it-types.js';
 export * from './lookup/lookup-types.js';
-export * from './utility/utility-types.js';
-export * from './user-search/user-search-types.js';
-export * from './assessment-search/assessment-search-types.js';
+export * from './mental-framing/mental-framing-types.js';
 export * from './organization/organization-types.js';
+export * from './user-search/user-types.js';
+export * from './user-search/user-search-types.js';
+export * from './utility/utility-types.js';
+
+// Re-export the type definitions from the 'joi' schemas
+export * from './assessment/assessment-schemas.js';
+export * from './assessment-search/assessment-search-schemas.js';
+export * from './cognitive-exercises/cognitive-exercises-schemas.js';
+export * from './content-interaction/content-interaction-schemas.js';
+export * from './content-recommendations/content-recommendations-schemas.js';
+export * from './daily-workout/daily-workout-schemas.js';
+export * from './development/development-schemas.js';
+export * from './frame-it/frame-it-schemas.js';
+export * from './lookup/lookup-schemas.js';
+export * from './mental-framing/mental-framing-schemas.js';
+export * from './organization/organization-schemas.js';
+export * from './user-search/user-schemas.js';
+export * from './user-search/user-search-schemas.js';
+export * from './utility/utility-schemas.js';
 
 // Re-export the error classes
 export * from './errors/authorization-error.js';

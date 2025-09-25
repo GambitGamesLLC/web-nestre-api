@@ -11,30 +11,30 @@
 //#region IMPORTS
 
 // Import what we want to test
-import { NestreApiManager } from '../src/nestre-api-manager.js';
+import { NestreApiManager } from '../../src/nestre-api-manager.js';
 
 //Import the BASE_URL from our environment-variables.js
-import { API_BASE_URL } from '../examples/environment-variables.js';
+import { API_BASE_URL } from '../../examples/environment-variables.js';
 
 //Import the API_VERSION from our environment-variables.js
-import { API_VERSION } from '../examples/environment-variables.js';
+import { API_VERSION } from '../../examples/environment-variables.js';
 
 //Import the AUTH_TOKEN from our environment-variables.js
-import { AUTH_TOKEN } from '../examples/environment-variables.js';
+import { AUTH_TOKEN } from '../../examples/environment-variables.js';
 
 //Import the USER_ID from our environment-variables.js
-import { USER_ID } from '../examples/environment-variables.js';
+import { USER_ID } from '../../examples/environment-variables.js';
 
 //Import the USER_EMAIL from our environment-variables.js
-import { USER_EMAIL } from '../examples/environment-variables.js';
+import { USER_EMAIL } from '../../examples/environment-variables.js';
 
-import { server } from '../tests/mocks/server.js';
+import { server } from '../mocks/server.js';
 import { http, HttpResponse } from 'msw';
-import { GeneralError } from '../src/errors/general-error.js';
+import { GeneralError } from '../../src/errors/general-error.js';
 
 /**
- * @typedef {import('../src/user/user-types.js').UpdateUserProfile } UpdateUserProfile
- * @typedef {import('../src/user/user-types.js').CreateReferralCode } CreateReferralCode
+ * @typedef {import('../../src/user/user-types.js').UpdateUserProfile } UpdateUserProfile
+ * @typedef {import('../../src/user/user-types.js').CreateReferralCode } CreateReferralCode
  */
 
 //#endregion
