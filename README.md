@@ -5,15 +5,15 @@ This is a JavaScript library with JSDoc for accessing the Nestre API. It is used
 
 **Package Name:** web-nestre-api
 
-**Version:** 0.13.0
+**Version:** 0.14.0
 
 **Description:** API Manager for Nestre Services
 
 -----
 
-## **LIMITATIONS**
+## **FUNCTIONALITY**
 
-Currently only supports the following endpoints of the Nestre Api.
+Currently supports the following endpoints of the Nestre Api.
 
 - User
 - Daily Workout
@@ -28,6 +28,15 @@ Currently only supports the following endpoints of the Nestre Api.
 - User Search
 - Assessment Search
 - Organization
+- Development
+
+-----
+
+## **LIMITATIONS**
+
+The following endpoints are currently not supported.
+
+- Admin App
 
 Further tagged releases of this library will support more endpoints.
 
