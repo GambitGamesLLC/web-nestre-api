@@ -13,7 +13,7 @@
 //#region IMPORTS
 
 // Import what we want to test
-import { NestreApiManager, HttpMethod } from '../../src/nestre-api-manager/nestre-api-manager.js';
+import { NestreApiManager, HttpMethod } from '../../src/nestre-api-manager.js';
 
 //Import the BASE_URL from our environment-variables.js
 import { API_BASE_URL } from '../../examples/environment-variables.js';
