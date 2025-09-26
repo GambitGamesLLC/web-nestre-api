@@ -16,10 +16,13 @@ module.exports = {
 
   // Ignore files or directories from coverage
   coveragePathIgnorePatterns: [
+    'src/index.js',
     '/node_modules/',
     '/vendor/',
     '/examples/',
     '/tests/mocks/',
+    '-types\\.js$',
+    '.types\\.js$',
     '-handlers\\.js$',
     '.handlers\\.js$',
     '-schemas\\.js$',

@@ -24,6 +24,7 @@ import { ContentRecommendationsApi  } from './content-recommendations/content-re
 import { FrameItApi  } from './frame-it/frame-it-api.js';
 import { LookupApi } from './lookup/lookup-api.js';
 import { UtilityApi } from './utility/utility-api.js';
+import { AdminAppApi } from './admin-app/admin-app-api.js';
 import { UserSearchApi } from './user-search/user-search-api.js';
 import { AssessmentSearchApi } from './assessment-search/assessment-search-api.js';
 import { OrganizationApi } from './organization/organization-api.js';
@@ -170,6 +171,12 @@ export class NestreApiManager
   utilityApi = null;
 
   /**
+   * Reference to the AdminAppApi object
+   * @type {AdminAppApi}
+   * */
+  adminAppApi = null;
+
+  /**
    * Reference to the UserSearchApi object
    * @type {UserSearchApi}
    * */
@@ -243,6 +250,9 @@ constructor()
 
     this.utilityApi = null;
     this.utilityApi = new UtilityApi();
+
+    this.adminAppApi = null;
+    this.adminAppApi = new AdminAppApi();
 
     this.userSearchApi = null;
     this.userSearchApi = new UserSearchApi();

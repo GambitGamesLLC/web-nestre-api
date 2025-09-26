@@ -11,6 +11,7 @@
 //Not included in unit testing code coverage
 
 //#region IMPORTS
+import { handlers as adminAppHandlers } from '../admin-app/admin-app-api.handlers.js';
 import { handlers as assessmentHandlers } from '../assessment/assessment-api.handlers.js';
 import { handlers as assessmentSearchHandlers } from '../assessment-search/assessment-search-api.handlers.js';
 import { handlers as cognitiveExercisesHandlers } from '../cognitive-exercises/cognitive-exercises-api.handlers.js';
@@ -35,6 +36,7 @@ import { handlers as utilityHandlers } from '../utility/utility-api.handlers.js'
  * @type{HttpHandler[]}
  */
 export let handlers = [
+  ...adminAppHandlers,
   ...assessmentHandlers,
   ...assessmentSearchHandlers,
   ...cognitiveExercisesHandlers,

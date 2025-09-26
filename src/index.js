@@ -23,7 +23,7 @@ export * from './frame-it/frame-it-types.js';
 export * from './lookup/lookup-types.js';
 export * from './mental-framing/mental-framing-types.js';
 export * from './organization/organization-types.js';
-export * from './user-search/user-types.js';
+export * from './user/user-types.js';
 export * from './user-search/user-search-types.js';
 export * from './utility/utility-types.js';
 
@@ -39,7 +39,7 @@ export * from './frame-it/frame-it-schemas.js';
 export * from './lookup/lookup-schemas.js';
 export * from './mental-framing/mental-framing-schemas.js';
 export * from './organization/organization-schemas.js';
-export * from './user-search/user-schemas.js';
+export * from './user/user-schemas.js';
 export * from './user-search/user-search-schemas.js';
 export * from './utility/utility-schemas.js';
 
