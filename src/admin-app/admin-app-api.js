@@ -14,6 +14,9 @@
 
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
 
+/**
+ * @typedef {import('./admin-app-types.js').UsersMatchingSearch } UsersMatchingSearch
+ */
 
 
 //#endregion
@@ -64,6 +67,56 @@ export class AdminAppApi
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `admin/shorten-url?url=${url}`);
 
   } //END ShortenUrl Method
+
+//#endregion
+
+//#region PUBLIC - DELETE USER BY EMAIL
+
+ /**
+   * Delete a user from the system by their email address.
+   * 
+   * @param {string} email
+   * @returns {Promise<>}
+   */
+  //-----------------------------------------------------------------------//
+  DeleteUserByEmail(email) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the email is a valid non-empty string.
+    if (typeof email !== 'string' || email.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js DeleteUserByEmail() Invalid email: The email must be a non-empty string."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.DELETE, `admin/delete-user-by-email?email=${email}`);
+
+  } //END DeleteUserByEmail Method
+
+//#endregion
+
+//#region PUBLIC - SEARCH USERS
+
+ /**
+   * Search for users by a search string (minimum 3 characters).
+   * 
+   * @param {string} search_string
+   * @returns {Promise<UsersMatchingSearch>}
+   */
+  //-----------------------------------------------------------------------//
+  SearchUsers(search_string) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the search_string is a valid non-empty string.
+    if (typeof search_string !== 'string' || search_string.trim().length < 3) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js SearchUsers() Invalid search_string: The search_string must be a non-empty string."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `admin/search-users?search_string=${search_string}`);
+
+  } //END SearchUsers Method
 
 //#endregion
 

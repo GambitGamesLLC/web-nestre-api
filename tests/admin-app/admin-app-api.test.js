@@ -59,4 +59,85 @@ describe('AdminAppApi', () => {
 
   //#endregion
 
+  //#region DeleteUserByEmail
+
+  test('DeleteUserByEmail should return a success message on successful deletion', async () => {
+    const email = 'test@example.com';
+    const response = await adminAppApi.DeleteUserByEmail(email);
+    expect(response).toEqual({ message: 'User deleted successfully.' });
+  });
+
+  test('DeleteUserByEmail should throw an error if the email is not a string', async () => {
+    await expect(adminAppApi.DeleteUserByEmail(12345)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteUserByEmail() Invalid email: The email must be a non-empty string.'
+    );
+  });
+
+  test('DeleteUserByEmail should throw an error if the email is an empty string', async () => {
+    await expect(adminAppApi.DeleteUserByEmail('')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteUserByEmail() Invalid email: The email must be a non-empty string.'
+    );
+  });
+
+  test('DeleteUserByEmail should throw an error if the email is a string with only whitespace', async () => {
+    await expect(adminAppApi.DeleteUserByEmail('   ')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteUserByEmail() Invalid email: The email must be a non-empty string.'
+    );
+  });
+
+  test('DeleteUserByEmail should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const email = 'test@example.com';
+    await expect(adminAppApi.DeleteUserByEmail(email)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
+  //#region SearchUsers
+
+  test('SearchUsers should return an array of users on successful search', async () => {
+    const searchString = 'test';
+    const users = await adminAppApi.SearchUsers(searchString);
+    expect(Array.isArray(users)).toBe(true);
+    expect(users.length).toBeGreaterThan(0);
+    expect(users[0]).toHaveProperty('id');
+    expect(users[0]).toHaveProperty('email');
+  });
+
+  test('SearchUsers should throw an error if search_string is not a string', async () => {
+    await expect(adminAppApi.SearchUsers(12345)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js SearchUsers() Invalid search_string: The search_string must be a non-empty string.'
+    );
+  });
+
+  test('SearchUsers should throw an error if search_string is an empty string', async () => {
+    await expect(adminAppApi.SearchUsers('')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js SearchUsers() Invalid search_string: The search_string must be a non-empty string.'
+    );
+  });
+
+  test('SearchUsers should throw an error if search_string is less than 3 characters', async () => {
+    await expect(adminAppApi.SearchUsers('ab')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js SearchUsers() Invalid search_string: The search_string must be a non-empty string.'
+    );
+  });
+
+  test('SearchUsers should throw an error if search_string is a string with only whitespace', async () => {
+    await expect(adminAppApi.SearchUsers('   ')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js SearchUsers() Invalid search_string: The search_string must be a non-empty string.'
+    );
+  });
+
+  test('SearchUsers should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const searchString = 'validsearch';
+    await expect(adminAppApi.SearchUsers(searchString)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
 });
