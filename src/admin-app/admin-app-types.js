@@ -34,5 +34,53 @@
 
 //#endregion
 
+//#region ADMIN APP API - USER DATA
+
+/**
+ * @typedef {object} ReferralCode
+ * @property {string} code
+ * @property {boolean} is_active
+ * @property {string} created_at
+ */
+
+/**
+ * @typedef {object} UserData
+ * @property {string} id
+ * @property {string} created_at
+ * @property {string} email
+ * @property {string} firstname
+ * @property {string} lastname
+ * @property {string} gender
+ * @property {string} date_of_birth
+ * @property {string} username
+ * @property {string} subscription_level
+ * @property {string} subscription_type
+ * @property {boolean} trial_used
+ * @property {boolean} frame_it_unlocked
+ * @property {string} last_activity
+ * @property {ReferralCode[]} referral_codes
+ */
+
+//#endregion
+
+//#region ADMIN APP API - CREATE ORGANIZATION DATA
+
+/**
+ * @typedef {object} CreateOrganizationData
+ * @property {string} name
+ * @property {number} num_basic_subscriptions
+ * @property {string} subscriptions_expiry
+ **/
+
+/**
+ * @typedef {object} NewlyCreatedOrganizationData
+ * @property {string} name
+ * @property {number} num_basic_subscriptions
+ * @property {string} subscriptions_expiry
+ * @property {string} id
+ **/
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

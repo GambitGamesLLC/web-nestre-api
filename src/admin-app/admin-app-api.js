@@ -13,9 +13,13 @@
 //#region IMPORTS
 
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
+import { CreateOrganizationDataSchema } from './admin-app-schemas.js';
 
 /**
  * @typedef {import('./admin-app-types.js').UsersMatchingSearch } UsersMatchingSearch
+ * @typedef {import('./admin-app-types.js').UserData } UserData
+ * @typedef {import('./admin-app-types.js').CreateOrganizationData } CreateOrganizationData
+ * @typedef {import('./admin-app-types.js').NewlyCreatedOrganizationData } NewlyCreatedOrganizationData
  */
 
 
@@ -117,6 +121,89 @@ export class AdminAppApi
     return NestreApiManager.GetInstance().Request( HttpMethod.GET, `admin/search-users?search_string=${search_string}`);
 
   } //END SearchUsers Method
+
+//#endregion
+
+//#region PUBLIC - GET USER
+
+ /**
+   * Retrieve a user by their unique identifier.
+   * 
+   * @param {string} user_id
+   * @returns {Promise<UserData>}
+   */
+  //-----------------------------------------------------------------------//
+  GetUser(user_id) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the user_id is a valid non-empty string.
+    if (typeof user_id !== 'string' || user_id.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetUser() Invalid user_id: The user_id must be a non-empty string."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `admin/user/${user_id}`);
+
+  } //END GetUser Method
+
+//#endregion
+
+//#region PUBLIC - UPDATE USER
+
+ /**
+   * Update a user's profile information by their unique identifier.
+   * 
+   * @param {string} user_id
+   * @param {object} updateData
+   * @returns {Promise<UserData>}
+   */
+  //-----------------------------------------------------------------------//
+  UpdateUser(user_id, updateData) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the user_id is a valid non-empty string.
+    if (typeof user_id !== 'string' || user_id.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js UpdateUser() Invalid user_id: The user_id must be a non-empty string."));
+    }
+
+    // Check if updateData is a valid object.
+    if (updateData === null || typeof updateData !== 'object' || Array.isArray(updateData)) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js UpdateUser() Invalid updateData: The updateData must be a non-null object."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.PATCH, `admin/user/${user_id}/update`, updateData);
+
+  } //END UpdateUser Method
+
+//#endregion
+
+//#region PUBLIC - CREATE ORGANIZATION
+
+ /**
+   * Create a new organization with the provided details
+   * 
+   * @param {CreateOrganizationData} orgData
+   * @returns {Promise<NewlyCreatedOrganizationData>}
+   */
+  //-----------------------------------------------------------------------//
+  CreateOrganization(orgData) 
+  //-----------------------------------------------------------------------//
+  {
+    // Validate the orgData object against the imported Joi schema
+    const { error } = CreateOrganizationDataSchema.validate(orgData);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : admin-app-api.js CreateOrganization() Validation failed for orgData: ${error.details[0].message}`));
+    }
+    
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `admin/organization`, orgData);
+
+  } //END CreateOrganization Method
 
 //#endregion
 

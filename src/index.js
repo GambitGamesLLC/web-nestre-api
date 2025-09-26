@@ -12,6 +12,7 @@ export { NestreApiManager, HttpMethod } from './nestre-api-manager.js';
 
 // Re-export the empty object for each types definition file. This allows JSDoc-aware
 // editors to find and use the JSDoc @typedefs for type checking.
+export * from './admin-app/admin-app-types.js';
 export * from './assessment/assessment-types.js';
 export * from './assessment-search/assessment-search-types.js';
 export * from './cognitive-exercises/cognitive-exercises-types.js';
@@ -28,6 +29,7 @@ export * from './user-search/user-search-types.js';
 export * from './utility/utility-types.js';
 
 // Re-export the type definitions from the 'joi' schemas
+export * from './admin-app/admin-app-schemas.js';
 export * from './assessment/assessment-schemas.js';
 export * from './assessment-search/assessment-search-schemas.js';
 export * from './cognitive-exercises/cognitive-exercises-schemas.js';

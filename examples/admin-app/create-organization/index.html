@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NESTRE API Client Test - Admin: Create Organization</title>
+    <style>
+        body { font-family: sans-serif; padding: 1em; }
+        input { width: 300px; padding: 8px; margin-bottom: 10px; }
+        button { padding: 8px 15px; }
+        #output { margin-top: 20px; white-space: pre-wrap; background-color: #f4f4f4; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>NESTRE API Client Test - Admin: Create Organization</h1>
+
+    <div>
+        <label for="nameInput">Organization Name:</label><br>
+        <input type="text" id="nameInput" value="Test Org">
+    </div>
+
+    <div>
+        <label for="numSubscriptionsInput">Number of Basic Subscriptions:</label><br>
+        <input type="number" id="numSubscriptionsInput" value="10">
+    </div>
+
+    <div>
+        <label for="expiryInput">Subscriptions Expiry (ISO Date):</label><br>
+        <input type="text" id="expiryInput" value="">
+    </div>
+    
+    <div>
+        <label for="authTokenInput">Auth Token (JWT):</label><br>
+        <input type="text" id="authTokenInput" value="">
+    </div>
+
+    <button id="runTestBtn">Run Test</button>
+
+    <div id="output">Test results will appear here...</div>
+
+    <script type="module">
+        import { AUTH_TOKEN } from '../../environment-variables.js';
+        document.getElementById('authTokenInput').value = AUTH_TOKEN;
+        document.getElementById('expiryInput').value = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    </script>
+
+    <script type="module" src="index.js"></script>
+</body>
+</html>

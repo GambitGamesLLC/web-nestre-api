@@ -140,4 +140,149 @@ describe('AdminAppApi', () => {
 
   //#endregion
 
+  //#region GetUser
+
+  test('GetUser should return a user object on successful fetch', async () => {
+    const user = await adminAppApi.GetUser('user_123');
+    expect(user).toBeDefined();
+    expect(user.id).toBe('user_123');
+    expect(user).toHaveProperty('email');
+    expect(user).toHaveProperty('referral_codes');
+    expect(Array.isArray(user.referral_codes)).toBe(true);
+  });
+
+  test('GetUser should throw an error if user_id is not a string', async () => {
+    await expect(adminAppApi.GetUser(12345)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetUser() Invalid user_id: The user_id must be a non-empty string.'
+    );
+  });
+
+  test('GetUser should throw an error if user_id is an empty string', async () => {
+    await expect(adminAppApi.GetUser('')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetUser() Invalid user_id: The user_id must be a non-empty string.'
+    );
+  });
+
+  test('GetUser should throw an error if user_id is a string with only whitespace', async () => {
+    await expect(adminAppApi.GetUser('   ')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetUser() Invalid user_id: The user_id must be a non-empty string.'
+    );
+  });
+
+  test('GetUser should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    await expect(adminAppApi.GetUser('user_123')).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
+  //#region UpdateUser
+
+  test('UpdateUser should return an updated user object on successful update', async () => {
+    const userId = 'user_123';
+    const updateData = { firstname: 'TestUpdated' };
+    const updatedUser = await adminAppApi.UpdateUser(userId, updateData);
+    expect(updatedUser).toBeDefined();
+    expect(updatedUser.id).toBe(userId);
+    expect(updatedUser.firstname).toBe('TestUpdated');
+    expect(updatedUser.lastname).toBe('User'); // From mock data
+  });
+
+  test('UpdateUser should throw an error if user_id is not a string', async () => {
+    await expect(adminAppApi.UpdateUser(12345, {})).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js UpdateUser() Invalid user_id: The user_id must be a non-empty string.'
+    );
+  });
+
+  test('UpdateUser should throw an error if user_id is an empty string', async () => {
+    await expect(adminAppApi.UpdateUser('', {})).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js UpdateUser() Invalid user_id: The user_id must be a non-empty string.'
+    );
+  });
+
+  test('UpdateUser should throw an error if updateData is null', async () => {
+    await expect(adminAppApi.UpdateUser('user_123', null)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js UpdateUser() Invalid updateData: The updateData must be a non-null object.'
+    );
+  });
+
+  test('UpdateUser should throw an error if updateData is not an object', async () => {
+    await expect(adminAppApi.UpdateUser('user_123', 'string')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js UpdateUser() Invalid updateData: The updateData must be a non-null object.'
+    );
+  });
+
+  test('UpdateUser should throw an error if updateData is an array', async () => {
+    await expect(adminAppApi.UpdateUser('user_123', [])).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js UpdateUser() Invalid updateData: The updateData must be a non-null object.'
+    );
+  });
+
+  test('UpdateUser should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    await expect(adminAppApi.UpdateUser('user_123', { firstname: 'Test' })).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
+  //#region CreateOrganization
+
+  test('CreateOrganization should return a newly created organization object', async () => {
+    const orgData = {
+      name: 'New Test Corp',
+      num_basic_subscriptions: 50,
+      subscriptions_expiry: '2025-12-31T23:59:59.000Z'
+    };
+    const newOrg = await adminAppApi.CreateOrganization(orgData);
+    expect(newOrg).toBeDefined();
+    expect(newOrg).toHaveProperty('id');
+    expect(newOrg.name).toBe(orgData.name);
+    expect(newOrg.num_basic_subscriptions).toBe(orgData.num_basic_subscriptions);
+  });
+
+  test('CreateOrganization should throw an error if orgData is invalid (missing name)', async () => {
+    const orgData = {
+      num_basic_subscriptions: 50,
+      subscriptions_expiry: '2025-12-31T23:59:59.000Z'
+    };
+    await expect(adminAppApi.CreateOrganization(orgData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateOrganization() Validation failed for orgData: "name" is required'
+    );
+  });
+
+  test('CreateOrganization should throw an error if orgData is invalid (bad date)', async () => {
+    const orgData = {
+      name: 'New Test Corp',
+      num_basic_subscriptions: 50,
+      subscriptions_expiry: 'not-a-date'
+    };
+    await expect(adminAppApi.CreateOrganization(orgData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateOrganization() Validation failed for orgData: "subscriptions_expiry" must be in iso format'
+    );
+  });
+
+  test('CreateOrganization should throw an error if orgData is null', async () => {
+    await expect(adminAppApi.CreateOrganization(null)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateOrganization() Validation failed for orgData: "value" must be of type object'
+    );
+  });
+
+  test('CreateOrganization should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const orgData = {
+      name: 'New Test Corp',
+      num_basic_subscriptions: 50,
+      subscriptions_expiry: '2025-12-31T23:59:59.000Z'
+    };
+    await expect(adminAppApi.CreateOrganization(orgData)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
 });
