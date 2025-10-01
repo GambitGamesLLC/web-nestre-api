@@ -25,6 +25,8 @@ import { API_VERSION } from '../../examples/environment-variables.js';
  * @typedef {import('../../src/admin-app/admin-app-types.js').UsersMatchingSearch} UsersMatchingSearch
  * @typedef {import('../../src/admin-app/admin-app-types.js').UserData} UserData
  * @typedef {import('../../src/admin-app/admin-app-types.js').NewlyCreatedOrganizationData} NewlyCreatedOrganizationData
+ * @typedef {import('../../src/admin-app/admin-app-types.js').UpdatedOrganization} UpdatedOrganization
+ * @typedef {import('../../src/admin-app/admin-app-types.js').RetrievedOrganizationData} RetrievedOrganizationData
  */
 
 //#endregion
@@ -50,6 +52,67 @@ handlers.push(
       return HttpResponse.text('https://sh.rt/mock-url');
     }
     return new HttpResponse('Invalid URL provided', { status: 400 });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ADMIN APP API - GET ORGANIZATION
+
+/**
+ * @type {RetrievedOrganizationData}
+ */
+const mockRetrievedOrganizationData = {
+  id: 'org_123',
+  name: 'Mock Org',
+  num_basic_subscriptions: 100,
+  subscriptions_expiry: '2025-12-31T23:59:59.000Z',
+  team_codes: [
+    { code: 'TEAM1', is_active: true },
+    { code: 'TEAM2', is_active: false }
+  ],
+  referral_codes: [
+    { code: 'REF1', is_active: true, created_at: '2024-01-01T00:00:00Z' }
+  ]
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/admin/organization/:organization_id`, ({ params }) => {
+    const { organization_id } = params;
+
+    if (organization_id === 'org_123') {
+      return HttpResponse.json(mockRetrievedOrganizationData);
+    }
+
+    if (organization_id === 'org_not_found') {
+      return new HttpResponse(JSON.stringify({ message: 'Organization not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    return new HttpResponse('Invalid organization ID provided', { status: 400 });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ADMIN APP API - UPDATE ORGANIZATION
+
+handlers.push(
+  http.patch(`${API_BASE_URL}/v${API_VERSION}/admin/organization/:organization_id`, async ({ request, params }) => {
+    const { organization_id } = params;
+    const updateData = await request.json();
+
+    if (organization_id) {
+      /** @type {UpdatedOrganization} */
+      const updatedOrg = {
+        id: organization_id,
+        ...updateData,
+      };
+      return HttpResponse.json(updatedOrg);
+    }
+    return new HttpResponse('Invalid organization ID provided', { status: 400 });
   })
 );
 
@@ -184,6 +247,74 @@ handlers.push(
       return HttpResponse.json(updatedUser);
     }
     return new HttpResponse('Invalid user ID provided', { status: 400 });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ADMIN APP API - CREATE TEAM CODE
+
+handlers.push(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/admin/organization/:organization_id/team-code`, async ({ request, params }) => {
+    const { organization_id } = params;
+    const teamCode = await request.json();
+
+    if (organization_id === 'org_123' && teamCode.code && typeof teamCode.is_active === 'boolean') {
+      return HttpResponse.text(`Team code '${teamCode.code}' created successfully for organization '${organization_id}'.`);
+    }
+
+    return new HttpResponse('Invalid data provided', { status: 400 });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ADMIN APP API - CREATE REFERRAL CODE
+
+handlers.push(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/admin/organization/:organization_id/referral-code`, async ({ request, params }) => {
+    const { organization_id } = params;
+    const referralCode = await request.json();
+
+    if (organization_id === 'org_123' && referralCode.code && typeof referralCode.is_active === 'boolean') {
+      return HttpResponse.text(`Referral code '${referralCode.code}' created successfully for organization '${organization_id}'.`);
+    }
+
+    return new HttpResponse('Invalid data provided', { status: 400 });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ADMIN APP API - CREATE ORGANIZATION MEMBERS
+
+handlers.push(
+  http.post(`${API_BASE_URL}/v${API_VERSION}/admin/organization/:organization_id/members`, async ({ request, params }) => {
+    const { organization_id } = params;
+    const membersData = await request.json();
+
+    if (organization_id === 'org_123' && membersData.members && Array.isArray(membersData.members)) {
+      return HttpResponse.text(`${membersData.members.length} member(s) created successfully for organization '${organization_id}'.`);
+    }
+
+    return new HttpResponse('Invalid data provided', { status: 400 });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ADMIN APP API - DELETE ORGANIZATION MEMBERS
+
+handlers.push(
+  http.delete(`${API_BASE_URL}/v${API_VERSION}/admin/organization/:organization_id/members`, async ({ request, params }) => {
+    const { organization_id } = params;
+    const memberIds = await request.json();
+
+    if (organization_id === 'org_123' && Array.isArray(memberIds) && memberIds.length > 0) {
+      return HttpResponse.text(`${memberIds.length} member(s) deleted successfully.`);
+    }
+
+    return new HttpResponse('Invalid data provided', { status: 400 });
   })
 );
 

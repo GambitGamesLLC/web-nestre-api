@@ -285,4 +285,371 @@ describe('AdminAppApi', () => {
 
   //#endregion
 
+  //#region UpdateOrganization
+
+  test('UpdateOrganization should return an updated organization object', async () => {
+    const orgId = 'org_123';
+    const orgUpdateData = {
+      name: 'Updated Test Corp',
+      num_basic_subscriptions: 150,
+      subscriptions_expiry: '2026-12-31T23:59:59.000Z'
+    };
+    const updatedOrg = await adminAppApi.UpdateOrganization(orgId, orgUpdateData);
+    expect(updatedOrg).toBeDefined();
+    expect(updatedOrg.id).toBe(orgId);
+    expect(updatedOrg.name).toBe(orgUpdateData.name);
+    expect(updatedOrg.num_basic_subscriptions).toBe(orgUpdateData.num_basic_subscriptions);
+  });
+
+  test('UpdateOrganization should throw an error if organization_id is not a string', async () => {
+    const orgUpdateData = { name: 'Test', num_basic_subscriptions: 1, subscriptions_expiry: '2025-01-01T00:00:00.000Z' };
+    await expect(adminAppApi.UpdateOrganization(12345, orgUpdateData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js UpdateOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('UpdateOrganization should throw an error if organization_id is an empty string', async () => {
+    const orgUpdateData = { name: 'Test', num_basic_subscriptions: 1, subscriptions_expiry: '2025-01-01T00:00:00.000Z' };
+    await expect(adminAppApi.UpdateOrganization('', orgUpdateData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js UpdateOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('UpdateOrganization should throw an error for invalid orgUpdateData (missing name)', async () => {
+    const orgUpdateData = {
+      num_basic_subscriptions: 50,
+      subscriptions_expiry: '2025-12-31T23:59:59.000Z'
+    };
+    await expect(adminAppApi.UpdateOrganization('org_123', orgUpdateData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js UpdateOrganization() Validation failed for organization_update: "name" is required'
+    );
+  });
+
+  test('UpdateOrganization should throw an error for invalid orgUpdateData (bad date)', async () => {
+    const orgUpdateData = {
+      name: 'Test Corp',
+      num_basic_subscriptions: 50,
+      subscriptions_expiry: 'not-a-date'
+    };
+    await expect(adminAppApi.UpdateOrganization('org_123', orgUpdateData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js UpdateOrganization() Validation failed for organization_update: "subscriptions_expiry" must be in iso format'
+    );
+  });
+
+  test('UpdateOrganization should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const orgUpdateData = {
+      name: 'Updated Test Corp',
+      num_basic_subscriptions: 150,
+      subscriptions_expiry: '2026-12-31T23:59:59.000Z'
+    };
+    await expect(adminAppApi.UpdateOrganization('org_123', orgUpdateData)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
+  //#region GetOrganization
+
+  test('GetOrganization should return an organization object on successful fetch', async () => {
+    const orgId = 'org_123';
+    const orgData = await adminAppApi.GetOrganization(orgId);
+    expect(orgData).toBeDefined();
+    expect(orgData.id).toBe(orgId);
+    expect(orgData.name).toBe('Mock Org');
+    expect(orgData).toHaveProperty('team_codes');
+    expect(orgData).toHaveProperty('referral_codes');
+    expect(Array.isArray(orgData.team_codes)).toBe(true);
+    expect(Array.isArray(orgData.referral_codes)).toBe(true);
+  });
+
+  test('GetOrganization should throw an error if organization_id is not a string', async () => {
+    await expect(adminAppApi.GetOrganization(12345)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('GetOrganization should throw an error if organization_id is an empty string', async () => {
+    await expect(adminAppApi.GetOrganization('')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('GetOrganization should throw an error if organization_id is a string with only whitespace', async () => {
+    await expect(adminAppApi.GetOrganization('   ')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('GetOrganization should throw a 404 error if organization is not found', async () => {
+    const orgId = 'org_not_found';
+    await expect(adminAppApi.GetOrganization(orgId)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js API Error: 404 - Organization not found'
+    );
+  });
+
+  test('GetOrganization should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const orgId = 'org_123';
+    await expect(adminAppApi.GetOrganization(orgId)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
+  //#region CreateTeamCodeForOrganization
+
+  test('CreateTeamCodeForOrganization should return a success message', async () => {
+    const orgId = 'org_123';
+    const teamCode = { code: 'VALIDCODE', is_active: true };
+    const response = await adminAppApi.CreateTeamCodeForOrganization(orgId, teamCode);
+    expect(typeof response).toBe('string');
+    expect(response).toContain('created successfully');
+  });
+
+  test('CreateTeamCodeForOrganization should throw an error if organization_id is not a string', async () => {
+    const teamCode = { code: 'VALIDCODE', is_active: true };
+    await expect(adminAppApi.CreateTeamCodeForOrganization(12345, teamCode)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateTeamCodeForOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('CreateTeamCodeForOrganization should throw an error if organization_id is an empty string', async () => {
+    const teamCode = { code: 'VALIDCODE', is_active: true };
+    await expect(adminAppApi.CreateTeamCodeForOrganization('', teamCode)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateTeamCodeForOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('CreateTeamCodeForOrganization should throw an error for invalid team_code (missing code)', async () => {
+    const orgId = 'org_123';
+    const teamCode = { is_active: true }; // Missing 'code'
+    await expect(adminAppApi.CreateTeamCodeForOrganization(orgId, teamCode)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateTeamCodeForOrganization() Validation failed for team_code: "code" is required'
+    );
+  });
+
+  test('CreateTeamCodeForOrganization should throw an error for invalid team_code (missing is_active)', async () => {
+    const orgId = 'org_123';
+    const teamCode = { code: 'ACODE' }; // Missing 'is_active'
+    await expect(adminAppApi.CreateTeamCodeForOrganization(orgId, teamCode)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateTeamCodeForOrganization() Validation failed for team_code: "is_active" is required'
+    );
+  });
+
+  test('CreateTeamCodeForOrganization should throw an error if team_code is null', async () => {
+    const orgId = 'org_123';
+    await expect(adminAppApi.CreateTeamCodeForOrganization(orgId, null)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateTeamCodeForOrganization() Validation failed for team_code: "value" must be of type object'
+    );
+  });
+
+  test('CreateTeamCodeForOrganization should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const orgId = 'org_123';
+    const teamCode = { code: 'VALIDCODE', is_active: true };
+    await expect(adminAppApi.CreateTeamCodeForOrganization(orgId, teamCode)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
+  //#region CreateReferralCodeForOrganization
+
+  test('CreateReferralCodeForOrganization should return a success message', async () => {
+    const orgId = 'org_123';
+    const referralCode = { code: 'NEWREFCODE', is_active: true };
+    const response = await adminAppApi.CreateReferralCodeForOrganization(orgId, referralCode);
+    expect(typeof response).toBe('string');
+    expect(response).toContain('created successfully');
+  });
+
+  test('CreateReferralCodeForOrganization should throw an error if organization_id is not a string', async () => {
+    const referralCode = { code: 'VALIDCODE', is_active: true };
+    await expect(adminAppApi.CreateReferralCodeForOrganization(12345, referralCode)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateReferralCodeForOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('CreateReferralCodeForOrganization should throw an error if organization_id is an empty string', async () => {
+    const referralCode = { code: 'VALIDCODE', is_active: true };
+    await expect(adminAppApi.CreateReferralCodeForOrganization('', referralCode)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateReferralCodeForOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('CreateReferralCodeForOrganization should throw an error for invalid referral_code (missing code)', async () => {
+    const orgId = 'org_123';
+    const referralCode = { is_active: true }; // Missing 'code'
+    await expect(adminAppApi.CreateReferralCodeForOrganization(orgId, referralCode)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateReferralCodeForOrganization() Validation failed for referral_code: "code" is required'
+    );
+  });
+
+  test('CreateReferralCodeForOrganization should throw an error for invalid referral_code (missing is_active)', async () => {
+    const orgId = 'org_123';
+    const referralCode = { code: 'ACODE' }; // Missing 'is_active'
+    await expect(adminAppApi.CreateReferralCodeForOrganization(orgId, referralCode)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateReferralCodeForOrganization() Validation failed for referral_code: "is_active" is required'
+    );
+  });
+
+  test('CreateReferralCodeForOrganization should throw an error if referral_code is null', async () => {
+    const orgId = 'org_123';
+    await expect(adminAppApi.CreateReferralCodeForOrganization(orgId, null)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateReferralCodeForOrganization() Validation failed for referral_code: "value" must be of type object'
+    );
+  });
+
+  test('CreateReferralCodeForOrganization should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const orgId = 'org_123';
+    const referralCode = { code: 'VALIDCODE', is_active: true };
+    await expect(adminAppApi.CreateReferralCodeForOrganization(orgId, referralCode)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
+  //#region CreateOrganizationMembers
+
+  test('CreateOrganizationMembers should return a success message', async () => {
+    const orgId = 'org_123';
+    const membersData = {
+      members: [
+        {
+          email: 'test@example.com',
+          member_type: 'member',
+          tags: ['team-a'],
+          subscription_level_id: 1
+        }
+      ]
+    };
+    const response = await adminAppApi.CreateOrganizationMembers(orgId, membersData);
+    expect(typeof response).toBe('string');
+    expect(response).toContain('1 member(s) created successfully');
+  });
+
+  test('CreateOrganizationMembers should throw an error if organization_id is not a string', async () => {
+    const membersData = { members: [] };
+    await expect(adminAppApi.CreateOrganizationMembers(12345, membersData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateOrganizationMembers() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('CreateOrganizationMembers should throw an error if organization_id is an empty string', async () => {
+    const membersData = { members: [] };
+    await expect(adminAppApi.CreateOrganizationMembers('', membersData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateOrganizationMembers() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('CreateOrganizationMembers should throw an error for invalid membersData (missing members array)', async () => {
+    const orgId = 'org_123';
+    const membersData = {}; // Missing 'members'
+    await expect(adminAppApi.CreateOrganizationMembers(orgId, membersData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateOrganizationMembers() Validation failed for organization_members: "members" is required'
+    );
+  });
+
+  test('CreateOrganizationMembers should throw an error for invalid membersData (empty members array)', async () => {
+    const orgId = 'org_123';
+    const membersData = { members: [] }; // Empty array
+    await expect(adminAppApi.CreateOrganizationMembers(orgId, membersData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateOrganizationMembers() Validation failed for organization_members: "members" must contain at least 1 items'
+    );
+  });
+
+  test('CreateOrganizationMembers should throw an error for invalid member object (missing email)', async () => {
+    const orgId = 'org_123';
+    const membersData = {
+      members: [{ member_type: 'member', tags: [], subscription_level_id: 1 }]
+    };
+    await expect(adminAppApi.CreateOrganizationMembers(orgId, membersData)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js CreateOrganizationMembers() Validation failed for organization_members: "members[0].email" is required'
+    );
+  });
+
+  test('CreateOrganizationMembers should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const orgId = 'org_123';
+    const membersData = {
+      members: [
+        {
+          email: 'test@example.com',
+          member_type: 'member',
+          tags: ['team-a'],
+          subscription_level_id: 1
+        }
+      ]
+    };
+    await expect(adminAppApi.CreateOrganizationMembers(orgId, membersData)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
+  //#region DeleteOrganizationMembers
+
+  test('DeleteOrganizationMembers should return a success message', async () => {
+    const orgId = 'org_123';
+    const memberIds = ['member_1', 'member_2'];
+    const response = await adminAppApi.DeleteOrganizationMembers(orgId, memberIds);
+    expect(typeof response).toBe('string');
+    expect(response).toContain('2 member(s) deleted successfully.');
+  });
+
+  test('DeleteOrganizationMembers should throw an error if organization_id is not a string', async () => {
+    const memberIds = ['member_1'];
+    await expect(adminAppApi.DeleteOrganizationMembers(12345, memberIds)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteOrganizationMembers() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('DeleteOrganizationMembers should throw an error if organization_id is an empty string', async () => {
+    const memberIds = ['member_1'];
+    await expect(adminAppApi.DeleteOrganizationMembers('', memberIds)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteOrganizationMembers() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('DeleteOrganizationMembers should throw an error for invalid member_ids (not an array)', async () => {
+    const orgId = 'org_123';
+    const memberIds = { id: 'member_1' }; // Invalid, should be an array
+    await expect(adminAppApi.DeleteOrganizationMembers(orgId, memberIds)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteOrganizationMembers() Validation failed for member_ids: "value" must be an array'
+    );
+  });
+
+  test('DeleteOrganizationMembers should throw an error for invalid member_ids (empty array)', async () => {
+    const orgId = 'org_123';
+    const memberIds = []; // Invalid, must have at least one item
+    await expect(adminAppApi.DeleteOrganizationMembers(orgId, memberIds)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteOrganizationMembers() Validation failed for member_ids: "value" does not contain 1 required value(s)'
+    );
+  });
+
+  test('DeleteOrganizationMembers should throw an error for invalid member_ids (contains non-string)', async () => {
+    const orgId = 'org_123';
+    const memberIds = ['member_1', 123]; // Contains a number
+    await expect(adminAppApi.DeleteOrganizationMembers(orgId, memberIds)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteOrganizationMembers() Validation failed for member_ids: "[1]" must be a string'
+    );
+  });
+
+  test('DeleteOrganizationMembers should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const orgId = 'org_123';
+    const memberIds = ['member_1'];
+    await expect(adminAppApi.DeleteOrganizationMembers(orgId, memberIds)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
 });

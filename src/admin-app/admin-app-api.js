@@ -14,12 +14,24 @@
 
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
 import { CreateOrganizationDataSchema } from './admin-app-schemas.js';
+import { UpdateOrganizationDataSchema } from './admin-app-schemas.js';
+import { TeamCodeSchema } from './admin-app-schemas.js';
+import { CreateReferralCodeSchema } from './admin-app-schemas.js';
+import { OrganizationMembersSchema } from './admin-app-schemas.js';
+import { MemberIdsSchema } from './admin-app-schemas.js';
 
 /**
  * @typedef {import('./admin-app-types.js').UsersMatchingSearch } UsersMatchingSearch
  * @typedef {import('./admin-app-types.js').UserData } UserData
  * @typedef {import('./admin-app-types.js').CreateOrganizationData } CreateOrganizationData
  * @typedef {import('./admin-app-types.js').NewlyCreatedOrganizationData } NewlyCreatedOrganizationData
+ * @typedef {import('./admin-app-types.js').UpdateOrganizationData } UpdateOrganizationData
+ * @typedef {import('./admin-app-types.js').UpdatedOrganization } UpdatedOrganization 
+ * @typedef {import('./admin-app-types.js').RetrievedOrganizationData } RetrievedOrganizationData
+ * @typedef {import('./admin-app-types.js').TeamCode } TeamCode
+ * @typedef {import('./admin-app-types.js').CreateReferralCode } CreateReferralCode
+ * @typedef {import('./admin-app-types.js').OrganizationMembers } OrganizationMembers
+ * @typedef {import('./admin-app-types.js').MemberIds } MemberIds
  */
 
 
@@ -204,6 +216,226 @@ export class AdminAppApi
     return NestreApiManager.GetInstance().Request( HttpMethod.POST, `admin/organization`, orgData);
 
   } //END CreateOrganization Method
+
+//#endregion
+
+//#region PUBLIC - UPDATE ORGANIZATION
+
+ /**
+   * Create a new organization with the provided details
+   * 
+   * @param {string} organization_id
+   * @param {UpdateOrganizationData} organization_update
+   * @returns {Promise<UpdatedOrganization>}
+   */
+  //-----------------------------------------------------------------------//
+  UpdateOrganization(organization_id, organization_update) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the organization_id is a valid non-empty string.
+    if (typeof organization_id !== 'string' || organization_id.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js UpdateOrganization() Invalid organization_id: The organization_id must be a non-empty string."));
+    }
+
+    // Validate the organization_update object against the imported Joi schema
+    const { error } = UpdateOrganizationDataSchema.validate(organization_update);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : admin-app-api.js UpdateOrganization() Validation failed for organization_update: ${error.details[0].message}`));
+    }
+    
+    return NestreApiManager.GetInstance().Request( HttpMethod.PATCH, `admin/organization/${organization_id}`, organization_update);
+
+  } //END UpdateOrganization Method
+
+//#endregion
+
+//#region PUBLIC - DELETE ORGANIZATION
+
+ /**
+   * Delete an organization by its unique identifier
+   * 
+   * @param {string} organization_id
+   * @returns {Promise<>}
+   */
+  //-----------------------------------------------------------------------//
+  DeleteOrganization(organization_id) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the organization_id is a valid non-empty string.
+    if (typeof organization_id !== 'string' || organization_id.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js DeleteOrganization() Invalid organization_id: The organization_id must be a non-empty string."));
+    }
+    
+    return NestreApiManager.GetInstance().Request( HttpMethod.DELETE, `admin/organization/${organization_id}` );
+
+  } //END DeleteOrganization Method
+
+//#endregion
+
+//#region PUBLIC - GET ORGANIZATION
+
+ /**
+   * Retrieve an organization by its unique identifier. Includes referral codes and team codes.
+   * 
+   * @param {string} organization_id
+   * @returns {Promise<RetrievedOrganizationData>}
+   */
+  //-----------------------------------------------------------------------//
+  GetOrganization(organization_id) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the organization_id is a valid non-empty string.
+    if (typeof organization_id !== 'string' || organization_id.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetOrganization() Invalid organization_id: The organization_id must be a non-empty string."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `admin/organization/${organization_id}` );
+
+  } //END GetOrganization Method
+
+//#endregion
+
+//#region PUBLIC - CREATE TEAM CODE FOR ORGANIZATION
+
+ /**
+   * Create a new team code for a specific organization.
+   * 
+   * @param {string} organization_id
+   * @param {TeamCode} team_code
+   * @returns {Promise<string>}
+   */
+  //-----------------------------------------------------------------------//
+  CreateTeamCodeForOrganization(organization_id, team_code) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the organization_id is a valid non-empty string.
+    if (typeof organization_id !== 'string' || organization_id.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js CreateTeamCodeForOrganization() Invalid organization_id: The organization_id must be a non-empty string."));
+    }
+
+    // Validate the team_code object against the imported Joi schema
+    const { error } = TeamCodeSchema.validate(team_code);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : admin-app-api.js CreateTeamCodeForOrganization() Validation failed for team_code: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `admin/organization/${organization_id}/team-code`, team_code );
+
+  } //END CreateTeamCodeForOrganization Method
+
+//#endregion
+
+//#region PUBLIC - CREATE REFERRAL CODE FOR ORGANIZATION
+
+ /**
+   * Create a new referral code for a specific organization.
+   * 
+   * @param {string} organization_id
+   * @param {CreateReferralCode} referral_code
+   * @returns {Promise<string>}
+   */
+  //-----------------------------------------------------------------------//
+  CreateReferralCodeForOrganization(organization_id, referral_code) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the organization_id is a valid non-empty string.
+    if (typeof organization_id !== 'string' || organization_id.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js CreateReferralCodeForOrganization() Invalid organization_id: The organization_id must be a non-empty string."));
+    }
+
+    // Validate the referral_code object against the imported Joi schema
+    const { error } = CreateReferralCodeSchema.validate(referral_code);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : admin-app-api.js CreateReferralCodeForOrganization() Validation failed for referral_code: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `admin/organization/${organization_id}/referral-code`, referral_code );
+
+  } //END CreateReferralCodeForOrganization Method
+
+//#endregion
+
+//#region PUBLIC - CREATE ORGANIZATION MEMBERS
+
+ /**
+   * Create new members in an organization
+   * 
+   * @param {string} organization_id
+   * @param {OrganizationMembers} organization_members
+   * @returns {Promise<string>}
+   */
+  //-----------------------------------------------------------------------//
+  CreateOrganizationMembers(organization_id, organization_members) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the organization_id is a valid non-empty string.
+    if (typeof organization_id !== 'string' || organization_id.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js CreateOrganizationMembers() Invalid organization_id: The organization_id must be a non-empty string."));
+    }
+
+    // Validate the referral_code object against the imported Joi schema
+    const { error } = OrganizationMembersSchema.validate(organization_members);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : admin-app-api.js CreateOrganizationMembers() Validation failed for organization_members: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.POST, `admin/organization/${organization_id}/members`, organization_members );
+
+  } //END CreateOrganizationMembers Method
+
+//#endregion
+
+//#region PUBLIC - DELETE ORGANIZATION MEMBERS
+
+ /**
+   * Delete members from an organization by their IDs
+   * 
+   * @param {string} organization_id
+   * @param {MemberIds} member_ids
+   * @returns {Promise<string>}
+   */
+  //-----------------------------------------------------------------------//
+  DeleteOrganizationMembers(organization_id, member_ids) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if the organization_id is a valid non-empty string.
+    if (typeof organization_id !== 'string' || organization_id.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js DeleteOrganizationMembers() Invalid organization_id: The organization_id must be a non-empty string."));
+    }
+
+    // Validate the referral_code object against the imported Joi schema
+    const { error } = MemberIdsSchema.validate(member_ids);
+
+    if (error) {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error(`web-nestre-api : admin-app-api.js DeleteOrganizationMembers() Validation failed for member_ids: ${error.details[0].message}`));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.DELETE, `admin/organization/${organization_id}/members`, member_ids );
+
+  } //END DeleteOrganizationMembers Method
 
 //#endregion
 

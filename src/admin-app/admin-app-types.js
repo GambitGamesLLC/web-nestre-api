@@ -82,5 +82,79 @@
 
 //#endregion
 
+//#region ADMIN APP API - UPDATE ORGANIZATION DATA
+
+/**
+ * @typedef {object} UpdateOrganizationData
+ * @property {string} name
+ * @property {number} num_basic_subscriptions
+ * @property {string} subscriptions_expiry
+ */
+
+/**
+ * @typedef {object} UpdatedOrganization
+ * @property {string} name
+ * @property {number} num_basic_subscriptions
+ * @property {string} subscriptions_expiry
+ * @property {string} id
+ **/
+
+//#endregion
+
+//#region ADMIN APP API - GET ORGANIZATION DATA
+
+/**
+ * @typedef {object} TeamCode
+ * @property {string} code
+ * @property {boolean} is_active
+ */
+
+/**
+ * @typedef {object} RetrievedOrganizationData
+ * @property {string} name
+ * @property {number} num_basic_subscriptions
+ * @property {string} subscriptions_expiry
+ * @property {string} id
+ * @property {TeamCode[]} team_codes
+ * @property {ReferralCode[]} referral_codes
+ */
+
+//#endregion
+
+//#region ADMIN APP API - CREATE REFERRAL CODE
+
+/**
+ * @typedef {object} CreateReferralCode
+ * @property {string} code
+ * @property {boolean} is_active
+ */
+
+//#endregion
+
+//#region ADMIN APP API - CREATE ORGANIZATION MEMBERS
+
+/**
+ * @typedef {object} OrganizationMember
+ * @property {string} email
+ * @property {string} member_type
+ * @property {string[]} tags
+ * @property {number} subscription_level_id
+ */
+
+/**
+ * @typedef {object} OrganizationMembers
+ * @property {OrganizationMember[]} members
+ */
+
+//#endregion
+
+//#region ADMIN APP API - DELETE ORGANIZATION MEMBERS
+
+/**
+ * @typedef {string[]} MemberIds
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};

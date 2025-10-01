@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NESTRE API Client Test - Create Organization Members</title>
+    <style>
+        body { font-family: sans-serif; padding: 1em; }
+        .input-group { margin-bottom: 10px; }
+        label { display: block; margin-bottom: 5px; }
+        input, textarea { width: 400px; padding: 8px; }
+        textarea { height: 150px; font-family: monospace; }
+        button { padding: 8px 15px; margin-top: 10px; }
+        #output { margin-top: 20px; white-space: pre-wrap; background-color: #f4f4f4; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>NESTRE API Client Test - Create Organization Members</h1>
+    <p>Create new members in an organization by providing a JSON object of members.</p>
+
+    <div class="input-group">
+        <label for="organizationIdInput">Organization ID:</label>
+        <input type="text" id="organizationIdInput" value="org_123">
+    </div>
+    
+    <div class="input-group">
+        <label for="membersInput">Members JSON:</label>
+        <textarea id="membersInput">{
+  "members": [
+    {
+      "email": "new.member1@example.com",
+      "member_type": "member",
+      "tags": ["team-c"],
+      "subscription_level_id": 1
+    }
+  ]
+}</textarea>
+    </div>
+    
+    <div class="input-group">
+        <label for="authTokenInput">Auth Token (JWT):</label>
+        <input type="text" id="authTokenInput" value="">
+    </div>
+
+    <button id="runTestBtn">Run Test</button>
+
+    <div id="output">Test results will appear here...</div>
+
+    <script type="module" src="index.js"></script>
+</body>
+</html>
