@@ -9,6 +9,7 @@
 
 import { NestreApiManager } from '../../src/index.js';
 import { API_BASE_URL, API_VERSION, AUTH_TOKEN } from '../../examples/environment-variables.js';
+import { jest } from '@jest/globals';
 
 describe('AdminAppApi', () => {
   let nestreApiManager;
@@ -350,6 +351,42 @@ describe('AdminAppApi', () => {
 
   //#endregion
 
+  //#region DeleteOrganization
+
+  test('DeleteOrganization should resolve successfully on valid deletion', async () => {
+    const orgId = 'org_123';
+    // Expect the promise to resolve without a value (or with null) for a 204 response
+    await expect(adminAppApi.DeleteOrganization(orgId)).resolves.toBeNull();
+  });
+
+  test('DeleteOrganization should throw an error if organization_id is not a string', async () => {
+    await expect(adminAppApi.DeleteOrganization(12345)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('DeleteOrganization should throw an error if organization_id is an empty string', async () => {
+    await expect(adminAppApi.DeleteOrganization('')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('DeleteOrganization should throw an error if organization_id is a string with only whitespace', async () => {
+    await expect(adminAppApi.DeleteOrganization('   ')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js DeleteOrganization() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('DeleteOrganization should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const orgId = 'org_123';
+    await expect(adminAppApi.DeleteOrganization(orgId)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
   //#region GetOrganization
 
   test('GetOrganization should return an organization object on successful fetch', async () => {
@@ -648,6 +685,241 @@ describe('AdminAppApi', () => {
     const memberIds = ['member_1'];
     await expect(adminAppApi.DeleteOrganizationMembers(orgId, memberIds)).rejects.toThrow(
       'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
+  //#region GetUserStats
+
+  test('GetUserStats should return user stats object on successful fetch', async () => {
+    const fromDate = new Date('2024-01-01');
+    const toDate = new Date('2024-01-31');
+    const stats = await adminAppApi.GetUserStats(fromDate, toDate);
+    expect(stats).toBeDefined();
+    expect(stats).toHaveProperty('total_users');
+    expect(stats).toHaveProperty('new_users');
+    expect(stats).toHaveProperty('active_users');
+    expect(stats.total_users).toBe(1000);
+  });
+
+  test('GetUserStats should throw an error if from_date is not a Date object', async () => {
+    const toDate = new Date();
+    await expect(adminAppApi.GetUserStats('2024-01-01', toDate)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetUserStats() Invalid from_date: The from_date must be a valid Date object.'
+    );
+  });
+
+  test('GetUserStats should throw an error if to_date is not a Date object', async () => {
+    const fromDate = new Date();
+    await expect(adminAppApi.GetUserStats(fromDate, '2024-01-31')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetUserStats() Invalid to_date: The to_date must be a valid Date object.'
+    );
+  });
+
+  test('GetUserStats should throw an error if from_date is an invalid Date', async () => {
+    const toDate = new Date();
+    await expect(adminAppApi.GetUserStats(new Date('invalid-date'), toDate)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetUserStats() Invalid from_date: The from_date must be a valid Date object.'
+    );
+  });
+
+  test('GetUserStats should throw an error if to_date is an invalid Date', async () => {
+    const fromDate = new Date();
+    await expect(adminAppApi.GetUserStats(fromDate, new Date('invalid-date'))).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetUserStats() Invalid to_date: The to_date must be a valid Date object.'
+    );
+  });
+
+  test('GetUserStats should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    const fromDate = new Date('2024-01-01');
+    const toDate = new Date('2024-01-31');
+    await expect(adminAppApi.GetUserStats(fromDate, toDate)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  //#endregion
+
+  //#region GetReferralCodeStats
+
+  test('GetReferralCodeStats should return stats object on successful fetch with no params', async () => {
+    const stats = await adminAppApi.GetReferralCodeStats(null, null, null, null, null);
+    expect(stats).toBeDefined();
+    expect(stats).toHaveProperty('codes');
+    expect(stats).toHaveProperty('total_referred_users');
+    expect(Array.isArray(stats.codes)).toBe(true);
+    expect(stats.codes[0].code).toBe('REF123');
+  });
+
+  test('GetReferralCodeStats should return stats object with all params', async () => {
+    const fromDate = new Date('2024-01-01');
+    const toDate = new Date('2024-01-31');
+    const stats = await adminAppApi.GetReferralCodeStats('Test User', 'REF123', fromDate, toDate, false);
+    expect(stats).toBeDefined();
+    expect(stats.codes[0].name).toBe('Test User');
+  });
+
+  test('GetReferralCodeStats should handle boolean for aggregate_codes', async () => {
+    const stats = await adminAppApi.GetReferralCodeStats(null, null, null, null, true);
+    expect(stats).toBeDefined();
+  });
+
+  test('GetReferralCodeStats should throw an error if from_date is not a Date object', async () => {
+    await expect(adminAppApi.GetReferralCodeStats(null, null, 'not-a-date', null, null)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetReferralCodeStats() Invalid from_date: If provided, from_date must be a valid Date object.'
+    );
+  });
+
+  test('GetReferralCodeStats should throw an error if to_date is an invalid Date', async () => {
+    await expect(adminAppApi.GetReferralCodeStats(null, null, new Date(), new Date('invalid'), null)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetReferralCodeStats() Invalid to_date: If provided, to_date must be a valid Date object.'
+    );
+  });
+
+  test('GetReferralCodeStats should throw an error if aggregate_codes is not a boolean', async () => {
+    await expect(adminAppApi.GetReferralCodeStats(null, null, null, null, 'not-a-boolean')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetReferralCodeStats() Invalid aggregate_codes: If provided, aggregate_codes must be a boolean.'
+    );
+  });
+
+  test('GetReferralCodeStats should not throw for null or undefined optional params', async () => {
+    await expect(adminAppApi.GetReferralCodeStats(undefined, null, undefined, null, undefined)).resolves.toBeDefined();
+  });
+
+  test('GetReferralCodeStats should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    await expect(adminAppApi.GetReferralCodeStats(null, null, null, null, null)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  test('GetReferralCodeStats should correctly build a query string with all params', async () => {
+    const fromDate = new Date('2024-01-01T00:00:00.000Z');
+    const toDate = new Date('2024-01-31T00:00:00.000Z');
+    const spy = jest.spyOn(NestreApiManager.GetInstance(), 'Request');
+    await adminAppApi.GetReferralCodeStats('Test User', 'CODE1', fromDate, toDate, true);
+    
+    const expectedEndpoint = `admin/referral-code-stats?name=Test+User&code=CODE1&from_date=${encodeURIComponent(fromDate.toISOString())}&to_date=${encodeURIComponent(toDate.toISOString())}&aggregate_codes=true`;
+
+    expect(spy).toHaveBeenCalledWith(expect.any(String), expectedEndpoint);
+    spy.mockRestore();
+  });
+
+  test('GetReferralCodeStats should correctly build a query string with some params', async () => {
+    const spy = jest.spyOn(NestreApiManager.GetInstance(), 'Request');
+    await adminAppApi.GetReferralCodeStats('Test User', null, null, null, false);
+    
+    const expectedEndpoint = `admin/referral-code-stats?name=Test+User&aggregate_codes=false`;
+
+    expect(spy).toHaveBeenCalledWith(expect.any(String), expectedEndpoint);
+    spy.mockRestore();
+  });
+
+  test('GetReferralCodeStats should correctly build a query string with no params', async () => {
+    const spy = jest.spyOn(NestreApiManager.GetInstance(), 'Request');
+    await adminAppApi.GetReferralCodeStats(null, null, null, null, null);
+    
+    const expectedEndpoint = `admin/referral-code-stats`;
+
+    expect(spy).toHaveBeenCalledWith(expect.any(String), expectedEndpoint);
+    spy.mockRestore();
+  });
+
+  test('GetReferralCodeStats should throw a 404 error if stats are not found', async () => {
+    const code = 'NOTFOUND';
+    await expect(adminAppApi.GetReferralCodeStats(null, code, null, null, null)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js API Error: 404 - Stats not found'
+    );
+  });
+
+  //#endregion
+
+  //#region GetMemberReferralCodeStats
+
+  test('GetMemberReferralCodeStats should return stats object on successful fetch', async () => {
+    const orgId = 'org_123';
+    const stats = await adminAppApi.GetMemberReferralCodeStats(orgId, null, null, null);
+    expect(stats).toBeDefined();
+    expect(stats).toHaveProperty('codes');
+    expect(stats.codes[0].name).toBe('Org Member');
+  });
+
+  test('GetMemberReferralCodeStats should return stats object with all params', async () => {
+    const orgId = 'org_123';
+    const fromDate = new Date('2024-01-01');
+    const toDate = new Date('2024-01-31');
+    const stats = await adminAppApi.GetMemberReferralCodeStats(orgId, fromDate, toDate, true);
+    expect(stats).toBeDefined();
+    expect(stats.codes[0].name).toBe('Org Member');
+  });
+
+  test('GetMemberReferralCodeStats should throw an error if organization_id is not a string', async () => {
+    await expect(adminAppApi.GetMemberReferralCodeStats(12345, null, null, null)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetMemberReferralCodeStats() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('GetMemberReferralCodeStats should throw an error if organization_id is an empty string', async () => {
+    await expect(adminAppApi.GetMemberReferralCodeStats('', null, null, null)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetMemberReferralCodeStats() Invalid organization_id: The organization_id must be a non-empty string.'
+    );
+  });
+
+  test('GetMemberReferralCodeStats should throw an error if from_date is invalid', async () => {
+    await expect(adminAppApi.GetMemberReferralCodeStats('org_123', 'not-a-date', null, null)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetMemberReferralCodeStats() Invalid from_date: If provided, from_date must be a valid Date object.'
+    );
+  });
+
+  test('GetMemberReferralCodeStats should throw an error if to_date is invalid', async () => {
+    await expect(adminAppApi.GetMemberReferralCodeStats('org_123', new Date(), new Date('invalid'), null)).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetMemberReferralCodeStats() Invalid to_date: If provided, to_date must be a valid Date object.'
+    );
+  });
+
+  test('GetMemberReferralCodeStats should throw an error if aggregate_codes is not a boolean', async () => {
+    await expect(adminAppApi.GetMemberReferralCodeStats('org_123', null, null, 'not-a-boolean')).rejects.toThrow(
+      'web-nestre-api : admin-app-api.js GetMemberReferralCodeStats() Invalid aggregate_codes: If provided, aggregate_codes must be a boolean.'
+    );
+  });
+
+  test('GetMemberReferralCodeStats should throw an error if auth token is not set', async () => {
+    nestreApiManager.ClearAuthToken();
+    await expect(adminAppApi.GetMemberReferralCodeStats('org_123', null, null, null)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js Error: this._authToken is null, undefined, or an empty string'
+    );
+  });
+
+  test('GetMemberReferralCodeStats should correctly build a query string with all params', async () => {
+    const orgId = 'org_123';
+    const fromDate = new Date('2024-01-01T00:00:00.000Z');
+    const toDate = new Date('2024-01-31T00:00:00.000Z');
+    const spy = jest.spyOn(NestreApiManager.GetInstance(), 'Request');
+    await adminAppApi.GetMemberReferralCodeStats(orgId, fromDate, toDate, true);
+    
+    const expectedEndpoint = `admin/organization/org_123/member-referral-code-stats?organization_id=${orgId}&from_date=${encodeURIComponent(fromDate.toISOString())}&to_date=${encodeURIComponent(toDate.toISOString())}&aggregate_codes=true`;
+
+    expect(spy).toHaveBeenCalledWith(expect.any(String), expectedEndpoint);
+    spy.mockRestore();
+  });
+
+  test('GetMemberReferralCodeStats should correctly build a query string with no optional params', async () => {
+    const orgId = 'org_123';
+    const spy = jest.spyOn(NestreApiManager.GetInstance(), 'Request');
+    await adminAppApi.GetMemberReferralCodeStats(orgId, null, null, null);
+
+    const expectedEndpoint = `admin/organization/org_123/member-referral-code-stats?organization_id=org_123`;
+
+    expect(spy).toHaveBeenCalledWith(expect.any(String), expectedEndpoint);
+    spy.mockRestore();
+  });
+
+  test('GetMemberReferralCodeStats should throw a 404 error if stats are not found', async () => {
+    const orgId = 'org_not_found';
+    await expect(adminAppApi.GetMemberReferralCodeStats(orgId, null, null, null)).rejects.toThrow(
+      'web-nestre-api : nestre-api-manager.js API Error: 404 - Stats not found'
     );
   });
 

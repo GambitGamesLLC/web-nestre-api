@@ -32,6 +32,8 @@ import { MemberIdsSchema } from './admin-app-schemas.js';
  * @typedef {import('./admin-app-types.js').CreateReferralCode } CreateReferralCode
  * @typedef {import('./admin-app-types.js').OrganizationMembers } OrganizationMembers
  * @typedef {import('./admin-app-types.js').MemberIds } MemberIds
+ * @typedef {import('./admin-app-types.js').UserStatsData } UserStatsData
+ * @typedef {import('./admin-app-types.js').ReferralCodeStats } ReferralCodeStats
  */
 
 
@@ -436,6 +438,152 @@ export class AdminAppApi
     return NestreApiManager.GetInstance().Request( HttpMethod.DELETE, `admin/organization/${organization_id}/members`, member_ids );
 
   } //END DeleteOrganizationMembers Method
+
+//#endregion
+
+//#region PUBLIC - GET USER STATS
+
+ /**
+   * Retrieve user statistics for the app within a date range.
+   * 
+   * @param {Date} from_date
+   * @param {Date} to_date
+   * @returns {Promise<UserStatsData>}
+   */
+  //-----------------------------------------------------------------------//
+  GetUserStats(from_date, to_date) 
+  //-----------------------------------------------------------------------//
+  {
+    // Check if from_date is a valid Date object.
+    if (!(from_date instanceof Date) || isNaN(from_date)) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetUserStats() Invalid from_date: The from_date must be a valid Date object."));
+    }
+
+    // Check if to_date is a valid Date object.
+    if (!(to_date instanceof Date) || isNaN(to_date)) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetUserStats() Invalid to_date: The to_date must be a valid Date object."));
+    }
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, `admin/user-stats?from_date=${from_date.toISOString()}&to_date=${to_date.toISOString()}` );
+
+  } //END GetUserStats Method
+
+//#endregion
+
+//#region PUBLIC - GET REFERRAL CODE STATS
+
+ /**
+   * Retrieve referral code statistics, optionally filtered by name, code, and date range.
+   * 
+   * @param {string | null} name
+   * @param {string | null} code
+   * @param {Date | null} from_date
+   * @param {Date | null} to_date
+   * @param {boolean} aggregate_codes
+   * @returns {Promise<ReferralCodeStats>}
+   */
+  //-----------------------------------------------------------------------//
+  GetReferralCodeStats(name, code, from_date, to_date, aggregate_codes) 
+  //-----------------------------------------------------------------------//
+  {    
+    const params = new URLSearchParams();
+
+    if (name && typeof name === 'string' && name.trim().length > 0) {
+        params.append('name', name);
+    }
+
+    if (code && typeof code === 'string' && code.trim().length > 0) {
+        params.append('code', code);
+    }
+
+    if (from_date) {
+        if (!(from_date instanceof Date) || isNaN(from_date)) {
+            return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetReferralCodeStats() Invalid from_date: If provided, from_date must be a valid Date object."));
+        }
+        params.append('from_date', from_date.toISOString());
+    }
+
+    if (to_date) {
+        if (!(to_date instanceof Date) || isNaN(to_date)) {
+            return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetReferralCodeStats() Invalid to_date: If provided, to_date must be a valid Date object."));
+        }
+        params.append('to_date', to_date.toISOString());
+    }
+
+    if (typeof aggregate_codes === 'boolean') {
+        params.append('aggregate_codes', aggregate_codes);
+    } else if (aggregate_codes != null) {
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetReferralCodeStats() Invalid aggregate_codes: If provided, aggregate_codes must be a boolean."));
+    }
+
+    const queryString = params.toString();
+    const endpoint = `admin/referral-code-stats${queryString ? `?${queryString}` : ''}`;
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, endpoint );
+
+  } //END GetReferralCodeStats Method
+
+//#endregion
+
+//#region PUBLIC - GET MEMBER REFERRAL CODE STATS
+
+ /**
+   * Retrieve referral code statistics for members of a specific organization, optionally filtered by date range.
+   * 
+   * @param {string} organization_id 
+   * @param {Date | null} from_date
+   * @param {Date | null} to_date
+   * @param {boolean} aggregate_codes
+   * @returns {Promise<ReferralCodeStats>}
+   */
+  //-----------------------------------------------------------------------//
+  GetMemberReferralCodeStats(organization_id, from_date, to_date, aggregate_codes) 
+  //-----------------------------------------------------------------------//
+  { 
+
+    const params = new URLSearchParams();
+
+    // Check if the organization_id is a valid non-empty string.
+    if (typeof organization_id !== 'string' || organization_id.trim().length === 0) 
+    {
+        // Return a rejected promise with a descriptive error.
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetMemberReferralCodeStats() Invalid organization_id: The organization_id must be a non-empty string."));
+    }
+    else
+    {
+      params.append( 'organization_id', organization_id );
+    }
+
+    if (from_date) {
+        if (!(from_date instanceof Date) || isNaN(from_date)) {
+            return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetMemberReferralCodeStats() Invalid from_date: If provided, from_date must be a valid Date object."));
+        }
+        params.append('from_date', from_date.toISOString());
+    }
+
+    if (to_date) {
+        if (!(to_date instanceof Date) || isNaN(to_date)) {
+            return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetMemberReferralCodeStats() Invalid to_date: If provided, to_date must be a valid Date object."));
+        }
+        params.append('to_date', to_date.toISOString());
+    }
+
+    if (typeof aggregate_codes === 'boolean') {
+        params.append('aggregate_codes', aggregate_codes);
+    } else if (aggregate_codes != null) {
+        return Promise.reject(new Error("web-nestre-api : admin-app-api.js GetMemberReferralCodeStats() Invalid aggregate_codes: If provided, aggregate_codes must be a boolean."));
+    }
+
+    const queryString = params.toString();
+    const endpoint = `admin/organization/${organization_id}/member-referral-code-stats?${queryString}`;
+
+    return NestreApiManager.GetInstance().Request( HttpMethod.GET, endpoint );
+
+  } //END GetMemberReferralCodeStats Method
 
 //#endregion
 

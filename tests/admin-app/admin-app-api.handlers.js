@@ -28,6 +28,8 @@ import { API_VERSION } from '../../examples/environment-variables.js';
  * @typedef {import('../../src/admin-app/admin-app-types.js').UpdatedOrganization} UpdatedOrganization
  * @typedef {import('../../src/admin-app/admin-app-types.js').RetrievedOrganizationData} RetrievedOrganizationData
  */
+/** @typedef {import('../../src/admin-app/admin-app-types.js').UserStatsData} UserStatsData */
+/** @typedef {import('../../src/admin-app/admin-app-types.js').ReferralCodeStats} ReferralCodeStats */
 
 //#endregion
 
@@ -52,6 +54,76 @@ handlers.push(
       return HttpResponse.text('https://sh.rt/mock-url');
     }
     return new HttpResponse('Invalid URL provided', { status: 400 });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ADMIN APP API - GET REFERRAL CODE STATS
+
+/**
+ * @type {ReferralCodeStats}
+ */
+const mockReferralCodeStats = {
+    codes: [
+        {
+            code: "REF123",
+            name: "Test User",
+            user_type: "user",
+            total_referred_users: 10,
+            basic_monthly_subscribers: 2,
+            basic_annual_subscribers: 1,
+            total_referred_subscribers: 3
+        }
+    ],
+    total_referred_users: 10,
+    total_referred_subscribers: 3,
+    total_basic_monthly_subscribers: 2,
+    total_basic_annual_subscribers: 1
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/admin/referral-code-stats`, ({ request }) => {
+    const url = new URL(request.url);
+    const name = url.searchParams.get('name');
+    const code = url.searchParams.get('code');
+
+    if (name === 'invalid-date-user') {
+        return new HttpResponse('Invalid date provided', { status: 400 });
+    }
+
+    if (code === 'NOTFOUND') {
+        return new HttpResponse(JSON.stringify({ message: 'Stats not found' }), { status: 404 });
+    }
+
+    return HttpResponse.json(mockReferralCodeStats);
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ADMIN APP API - GET USER STATS
+
+/**
+ * @type {UserStatsData}
+ */
+const mockUserStatsData = {
+  total_users: 1000,
+  new_users: 50,
+  active_users: 300
+};
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/admin/user-stats`, ({ request }) => {
+    const url = new URL(request.url);
+    const fromDate = url.searchParams.get('from_date');
+    const toDate = url.searchParams.get('to_date');
+
+    if (fromDate && toDate) {
+      return HttpResponse.json(mockUserStatsData);
+    }
+
+    return new HttpResponse('Invalid date range provided', { status: 400 });
   })
 );
 
@@ -140,6 +212,23 @@ handlers.push(
 
 //#endregion
 
+//#region MOCK SERVICE WORKERS - ADMIN APP API - DELETE ORGANIZATION
+
+handlers.push(
+  http.delete(`${API_BASE_URL}/v${API_VERSION}/admin/organization/:organization_id`, ({ params }) => {
+    const { organization_id } = params;
+
+    if (organization_id === 'org_123') {
+      // Return 204 No Content for successful deletion
+      return new HttpResponse(null, { status: 204 });
+    }
+
+    return new HttpResponse('Invalid organization ID provided', { status: 400 });
+  })
+);
+
+//#endregion
+
 //#region MOCK SERVICE WORKERS - ADMIN APP API - GET USER
 
 /**
@@ -178,6 +267,7 @@ handlers.push(
 );
 
 //#endregion
+
 
 //#region MOCK SERVICE WORKERS - ADMIN APP API - SEARCH USERS
 
@@ -315,6 +405,34 @@ handlers.push(
     }
 
     return new HttpResponse('Invalid data provided', { status: 400 });
+  })
+);
+
+//#endregion
+
+//#region MOCK SERVICE WORKERS - ADMIN APP API - GET MEMBER REFERRAL CODE STATS
+
+handlers.push(
+  http.get(`${API_BASE_URL}/v${API_VERSION}/admin/organization/:organization_id/member-referral-code-stats`, ({ params }) => {
+    const { organization_id } = params;
+
+    if (organization_id === 'org_not_found') {
+        return new HttpResponse(JSON.stringify({ message: 'Stats not found' }), { status: 404 });
+    }
+
+    if (organization_id === 'org_123') {
+        /** @type {ReferralCodeStats} */
+        const mockMemberReferralCodeStats = {
+            ...mockReferralCodeStats,
+            codes: [{
+                ...mockReferralCodeStats.codes[0],
+                name: "Org Member"
+            }]
+        };
+        return HttpResponse.json(mockMemberReferralCodeStats);
+    }
+
+    return new HttpResponse('Invalid organization ID provided', { status: 400 });
   })
 );
 

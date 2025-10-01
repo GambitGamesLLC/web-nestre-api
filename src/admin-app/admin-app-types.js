@@ -156,5 +156,40 @@
 
 //#endregion
 
+//#region ADMIN APP API - USER STATS
+
+/**
+ * @typedef {object} UserStatsData
+ * @property {number} total_users
+ * @property {number} new_users
+ * @property {number} active_users
+ */
+
+//#endregion
+
+//#region ADMIN APP API - GET REFERRAL CODE STATS
+
+/**
+ * @typedef {object} ReferralCodeStat
+ * @property {string} code
+ * @property {string} name
+ * @property {string} user_type
+ * @property {number} total_referred_users
+ * @property {number} basic_monthly_subscribers
+ * @property {number} basic_annual_subscribers
+ * @property {number} total_referred_subscribers
+ */
+
+/**
+ * @typedef {object} ReferralCodeStats
+ * @property {ReferralCodeStat[]} codes - An array of statistics for individual referral codes.
+ * @property {number} total_referred_users - The grand total of referred users across all codes.
+ * @property {number} total_referred_subscribers - The grand total of referred subscribers across all codes.
+ * @property {number} total_basic_monthly_subscribers - The grand total of basic monthly subscribers across all codes.
+ * @property {number} total_basic_annual_subscribers - The grand total of basic annual subscribers across all codes.
+ */
+
+//#endregion
+
 // We just need to export an empty object for this file to be treated as a module.
 export {};
