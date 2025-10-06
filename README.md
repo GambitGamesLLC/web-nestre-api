@@ -219,11 +219,3 @@ These dependencies are included as part of the library when you import it. They 
 
   * **joi** [[Git Repo]](https://github.com/hapijs/joi)
   Used to validate `JSON` schema to make sure it has the right contents and shape.
-
------
-
-## **SUPPORT**
-
-Created and maintained by Gambit Games LLC.
-
-For support or feature requests, contact: gambitgamesllc@gmail.com.
