@@ -15,8 +15,8 @@
 import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
 import { CreateOrganizationDataSchema } from './admin-app-schemas.js';
 import { UpdateOrganizationDataSchema } from './admin-app-schemas.js';
-import { TeamCodeSchema } from './admin-app-schemas.js';
-import { CreateReferralCodeSchema } from './admin-app-schemas.js';
+import { TeamCodeSchema } from './admin-app-schemas.js'; 
+import { AdminAppCreateReferralCodeSchema } from './admin-app-schemas.js';
 import { OrganizationMembersSchema } from './admin-app-schemas.js';
 import { MemberIdsSchema } from './admin-app-schemas.js';
 
@@ -360,11 +360,11 @@ export class AdminAppApi
     }
 
     // Validate the referral_code object against the imported Joi schema
-    const { error } = CreateReferralCodeSchema.validate(referral_code);
+    const { error } = AdminAppCreateReferralCodeSchema.validate(referral_code);
 
     if (error) {
         // Return a rejected promise with a descriptive error.
-        return Promise.reject(new Error(`web-nestre-api : admin-app-api.js CreateReferralCodeForOrganization() Validation failed for referral_code: ${error.details[0].message}`));
+        return Promise.reject(new Error(`web-nestre-api : admin-app-api.js CreateReferralCodeForOrganization() Validation failed for referral_code: ${error.details[0].message}`)); 
     }
 
     return NestreApiManager.GetInstance().Request( HttpMethod.POST, `admin/organization/${organization_id}/referral-code`, referral_code );

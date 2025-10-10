@@ -24,7 +24,7 @@ import {NestreApiManager, HttpMethod} from '../nestre-api-manager.js';
 
 //Joi Schema Validators
 import { UpdateUserProfileSchema } from './user-schemas.js';
-import { CreateReferralCodeSchema } from './user-schemas.js';
+import { UserCreateReferralCodeSchema } from './user-schemas.js';
 
 //#endregion
 
@@ -219,7 +219,7 @@ export class UserApi
     }
 
     // Validate the CreateReferralCode object against the imported Joi schema
-    const { error } = CreateReferralCodeSchema.validate(createReferralCode);
+    const { error } = UserCreateReferralCodeSchema.validate(createReferralCode);
 
     if (error) {
         // Return a rejected promise with a descriptive error.

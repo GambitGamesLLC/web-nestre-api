@@ -4,7 +4,7 @@
  * @description This file exports Joi validation schemas for the objects used in the User API. 
  * These schemas are used to ensure the data sent to the API functions has the correct shape and type.
  * @exports {UpdateUserProfileSchema}
- * @exports {CreateReferralCodeSchema}
+ * @exports {UserCreateReferralCodeSchema}
  */
 
 //#region IMPORTS
@@ -42,9 +42,9 @@ export const UpdateUserProfileSchema = Joi.object({
 //#region USER API - CREATE REFERRAL CODE
 
 /**
- * Joi schema for validating the CreateReferralCodeSchema object.
+ * Joi schema for validating the UserCreateReferralCodeSchema object.
  */
-export const CreateReferralCodeSchema = Joi.object({
+export const UserCreateReferralCodeSchema = Joi.object({
     code: Joi.string().allow(null, ''),
     is_active: Joi.boolean(),
 }).unknown(false); // Prevents unknown keys

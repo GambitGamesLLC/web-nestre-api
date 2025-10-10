@@ -4,6 +4,11 @@
  * @description This file exports Joi validation schemas for the objects used in the Admin App API.
  * These schemas are used to ensure the data sent to the API functions has the correct shape and type.
  * @exports {CreateOrganizationDataSchema}
+ * @exports {OrganizationMembersSchema}
+ * @exports {UpdateOrganizationDataSchema}
+ * @exports {TeamCodeSchema}
+ * @exports {AdminAppCreateReferralCodeSchema}
+ * @exports {MemberIdsSchema}
  */
 /* eslint-disable no-dupe-keys */
 
@@ -73,7 +78,7 @@ export const TeamCodeSchema = Joi.object({
 /**
  * Joi schema for validating the CreateReferralCode object.
  */
-export const CreateReferralCodeSchema = Joi.object({
+export const AdminAppCreateReferralCodeSchema = Joi.object({
     code: Joi.string().required(),
     is_active: Joi.boolean().required()
 }).unknown(false); // Prevents unknown keys
