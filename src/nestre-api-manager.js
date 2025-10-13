@@ -381,8 +381,8 @@ SetApiVersion( version )
    * @param {HttpMethodValue} httpMethodValue - The HTTP method to use (GET, POST, PATCH, DELETE).
    * @param {string} endpoint - The API endpoint path.
    * @param {object} [body] - The request body for POST/PATCH requests.
-   * @param {boolean} ignoreApiVersion - Should we exclude the /v#/ from the Request url?
-   * @param {boolean} ignoreAuthToken - Should we ignore if the auth token is not set?
+   * @param {boolean} [ignoreApiVersion] - Should we exclude the /v#/ from the Request url?
+   * @param {boolean} [ignoreAuthToken] - Should we ignore if the auth token is not set?
    * @returns {Promise<T>}
    */
   //----------------------------------------------------------------------------//

@@ -124,7 +124,7 @@
 //#region ADMIN APP API - CREATE REFERRAL CODE
 
 /**
- * @typedef {object} CreateReferralCode
+ * @typedef {object} AdminAppCreateReferralCode
  * @property {string} code
  * @property {boolean} is_active
  */
@@ -134,7 +134,7 @@
 //#region ADMIN APP API - CREATE ORGANIZATION MEMBERS
 
 /**
- * @typedef {object} OrganizationMember
+ * @typedef {object} AdminAppOrganizationMember
  * @property {string} email
  * @property {string} member_type
  * @property {string[]} tags
@@ -142,8 +142,8 @@
  */
 
 /**
- * @typedef {object} OrganizationMembers
- * @property {OrganizationMember[]} members
+ * @typedef {object} AdminAppOrganizationMembers
+ * @property {AdminAppOrganizationMember[]} members
  */
 
 //#endregion

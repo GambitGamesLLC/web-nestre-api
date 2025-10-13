@@ -4,7 +4,6 @@
 
 # Build output and generated documentation
 # Ignore common build output directories.
-/dist
 /build
 /out
 

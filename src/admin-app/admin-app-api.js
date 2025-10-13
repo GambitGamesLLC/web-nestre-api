@@ -17,7 +17,7 @@ import { CreateOrganizationDataSchema } from './admin-app-schemas.js';
 import { UpdateOrganizationDataSchema } from './admin-app-schemas.js';
 import { TeamCodeSchema } from './admin-app-schemas.js'; 
 import { AdminAppCreateReferralCodeSchema } from './admin-app-schemas.js';
-import { OrganizationMembersSchema } from './admin-app-schemas.js';
+import { AdminAppOrganizationMembersSchema } from './admin-app-schemas.js';
 import { MemberIdsSchema } from './admin-app-schemas.js';
 
 /**
@@ -29,8 +29,8 @@ import { MemberIdsSchema } from './admin-app-schemas.js';
  * @typedef {import('./admin-app-types.js').UpdatedOrganization } UpdatedOrganization 
  * @typedef {import('./admin-app-types.js').RetrievedOrganizationData } RetrievedOrganizationData
  * @typedef {import('./admin-app-types.js').TeamCode } TeamCode
- * @typedef {import('./admin-app-types.js').CreateReferralCode } CreateReferralCode
- * @typedef {import('./admin-app-types.js').OrganizationMembers } OrganizationMembers
+ * @typedef {import('./admin-app-types.js').AdminAppCreateReferralCode } CreateReferralCode
+ * @typedef {import('./admin-app-types.js').AdminAppOrganizationMembers } OrganizationMembers
  * @typedef {import('./admin-app-types.js').MemberIds } MemberIds
  * @typedef {import('./admin-app-types.js').UserStatsData } UserStatsData
  * @typedef {import('./admin-app-types.js').ReferralCodeStats } ReferralCodeStats
@@ -394,7 +394,7 @@ export class AdminAppApi
     }
 
     // Validate the referral_code object against the imported Joi schema
-    const { error } = OrganizationMembersSchema.validate(organization_members);
+    const { error } = AdminAppOrganizationMembersSchema.validate(organization_members);
 
     if (error) {
         // Return a rejected promise with a descriptive error.

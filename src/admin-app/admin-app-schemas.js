@@ -4,7 +4,7 @@
  * @description This file exports Joi validation schemas for the objects used in the Admin App API.
  * These schemas are used to ensure the data sent to the API functions has the correct shape and type.
  * @exports {CreateOrganizationDataSchema}
- * @exports {OrganizationMembersSchema}
+ * @exports {AdminAppOrganizationMembersSchema}
  * @exports {UpdateOrganizationDataSchema}
  * @exports {TeamCodeSchema}
  * @exports {AdminAppCreateReferralCodeSchema}
@@ -36,7 +36,7 @@ export const CreateOrganizationDataSchema = Joi.object({
 /**
  * Joi schema for validating the OrganizationMembers object.
  */
-export const OrganizationMembersSchema = Joi.object({
+export const AdminAppOrganizationMembersSchema = Joi.object({
     members: Joi.array().items(Joi.object({
         email: Joi.string().email({ tlds: { allow: false } }).required(),
         member_type: Joi.string().required(),
