@@ -14,36 +14,40 @@
 
 //#region IMPORTS
 
-import { UserApi } from './user/user-api.js';
-import { DailyWorkoutApi } from './daily-workout/daily-workout-api.js';
-import { CognitiveExercisesApi } from './cognitive-exercises/cognitive-exercises-api.js';
-import { MentalFramingApi } from './mental-framing/mental-framing-api.js';
+import { AdminAppApi } from './admin-app/admin-app-api.js';
 import { AssessmentApi } from './assessment/assessment-api.js';
+import { AssessmentSearchApi } from './assessment-search/assessment-search-api.js';
+import { CognitiveExercisesApi } from './cognitive-exercises/cognitive-exercises-api.js';
 import { ContentInteractionApi } from './content-interaction/content-interaction-api.js';
 import { ContentRecommendationsApi  } from './content-recommendations/content-recommendations-api.js';
+import { DailyWorkoutApi } from './daily-workout/daily-workout-api.js';
+import { DevelopmentApi } from './development/development-api.js';
 import { FrameItApi  } from './frame-it/frame-it-api.js';
 import { LookupApi } from './lookup/lookup-api.js';
-import { UtilityApi } from './utility/utility-api.js';
-import { AdminAppApi } from './admin-app/admin-app-api.js';
-import { UserSearchApi } from './user-search/user-search-api.js';
-import { AssessmentSearchApi } from './assessment-search/assessment-search-api.js';
+import { MentalFramingApi } from './mental-framing/mental-framing-api.js';
+import { NeurolabsAppsReports } from './neurolabs-apps-reports/neurolabs-reports-api.js';
 import { OrganizationApi } from './organization/organization-api.js';
-import { DevelopmentApi } from './development/development-api.js';
-
-//Custom error class returned by our Request() when we have a 500 status code in our server Api response
-import { InternalServerError } from './errors/internal-server-error.js';
-
-//Custom error class returned by our Request() when we have a 422 status code in our server Api response
-import { ValidationError } from './errors/validation-error.js';
-
-//Custom error class returned by our Request() when we have a 403 status code in our server Api response
-import { ForbiddenError } from './errors/forbidden-error.js';
+import { UserApi } from './user/user-api.js';
+import { UserSearchApi } from './user-search/user-search-api.js';
+import { UtilityApi } from './utility/utility-api.js';
 
 //Custom error class returned by our Request() when we have a 401 status code in our server Api response
 import { AuthorizationError } from './errors/authorization-error.js';
 
+//Custom error class returned by our Request() when we have a 403 status code in our server Api response
+import { ForbiddenError } from './errors/forbidden-error.js';
+
 //Custom error class returned by our Request() when we have a 400 status code in our server Api response
 import { GeneralError } from './errors/general-error.js';
+
+//Custom error class returned by our Request() when we have a 500 status code in our server Api response
+import { InternalServerError } from './errors/internal-server-error.js';
+
+//Custom error class returned by our Request() when we have a 404 status code in our server Api response
+import { MissingError } from './errors/missing-error.js';
+
+//Custom error class returned by our Request() when we have a 422 status code in our server Api response
+import { ValidationError } from './errors/validation-error.js';
 
 //#endregion
 
@@ -110,35 +114,29 @@ export class NestreApiManager
 
 //#region PUBLIC - VARIABLES
 
-  /** 
-   * Reference to the UserAPI object
-   * @type {UserApi} 
-   * */
-  userApi = null;
-
   /**
-   * Reference to the DailyWorkoutApi object
-   * @type {DailyWorkoutApi}
+   * Reference to the AdminAppApi object
+   * @type {AdminAppApi}
    * */
-  dailyWorkoutApi = null;
-
-  /**
-   * Reference to the CognitiveExcercisesApi object
-   * @type {CognitiveExercisesApi}
-   * */
-  cognitiveExercisesApi = null;
-
-  /**
-   * Reference to the MentalFramingApi object
-   * @type {MentalFramingApi}
-   * */
-  mentalFramingApi = null;
+  adminAppApi = null;
 
   /**
    * Reference to the AssessmentApi object
    * @type {AssessmentApi}
    * */
   assessmentApi = null;
+
+  /**
+   * Reference to the AssessmentSearchApi object
+   * @type {AssessmentSearchApi}
+   * */
+  assessmentSearchApi = null;
+
+  /**
+   * Reference to the CognitiveExcercisesApi object
+   * @type {CognitiveExercisesApi}
+   * */
+  cognitiveExercisesApi = null;
 
   /**
    * Reference to the ContentInteractionApi object
@@ -153,6 +151,18 @@ export class NestreApiManager
   contentRecommendationsApi = null;
 
   /**
+   * Reference to the DailyWorkoutApi object
+   * @type {DailyWorkoutApi}
+   * */
+  dailyWorkoutApi = null;
+
+  /**
+   * Reference to the DevelopmentApi object
+   * @type {DevelopmentApi}
+   * */
+  DevelopmentApi = null;
+
+  /**
    * Reference to the FrameItApi object
    * @type {FrameItApi}
    * */
@@ -165,16 +175,28 @@ export class NestreApiManager
   lookupApi = null;
 
   /**
-   * Reference to the UtilityApi object
-   * @type {UtilityApi}
+   * Reference to the MentalFramingApi object
+   * @type {MentalFramingApi}
    * */
-  utilityApi = null;
+  mentalFramingApi = null;
 
   /**
-   * Reference to the AdminAppApi object
-   * @type {AdminAppApi}
+   * Reference to the NeurolabsAppsReports object
+   * @type {NeurolabsAppsReports}
    * */
-  adminAppApi = null;
+  neurolabsAppsReportApi = null;
+
+  /**
+   * Reference to the OrganizationApi object
+   * @type {OrganizationApi}
+   * */
+  OrganizationApi = null;
+
+  /** 
+   * Reference to the UserAPI object
+   * @type {UserApi} 
+   * */
+  userApi = null;
 
   /**
    * Reference to the UserSearchApi object
@@ -183,23 +205,11 @@ export class NestreApiManager
   userSearchApi = null;
 
   /**
-   * Reference to the AssessmentSearchApi object
-   * @type {AssessmentSearchApi}
+   * Reference to the UtilityApi object
+   * @type {UtilityApi}
    * */
-  assessmentSearchApi = null;
-
-  /**
-   * Reference to the OrganizationApi object
-   * @type {OrganizationApi}
-   * */
-  OrganizationApi = null;
-
-  /**
-   * Reference to the DevelopmentApi object
-   * @type {DevelopmentApi}
-   * */
-  DevelopmentApi = null;
-
+  utilityApi = null;
+  
 //#endregion
 
 //#region PUBLIC - CONSTRUCTOR
@@ -221,20 +231,17 @@ constructor()
     NestreApiManager.instance = this;
 
     //We only need to generate our helper classes once
-    this.userApi = null;
-    this.userApi = new UserApi(this);
-
-    this.dailyWorkoutApi = null;
-    this.dailyWorkoutApi = new DailyWorkoutApi();
-
-    this.cognitiveExercisesApi = null;
-    this.cognitiveExercisesApi = new CognitiveExercisesApi();
-
-    this.mentalFramingApi = null;
-    this.mentalFramingApi = new MentalFramingApi();
+    this.adminAppApi = null;
+    this.adminAppApi = new AdminAppApi();
 
     this.assessmentApi = null;
     this.assessmentApi = new AssessmentApi();
+
+    this.assessmentSearchApi = null;
+    this.assessmentSearchApi = new AssessmentSearchApi();
+
+    this.cognitiveExercisesApi = null;
+    this.cognitiveExercisesApi = new CognitiveExercisesApi();
 
     this.contentInteractionApi = null;
     this.contentInteractionApi = new ContentInteractionApi();
@@ -242,29 +249,35 @@ constructor()
     this.contentRecommendationsApi = null;
     this.contentRecommendationsApi = new ContentRecommendationsApi();
 
+    this.dailyWorkoutApi = null;
+    this.dailyWorkoutApi = new DailyWorkoutApi();
+
+    this.developmentApi = null;
+    this.developmentApi = new DevelopmentApi();
+
     this.frameItApi = null;
     this.frameItApi = new FrameItApi();
 
     this.lookupApi = null;
     this.lookupApi = new LookupApi();
 
-    this.utilityApi = null;
-    this.utilityApi = new UtilityApi();
+    this.mentalFramingApi = null;
+    this.mentalFramingApi = new MentalFramingApi();
 
-    this.adminAppApi = null;
-    this.adminAppApi = new AdminAppApi();
-
-    this.userSearchApi = null;
-    this.userSearchApi = new UserSearchApi();
-
-    this.assessmentSearchApi = null;
-    this.assessmentSearchApi = new AssessmentSearchApi();
+    this.neurolabsAppsReportApi = null;
+    this.neurolabsAppsReportApi = new NeurolabsAppsReportsApi();
 
     this.organizationApi = null;
     this.organizationApi = new OrganizationApi();
 
-    this.developmentApi = null;
-    this.developmentApi = new DevelopmentApi();
+    this.userApi = null;
+    this.userApi = new UserApi(this);
+
+    this.userSearchApi = null;
+    this.userSearchApi = new UserSearchApi();
+
+    this.utilityApi = null;
+    this.utilityApi = new UtilityApi();    
 
 } //END constructor Method
 
@@ -481,6 +494,11 @@ SetApiVersion( version )
         if (response.status === 422)
         {
           throw new ValidationError( errorData.detail, 'web-nestre-api : nestre-api-manager.js API Error (422). Validation error.');
+        }
+ 
+        if( response.status === 404 )
+        {
+          throw new MissingError( errorData.detail, "web-nestre-api : nestre-api-manager.js API Error (404). Client not found." );
         }
 
         if( response.status === 403 )
